@@ -52,12 +52,27 @@
 				<ArtistList subsonic={subsonic} iconSize="30" />,
 				document.getElementById('artistList')
 			);
+
+			React.render(
+				<PlaylistCollection subsonic={subsonic} iconSize="20" />,
+				document.getElementById('playlistView')
+			);
 		});
 
 		$('.ui.accordion').accordion();
+		$('.menu .item').tab();
 	</script>
 </head>
 <body>
-	<div id="artistList"></div>
+	<div id="frames">
+		<div id="player-frame"></div>
+		<div id="browser-frame">
+			<div id="artistList"></div>
+			<!-- string filter -->
+		</div>
+		<div id="playlist-frame">
+			<div id="playlistView"></div>
+		</div>
+	</div>
 </body>
 </html>

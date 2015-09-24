@@ -144,6 +144,10 @@ var Playlist = React.createClass({
 		return {playlist: []};
 	},
 
+	componentDidMount: function() {
+		this.loadPlaylist(); // TODO only load this when selecting the tab
+	},
+
 	loadPlaylist: function() {
 		$.ajax({
 			url: this.props.subsonic.getUrl('getPlaylist', {id: this.props.data.id}),
@@ -167,12 +171,15 @@ var Playlist = React.createClass({
 		});
 
 		return (
-			<table className="ui selectable celled table">
+			<table className="ui selectable compact table">
 				<thead>
 					<tr>
-						<th>Name</th>
-						<th>Status</th>
-						<th>Notes</th>
+						<th>#</th>
+						<th>Artist</th>
+						<th>Title</th>
+						<th>Album</th>
+						<th>Date</th>
+						<th>Duration</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -186,9 +193,9 @@ var Playlist = React.createClass({
 var PlaylistTab = React.createClass({
 	render: function() {
 		return (
-			<a className="item" dataTab={this.data.id}>
+			<a className="item playlistTab" data-tab={this.props.data.id} onClick={this.props.onClick}>
 				<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize}/>
-				{this.data.name}
+				{this.props.data.name}
 			</a>
 		);
 	}
@@ -197,7 +204,7 @@ var PlaylistTab = React.createClass({
 var PlaylistTabContent = React.createClass({
 	render: function() {
 		return (
-			<div className="ui bottom attached tab segment" dataTab={this.data.id}>
+			<div className="ui bottom attached tab segment" data-tab={this.props.data.id}>
 				<Playlist key={this.props.data.id} subsonic={this.props.subsonic} iconSize={this.props.iconSize} data={this.props.data}/>
 			</div>
 		);
@@ -209,9 +216,9 @@ var PlaylistCollection = React.createClass({
 		return {playlists: []};
 	},
 
-	loadPlaylists: function() {
+	componentDidMount: function() {
 		$.ajax({
-			url: this.props.subsonic.getUrl('getPlaylists', {id: this.props.data.id}),
+			url: this.props.subsonic.getUrl('getPlaylists', {}),
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
@@ -223,27 +230,30 @@ var PlaylistCollection = React.createClass({
 		});
 	},
 
+	componentDidUpdate: function() {
+		$('.playlistTab').tab();
+	},
+
 	render: function() {
 		var _this = this;
-		var playlist = this.state.playlist.map(function (entry) {
+		var playlistTabs = this.state.playlists.map(function (playlist) {
 			return (
-				<Playlist key={entry.id} subsonic={_this.props.subsonic} data={entry} iconSize={_this.props.iconSize} />
+				<PlaylistTab key={playlist.id} subsonic={_this.props.subsonic} data={playlist} iconSize={_this.props.iconSize} />
+			);
+		});
+		var playlistContents = this.state.playlists.map(function (playlist) {
+			return (
+				<PlaylistTabContent key={playlist.id} subsonic={_this.props.subsonic} data={playlist} iconSize={_this.props.iconSize} />
 			);
 		});
 
 		return (
-			<table className="ui selectable celled table">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Status</th>
-						<th>Notes</th>
-					</tr>
-				</thead>
-				<tbody>
-					{playlist}
-				</tbody>
-			</table>
+			<div>
+				<div className="ui top attached tabular menu">
+					{playlistTabs}
+				</div>
+				{playlistContents}
+			</div>
 		);
 	}
 });
