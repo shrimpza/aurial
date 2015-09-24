@@ -115,23 +115,23 @@ var PlaylistItem = React.createClass({
 		return (
 			<tr>
 				<td>
-					{this.data.track}
+					{this.props.data.track}
 				</td>
 				<td>
-					{this.data.artist}
+					{this.props.data.artist}
 				</td>
 				<td>
-					{this.data.title}
+					{this.props.data.title}
 				</td>
 				<td>
-					<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
-					{this.data.album}
+					{/* <CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} /> */}
+					{this.props.data.album}
 				</td>
 				<td>
-					{this.data.year}
+					{this.props.data.year}
 				</td>
 				<td>
-					{this.data.duration}
+					{this.props.data.duration}
 				</td>
 			</tr>
 		);
@@ -154,7 +154,9 @@ var Playlist = React.createClass({
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
-				this.setState({playlist: data['subsonic-response'].playlist.entry});
+				if (data['subsonic-response'].playlist.entry) {
+					this.setState({playlist: data['subsonic-response'].playlist.entry});
+				}
 			}.bind(this),
 			error: function(xhr, status, err) {
 				console.error(this.props.url, status, err.toString());
@@ -222,7 +224,9 @@ var PlaylistCollection = React.createClass({
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
-				this.setState({playlists: data['subsonic-response'].playlists.playlist});
+				if (data['subsonic-response'].playlists.playlist) {
+					this.setState({playlists: data['subsonic-response'].playlists.playlist});
+				}
 			}.bind(this),
 			error: function(xhr, status, err) {
 				console.error(this.props.url, status, err.toString());
