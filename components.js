@@ -1,7 +1,7 @@
 var CoverArt = React.createClass({
 	render: function() {
 		return (
-			<img className="ui image" src={this.props.subsonic.getUrl("getCoverArt", {id:this.props.id, size:this.props.size})}/>
+			<img className="ui image" src={this.props.subsonic.getUrl("getCoverArt", {id:this.props.id, size:this.props.size})} />
 		);
 	}
 });
@@ -12,7 +12,7 @@ var Album = React.createClass({
 		return (
 			<div className="item">
 				<div className="ui image label">
-					<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize}/>
+					<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
 					{year} {this.props.data.name} ({this.props.data.songCount})
 				</div>
 			</div>
@@ -124,7 +124,7 @@ var PlaylistItem = React.createClass({
 					{this.data.title}
 				</td>
 				<td>
-					<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize}/>
+					<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
 					{this.data.album}
 				</td>
 				<td>
@@ -194,7 +194,7 @@ var PlaylistTab = React.createClass({
 	render: function() {
 		return (
 			<a className="item playlistTab" data-tab={this.props.data.id} onClick={this.props.onClick}>
-				<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize}/>
+				<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
 				{this.props.data.name}
 			</a>
 		);
@@ -205,7 +205,7 @@ var PlaylistTabContent = React.createClass({
 	render: function() {
 		return (
 			<div className="ui bottom attached tab segment" data-tab={this.props.data.id}>
-				<Playlist key={this.props.data.id} subsonic={this.props.subsonic} iconSize={this.props.iconSize} data={this.props.data}/>
+				<Playlist key={this.props.data.id} subsonic={this.props.subsonic} data={this.props.data} iconSize={this.props.iconSize} />
 			</div>
 		);
 	}
