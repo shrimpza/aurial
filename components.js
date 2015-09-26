@@ -11,9 +11,10 @@ var Album = React.createClass({
 		var year = this.props.data.year ? '[' + this.props.data.year + ']' : '';
 		return (
 			<div className="item">
-				<div className="ui image label">
-					<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
-					{year} {this.props.data.name} ({this.props.data.songCount})
+				<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
+				<div className="content">
+					<div className="header">{this.props.data.name}</div>
+					<div className="description">{year} {this.props.data.songCount} tracks</div>
 				</div>
 			</div>
 		);
@@ -59,8 +60,10 @@ var Artist = React.createClass({
 					<i className="dropdown icon"></i>
 					{this.props.data.name} ({this.props.data.albumCount})
 				</div>
-				<div className="ui selection list content">
-					{albums}
+				<div className="ui secondary inverted segment content">
+					<div className="ui inverted tiny selection list">
+						{albums}
+					</div>
 				</div>
 			</div>
 		);
@@ -102,8 +105,10 @@ var ArtistList = React.createClass({
 		});
 
 		return (
-			<div className="ui styled fluid accordion">
-				{artists}
+			<div className="ui inverted basic segment">
+				<div className="ui inverted fluid accordion">
+					{artists}
+				</div>
 			</div>
 		);
 	}
@@ -173,7 +178,7 @@ var Playlist = React.createClass({
 		});
 
 		return (
-			<table className="ui selectable compact table">
+			<table className="ui selectable single line very basic compact table">
 				<thead>
 					<tr>
 						<th>#</th>
@@ -206,7 +211,7 @@ var PlaylistTab = React.createClass({
 var PlaylistTabContent = React.createClass({
 	render: function() {
 		return (
-			<div className="ui bottom attached tab segment" data-tab={this.props.data.id}>
+			<div className="ui bottom attached tab segment playlist" data-tab={this.props.data.id}>
 				<Playlist key={this.props.data.id} subsonic={this.props.subsonic} data={this.props.data} iconSize={this.props.iconSize} />
 			</div>
 		);
@@ -252,11 +257,13 @@ var PlaylistCollection = React.createClass({
 		});
 
 		return (
-			<div>
-				<div className="ui top attached tabular menu">
+			<div className="playlists">
+				<div className="ui top attached compact tabular menu">
 					{playlistTabs}
 				</div>
-				{playlistContents}
+				<div className="playlistContent">
+					{playlistContents}
+				</div>
 			</div>
 		);
 	}
