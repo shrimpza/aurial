@@ -15,7 +15,13 @@ var Album = React.createClass({
 				<div className="content">
 					<div className="header">{this.props.data.name}</div>
 					<div className="description">{year} {this.props.data.songCount} tracks</div>
+					<div className="extra">
+						
+					</div>
 				</div>
+				{/*<div className="ui inverted right floated compact basic tiny icon button">
+					<i className="play icon"></i>
+				</div>*/}
 			</div>
 		);
 	}
