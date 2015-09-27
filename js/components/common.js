@@ -5,3 +5,38 @@ var CoverArt = React.createClass({
 		);
 	}
 });
+
+var TabGroup = React.createClass({
+	getInitialState: function() {
+		return {tabs: []};
+	},
+
+	addTab: function(tab) {
+		var tabs = this.state.tabs;
+		tabs.push(tab);
+		this.setState({tabs: tabs});
+	},
+
+	render: function() {
+		var _this = this;
+		var tabs = this.state.tabs.map(function (tab) {
+			return (
+				<Tab key={tab.id} id={tab.id} title={tab.id} />
+			);
+		});
+
+		return (
+			<div className="ui top attached tabular menu">
+				{tabs}
+			</div>
+		);
+	}
+});
+
+var Tab = React.createClass({
+	render: function() {
+		return (
+			<a className="item" data-tab="{this.props.id}" onClick={this.props.onClick}>{this.props.title}</a>
+		);
+	}
+});
