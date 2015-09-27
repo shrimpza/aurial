@@ -9,8 +9,10 @@
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.js"></script>
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.css">
 
-	<script type="text/javascript" src="script.js"></script>
-	<script type="text/jsx" src="components.js"></script>
+	<script type="text/javascript" src="js/script.js"></script>
+	<script type="text/jsx" src="js/components/common.js"></script>
+	<script type="text/jsx" src="js/components/browser.js"></script>
+	<script type="text/jsx" src="js/components/playlist.js"></script>
 
 	<link rel="stylesheet" href="style.css">
 
@@ -46,6 +48,7 @@
 
 
 		$(document).ready(function() {
+			// TODO these properties should be populated from local storage, supplied by the user via setup view
 			var subsonic = new Subsonic("http://192.168.0.3:4242", "admin", "hpserver", "1.12.0", "thing");
 
 			React.render(
