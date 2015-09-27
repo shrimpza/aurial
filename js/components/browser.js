@@ -24,6 +24,10 @@ var ArtistList = React.createClass({
 		});
 	},
 
+	componentDidUpdate: function() {
+		$('.artistList').accordion({exclusive: false});
+	},
+
 	render: function() {
 		var _this = this;
 		var artists = this.state.artists.map(function (artist) {
@@ -34,7 +38,7 @@ var ArtistList = React.createClass({
 
 		return (
 			<div className="ui inverted basic segment">
-				<div className="ui inverted fluid accordion">
+				<div className="ui inverted fluid accordion artistList">
 					{artists}
 				</div>
 			</div>
@@ -44,7 +48,7 @@ var ArtistList = React.createClass({
 
 var Artist = React.createClass({
 	getInitialState: function() {
-		return {albums: []};
+		return {albums: [], loaded: false};
 	},
 
 	loadAlbums: function() {
@@ -53,7 +57,7 @@ var Artist = React.createClass({
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
-				this.setState({albums: data['subsonic-response'].artist.album});
+				this.setState({albums: data['subsonic-response'].artist.album, loaded:true});
 			}.bind(this),
 			error: function(xhr, status, err) {
 				console.error(this.props.url, status, err.toString());
@@ -62,7 +66,7 @@ var Artist = React.createClass({
 	},
 
 	onClick: function() {
-		if (this.state.albums.length == 0) {
+		if (!this.state.loaded) {
 			this.loadAlbums();
 		}
 	},
@@ -74,6 +78,10 @@ var Artist = React.createClass({
 				<Album key={album.id} subsonic={_this.props.subsonic} data={album} iconSize={_this.props.iconSize} />
 			);
 		});
+
+		if (!this.state.loaded && albums.length == 0) {
+			albums = <div className="ui inverted active centered inline loader"></div>
+		}
 
 		return (
 			<div key={this.props.data.id} onClick={this.onClick}>
