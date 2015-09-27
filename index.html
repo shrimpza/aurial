@@ -9,7 +9,7 @@
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.js"></script>
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.css">
 
-	<script type="text/javascript" src="js/script.js"></script>
+	<script type="text/javascript" src="js/util.js"></script>
 	<script type="text/jsx" src="js/components/common.js"></script>
 	<script type="text/jsx" src="js/components/browser.js"></script>
 	<script type="text/jsx" src="js/components/playlist.js"></script>
@@ -52,10 +52,14 @@
 			var subsonic = new Subsonic("http://192.168.0.3:4242", "admin", "hpserver", "1.12.0", "thing");
 
 			React.render(
+				<PlaylistManager subsonic={subsonic} iconSize="20" />,
+				document.getElementById('playlist-playlists')
+			);
+
+			React.render(
 				<ArtistList subsonic={subsonic} iconSize="30" />,
 				document.getElementById('artistList')
 			);
-
 
 			var tabs = [];
 			tabs.push({id:"1", title: "Hello"});

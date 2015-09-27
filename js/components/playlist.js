@@ -60,21 +60,78 @@ var PlaylistTab = React.createClass({
 	}
 });
 
-var PlaylistTabContent = React.createClass({
+var PlaylistManager = React.createClass({
+	getInitialState: function() {
+		return {playlists: []};
+	},
+
+	componentDidMount: function() {
+		$.ajax({
+			url: this.props.subsonic.getUrl('getPlaylists', {}),
+			dataType: 'json',
+			cache: false,
+			success: function(data) {
+				if (data['subsonic-response'].playlists.playlist) {
+					this.setState({playlists: data['subsonic-response'].playlists.playlist});
+				}
+			}.bind(this),
+			error: function(xhr, status, err) {
+				console.error(this.props.url, status, err.toString());
+			}.bind(this)
+		});
+	},
+
 	render: function() {
 		return (
-			<div className="ui bottom attached tab segment playlist" data-tab={this.props.data.id}>
-				<Playlist key={this.props.data.id} subsonic={this.props.subsonic} data={this.props.data} iconSize={this.props.iconSize} />
+			<div>
+				<PlaylistSelector subsonic={this.props.subsonic} playlists={this.state.playlists} iconSize={this.props.iconSize} />
 			</div>
 		);
 	}
 });
 
 
+var PlaylistSelector = React.createClass({
+	componentDidMount: function() {
+		$('.playlistSelector').dropdown();
+	},
+
+	render: function() {
+		var _this = this;
+		var playlists = this.props.playlists.map(function (playlist) {
+			return (
+				<PlaylistSelectorItem key={playlist.id} subsonic={_this.props.subsonic} data={playlist} iconSize={_this.props.iconSize} />
+			);
+		});
+
+		return (
+			<div className="ui fluid selection dropdown playlistSelector">
+				<i className="dropdown icon"></i>
+				<div className="default text">Playlists...</div>
+				<div className="menu">
+					{playlists}
+				</div>
+			</div>
+		);
+	}
+});
+
+var PlaylistSelectorItem = React.createClass({
+	render: function() {
+		return (
+			<div className="item">
+				<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
+				<span className="description">{this.props.data.songCount}, {this.props.data.duration.asTime()}</span>
+				<span className="text">{this.props.data.name}</span>
+			</div>
+		);
+	}
+})
+
 var Playlist = React.createClass({
 
 	getInitialState: function() {
-		return {playlist: []};
+		return {playlist: [], id: null};
 	},
 
 	componentDidMount: function() {
