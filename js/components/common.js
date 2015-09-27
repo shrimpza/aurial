@@ -7,26 +7,15 @@ var CoverArt = React.createClass({
 });
 
 var TabGroup = React.createClass({
-	getInitialState: function() {
-		return {tabs: []};
-	},
-
-	addTab: function(tab) {
-		var tabs = this.state.tabs;
-		tabs.push(tab);
-		this.setState({tabs: tabs});
-	},
-
 	render: function() {
-		var _this = this;
-		var tabs = this.state.tabs.map(function (tab) {
+		var tabs = this.props.tabs.map(function (tab) {
 			return (
-				<Tab key={tab.id} id={tab.id} title={tab.id} />
+				<Tab key={tab.id} id={tab.id} title={tab.title} />
 			);
 		});
 
 		return (
-			<div className="ui top attached tabular menu">
+			<div className="ui secondary pointing menu">
 				{tabs}
 			</div>
 		);

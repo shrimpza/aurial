@@ -56,10 +56,22 @@
 				document.getElementById('artistList')
 			);
 
+
+			var tabs = [];
+			tabs.push({id:"1", title: "Hello"});
+			tabs.push({id:"2", title: "World"});
+
+			var tabGroup = <TabGroup tabs={tabs} iconSize="20" />;
+
 			React.render(
+				tabGroup,
+				document.getElementById('playlist-menu')
+			);
+
+			/*React.render(
 				<PlaylistCollection subsonic={subsonic} iconSize="20" />,
 				document.getElementById('playlistView')
-			);
+			);*/
 		});
 
 	</script>
@@ -72,7 +84,12 @@
 		</div>
 		<div id="player-frame"></div>
 		<div id="playlist-frame">
-			<div id="playlistView"></div>
+			<div id="playlist-menu"></div>
+			<div id="playlist-content">
+				<div id="playlist-selection"></div>
+				<div id="playlist-playlists"></div>
+				<div id="playlist-playing"></div>
+			</div>
 		</div>
 	</div>
 </body>

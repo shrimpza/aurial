@@ -17,7 +17,7 @@ body {
 
     #browser-frame .segment {
         padding:0.25em;
-        margin: 0 0 1rem;
+        margin: 0 0 1rem 0;
     }
 
     #player-frame {
@@ -31,19 +31,13 @@ body {
     	top: 101px; right: 0px; bottom: 0px; left: 381px;
     }
 
-    #playlist-frame .playlists {
+    #playlist-menu {
         position: absolute;
         top: 0; right: 0; bottom: 0; left: 0;
     }
 
-    #playlist-frame .playlists .playlistContent {
+    #playlist-content {
         position: absolute;
-        top: 46px; right: 0; bottom: 0; left: 1px;
-    }
-
-    #playlist-frame .playlists .playlistContent .playlist {
-        position: absolute;
-        top: 0; right: 0; bottom: 0; left: 0;
-        overflow: auto;
+        top: 45px; right: 0; bottom: 0; left: 0;
     }
 }
