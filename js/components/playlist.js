@@ -62,10 +62,16 @@ var PlaylistTab = React.createClass({
 
 var PlaylistManager = React.createClass({
 	getInitialState: function() {
+		this.playlist = null;
+
 		return {playlists: []};
 	},
 
 	componentDidMount: function() {
+		this.loadPlaylists();
+	},
+
+	loadPlaylists: function() {
 		$.ajax({
 			url: this.props.subsonic.getUrl('getPlaylists', {}),
 			dataType: 'json',
@@ -81,10 +87,29 @@ var PlaylistManager = React.createClass({
 		});
 	},
 
+	loadPlaylist: function(id) {
+		$.ajax({
+			url: this.props.subsonic.getUrl('getPlaylist', {id: id),
+			dataType: 'json',
+			cache: false,
+			success: function(data) {
+				if (data['subsonic-response'].playlist.entry) {
+					this.setState({playlist: data['subsonic-response'].playlist.entry});
+				}
+			}.bind(this),
+			error: function(xhr, status, err) {
+				console.error(this.props.url, status, err.toString());
+			}.bind(this)
+		});
+	},
+
 	render: function() {
+		if (this.playlist == null) this.playlist = <Playlist subsonic={this.props.subsonic} iconSize={this.props.iconSize} />
+
 		return (
 			<div>
-				<PlaylistSelector subsonic={this.props.subsonic} playlists={this.state.playlists} iconSize={this.props.iconSize} />
+				<PlaylistSelector subsonic={this.props.subsonic} playlists={this.state.playlists} iconSize={this.props.iconSize} selected={this.loadPlaylist} />
+				{this.playlist}
 			</div>
 		);
 	}
@@ -93,7 +118,12 @@ var PlaylistManager = React.createClass({
 
 var PlaylistSelector = React.createClass({
 	componentDidMount: function() {
-		$('.playlistSelector').dropdown();
+		$('.playlistSelector').dropdown({
+			action: 'hide',
+			onChange: function(value, text, $selectedItem) {
+				this.props.selected(value);
+			}
+		});
 	},
 
 	render: function() {
@@ -119,7 +149,7 @@ var PlaylistSelector = React.createClass({
 var PlaylistSelectorItem = React.createClass({
 	render: function() {
 		return (
-			<div className="item">
+			<div className="item" data-value={this.props.data.id}>
 				<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
 				<span className="description">{this.props.data.songCount}, {this.props.data.duration.asTime()}</span>
 				<span className="text">{this.props.data.name}</span>
@@ -132,26 +162,6 @@ var Playlist = React.createClass({
 
 	getInitialState: function() {
 		return {playlist: [], id: null};
-	},
-
-	componentDidMount: function() {
-		this.loadPlaylist(); // TODO only load this when selecting the tab
-	},
-
-	loadPlaylist: function() {
-		$.ajax({
-			url: this.props.subsonic.getUrl('getPlaylist', {id: this.props.data.id}),
-			dataType: 'json',
-			cache: false,
-			success: function(data) {
-				if (data['subsonic-response'].playlist.entry) {
-					this.setState({playlist: data['subsonic-response'].playlist.entry});
-				}
-			}.bind(this),
-			error: function(xhr, status, err) {
-				console.error(this.props.url, status, err.toString());
-			}.bind(this)
-		});
 	},
 
 	render: function() {
