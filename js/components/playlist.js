@@ -62,9 +62,7 @@ var PlaylistTab = React.createClass({
 
 var PlaylistManager = React.createClass({
 	getInitialState: function() {
-		this.playlist = null;
-
-		return {playlists: []};
+		return {playlists: [], playlist: []};
 	},
 
 	componentDidMount: function() {
@@ -89,7 +87,7 @@ var PlaylistManager = React.createClass({
 
 	loadPlaylist: function(id) {
 		$.ajax({
-			url: this.props.subsonic.getUrl('getPlaylist', {id: id),
+			url: this.props.subsonic.getUrl('getPlaylist', {id: id}),
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
@@ -104,12 +102,15 @@ var PlaylistManager = React.createClass({
 	},
 
 	render: function() {
-		if (this.playlist == null) this.playlist = <Playlist subsonic={this.props.subsonic} iconSize={this.props.iconSize} />
+		//var hash = 1;
+		//this.state.playlists.map(function (playlist) {
+		//	hash += 31 * playlist.id;
+		//});
 
 		return (
 			<div>
 				<PlaylistSelector subsonic={this.props.subsonic} playlists={this.state.playlists} iconSize={this.props.iconSize} selected={this.loadPlaylist} />
-				{this.playlist}
+				<Playlist subsonic={this.props.subsonic} iconSize={this.props.iconSize} playlist={this.state.playlist} />
 			</div>
 		);
 	}
@@ -118,10 +119,11 @@ var PlaylistManager = React.createClass({
 
 var PlaylistSelector = React.createClass({
 	componentDidMount: function() {
+		var _this = this;
 		$('.playlistSelector').dropdown({
-			action: 'hide',
+			action: 'activate',
 			onChange: function(value, text, $selectedItem) {
-				this.props.selected(value);
+				_this.props.selected(value);
 			}
 		});
 	},
@@ -151,7 +153,7 @@ var PlaylistSelectorItem = React.createClass({
 		return (
 			<div className="item" data-value={this.props.data.id}>
 				<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
-				<span className="description">{this.props.data.songCount}, {this.props.data.duration.asTime()}</span>
+				<span className="description">{this.props.data.songCount} tracks, {this.props.data.duration.asTime()}</span>
 				<span className="text">{this.props.data.name}</span>
 			</div>
 		);
@@ -159,14 +161,9 @@ var PlaylistSelectorItem = React.createClass({
 })
 
 var Playlist = React.createClass({
-
-	getInitialState: function() {
-		return {playlist: [], id: null};
-	},
-
 	render: function() {
 		var _this = this;
-		var playlist = this.state.playlist.map(function (entry) {
+		var playlist = this.props.playlist.map(function (entry) {
 			return (
 				<PlaylistItem key={entry.id} subsonic={_this.props.subsonic} data={entry} iconSize={_this.props.iconSize} />
 			);
@@ -213,7 +210,7 @@ var PlaylistItem = React.createClass({
 					{this.props.data.year}
 				</td>
 				<td>
-					{this.props.data.duration}
+					{this.props.data.duration.asTime()}
 				</td>
 			</tr>
 		);
