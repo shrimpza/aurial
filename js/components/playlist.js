@@ -1,65 +1,3 @@
-var PlaylistCollection = React.createClass({
-	getInitialState: function() {
-		return {playlists: []};
-	},
-
-	componentDidMount: function() {
-		$.ajax({
-			url: this.props.subsonic.getUrl('getPlaylists', {}),
-			dataType: 'json',
-			cache: false,
-			success: function(data) {
-				if (data['subsonic-response'].playlists.playlist) {
-					this.setState({playlists: data['subsonic-response'].playlists.playlist});
-				}
-			}.bind(this),
-			error: function(xhr, status, err) {
-				console.error(this.props.url, status, err.toString());
-			}.bind(this)
-		});
-	},
-
-	componentDidUpdate: function() {
-		$('.playlistTab').tab();
-	},
-
-	render: function() {
-		var _this = this;
-		var playlistTabs = this.state.playlists.map(function (playlist) {
-			return (
-				<PlaylistTab key={playlist.id} subsonic={_this.props.subsonic} data={playlist} iconSize={_this.props.iconSize} />
-			);
-		});
-		var playlistContents = this.state.playlists.map(function (playlist) {
-			return (
-				<PlaylistTabContent key={playlist.id} subsonic={_this.props.subsonic} data={playlist} iconSize={_this.props.iconSize} />
-			);
-		});
-
-		return (
-			<div className="playlists">
-				<div className="ui top attached compact tabular menu">
-					{playlistTabs}
-				</div>
-				<div className="playlistContent">
-					{playlistContents}
-				</div>
-			</div>
-		);
-	}
-});
-
-var PlaylistTab = React.createClass({
-	render: function() {
-		return (
-			<a className="item playlistTab" data-tab={this.props.data.id} onClick={this.props.onClick}>
-				<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
-				{this.props.data.name}
-			</a>
-		);
-	}
-});
-
 var PlaylistManager = React.createClass({
 	getInitialState: function() {
 		return {playlists: [], playlist: []};
@@ -70,33 +8,24 @@ var PlaylistManager = React.createClass({
 	},
 
 	loadPlaylists: function() {
-		$.ajax({
-			url: this.props.subsonic.getUrl('getPlaylists', {}),
-			dataType: 'json',
-			cache: false,
+		this.props.subsonic.getPlaylists({
 			success: function(data) {
-				if (data['subsonic-response'].playlists.playlist) {
-					this.setState({playlists: data['subsonic-response'].playlists.playlist});
-				}
+				this.setState({playlists: data.playlists});
 			}.bind(this),
-			error: function(xhr, status, err) {
-				console.error(this.props.url, status, err.toString());
+			error: function(status, err) {
+				console.error(this, status, err.toString());
 			}.bind(this)
 		});
 	},
 
 	loadPlaylist: function(id) {
-		$.ajax({
-			url: this.props.subsonic.getUrl('getPlaylist', {id: id}),
-			dataType: 'json',
-			cache: false,
+		this.props.subsonic.getPlaylist({
+			id: id,
 			success: function(data) {
-				if (data['subsonic-response'].playlist.entry) {
-					this.setState({playlist: data['subsonic-response'].playlist.entry});
-				}
+				this.setState({playlist: data.playlist});
 			}.bind(this),
-			error: function(xhr, status, err) {
-				console.error(this.props.url, status, err.toString());
+			error: function(status, err) {
+				console.error(this, status, err.toString());
 			}.bind(this)
 		});
 	},

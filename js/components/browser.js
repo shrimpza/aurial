@@ -4,24 +4,14 @@ var ArtistList = React.createClass({
 	},
 
 	componentDidMount: function() {
-		$.ajax({
-			url: this.props.subsonic.getUrl('getArtists', {}),
-			dataType: 'json',
-			cache: false,
+		this.props.subsonic.getArtists({
 			success: function(data) {
-				var allArtists = [];
-				data['subsonic-response'].artists.index.map(function(letter) {
-					letter.artist.map(function(artist) {
-						allArtists.push(artist);
-					});
-				});
-
-				this.setState({artists: allArtists});
+				this.setState({artists: data.artists});
 			}.bind(this),
-			error: function(xhr, status, err) {
-				console.error(this.props.url, status, err.toString());
+			error: function(status, err) {
+				console.error(this, status, err.toString());
 			}.bind(this)
-		});
+		})
 	},
 
 	componentDidUpdate: function() {
@@ -52,15 +42,13 @@ var Artist = React.createClass({
 	},
 
 	loadAlbums: function() {
-		$.ajax({
-			url: this.props.subsonic.getUrl('getArtist', {id: this.props.data.id}),
-			dataType: 'json',
-			cache: false,
+		this.props.subsonic.getArtist({
+			id: this.props.data.id,
 			success: function(data) {
-				this.setState({albums: data['subsonic-response'].artist.album, loaded:true});
+				this.setState({albums: data.albums, loaded:true});
 			}.bind(this),
-			error: function(xhr, status, err) {
-				console.error(this.props.url, status, err.toString());
+			error: function(status, err) {
+				console.error(this, status, err.toString());
 			}.bind(this)
 		});
 	},

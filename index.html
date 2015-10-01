@@ -10,6 +10,8 @@
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.css">
 
 	<script type="text/javascript" src="js/util.js"></script>
+	<script type="text/javascript" src="js/subsonic.js"></script>
+
 	<script type="text/jsx" src="js/components/common.js"></script>
 	<script type="text/jsx" src="js/components/browser.js"></script>
 	<script type="text/jsx" src="js/components/playlist.js"></script>
@@ -17,36 +19,6 @@
 	<link rel="stylesheet" href="style.css">
 
 	<script type="text/jsx">
-		Subsonic = function(url, user, password, version, appName) {
-			this.url = url;
-			this.user = user;
-			this.password = password;
-			this.version = version;
-			this.appName = appName;
-
-			this.getUrl = function(func, params) {
-				var result = this.url + "/rest/" + func + ".view?";
-				var _params = {
-					u: this.user,
-					p: this.password,
-					v: this.version,
-					c: appName,
-					f: "json"
-				};
-
-				$.each(_params, function(k, v) {
-					result += k + "=" + v + "&";
-				});
-
-				$.each(params, function(k, v) {
-					result += k + "=" + v + "&";
-				});
-
-				return result;
-			}
-		}
-
-
 		$(document).ready(function() {
 			// TODO these properties should be populated from local storage, supplied by the user via setup view
 			var subsonic = new Subsonic("http://192.168.0.3:4242", "admin", "hpserver", "1.12.0", "thing");
@@ -71,11 +43,6 @@
 				tabGroup,
 				document.getElementById('playlist-menu')
 			);
-
-			/*React.render(
-				<PlaylistCollection subsonic={subsonic} iconSize="20" />,
-				document.getElementById('playlistView')
-			);*/
 		});
 
 	</script>
