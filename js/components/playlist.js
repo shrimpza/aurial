@@ -37,7 +37,7 @@ var PlaylistManager = React.createClass({
 		//});
 
 		return (
-			<div>
+			<div className="playlistManager">
 				<PlaylistSelector subsonic={this.props.subsonic} playlists={this.state.playlists} iconSize={this.props.iconSize} selected={this.loadPlaylist} />
 				<Playlist subsonic={this.props.subsonic} iconSize={this.props.iconSize} playlist={this.state.playlist} />
 			</div>
