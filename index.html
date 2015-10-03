@@ -34,8 +34,9 @@
 			);
 
 			var tabs = [];
-			tabs.push({id:"1", title: "Hello"});
-			tabs.push({id:"2", title: "World"});
+			tabs.push({id:"selection", title: "Selection"});
+			tabs.push({id:"playlists", title: "Playlists"});
+			tabs.push({id:"playing", title: "Playing"});
 
 			var tabGroup = <TabGroup tabs={tabs} iconSize="20" />;
 
@@ -57,9 +58,9 @@
 		<div id="playlist-frame">
 			<div id="playlist-menu"></div>
 			<div id="playlist-content">
-				<div id="playlist-selection"></div>
-				<div id="playlist-playlists"></div>
-				<div id="playlist-playing"></div>
+				<div id="playlist-selection" data-tab="selection" class="ui tab"></div>
+				<div id="playlist-playlists" data-tab="playlists" class="ui tab"></div>
+				<div id="playlist-playing" data-tab="playing" class="ui tab"></div>
 			</div>
 		</div>
 	</div>

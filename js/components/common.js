@@ -7,6 +7,10 @@ var CoverArt = React.createClass({
 });
 
 var TabGroup = React.createClass({
+	componentDidMount: function() {
+		$('.menu .item').tab();
+	},
+
 	render: function() {
 		var tabs = this.props.tabs.map(function (tab) {
 			return (
@@ -25,7 +29,7 @@ var TabGroup = React.createClass({
 var Tab = React.createClass({
 	render: function() {
 		return (
-			<a className="item" data-tab="{this.props.id}" onClick={this.props.onClick}>{this.props.title}</a>
+			<a className="item" data-tab={this.props.id}>{this.props.title}</a>
 		);
 	}
 });
