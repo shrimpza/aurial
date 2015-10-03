@@ -99,21 +99,23 @@ var Playlist = React.createClass({
 		});
 
 		return (
-			<table className="ui selectable single line very basic compact table">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Artist</th>
-						<th>Title</th>
-						<th>Album</th>
-						<th>Date</th>
-						<th>Duration</th>
-					</tr>
-				</thead>
-				<tbody>
-					{playlist}
-				</tbody>
-			</table>
+			<div className="ui basic segment playlistView">
+				<table className="ui selectable single line very basic compact table">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Artist</th>
+							<th>Title</th>
+							<th>Album</th>
+							<th>Date</th>
+							<th>Duration</th>
+						</tr>
+					</thead>
+					<tbody>
+						{playlist}
+					</tbody>
+				</table>
+			</div>
 		);
 	}
 });
