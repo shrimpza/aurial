@@ -49,7 +49,7 @@ var PlaylistManager = React.createClass({
 var PlaylistSelector = React.createClass({
 	componentDidMount: function() {
 		var _this = this;
-		$('.playlistSelector').dropdown({
+		$('.playlistSelector .dropdown').dropdown({
 			action: 'activate',
 			onChange: function(value, text, $selectedItem) {
 				_this.props.selected(value);
@@ -66,11 +66,13 @@ var PlaylistSelector = React.createClass({
 		});
 
 		return (
-			<div className="ui fluid selection dropdown playlistSelector">
-				<i className="dropdown icon"></i>
-				<div className="default text">Playlists...</div>
-				<div className="menu">
-					{playlists}
+			<div className="ui basic segment playlistSelector">
+				<div className="ui fluid selection dropdown">
+					<i className="dropdown icon"></i>
+					<div className="default text">Playlists...</div>
+					<div className="menu">
+						{playlists}
+					</div>
 				</div>
 			</div>
 		);
@@ -108,7 +110,7 @@ var Playlist = React.createClass({
 							<th>Title</th>
 							<th>Album</th>
 							<th>Date</th>
-							<th>Duration</th>
+							<th className="right aligned">Duration</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -140,7 +142,7 @@ var PlaylistItem = React.createClass({
 				<td>
 					{this.props.data.year}
 				</td>
-				<td>
+				<td className="right aligned">
 					{this.props.data.duration.asTime()}
 				</td>
 			</tr>
