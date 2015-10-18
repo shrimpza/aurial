@@ -103,4 +103,8 @@ Subsonic = function(url, user, password, version, appName) {
 		});
 	}
 
+	this.getStreamUrl = function(params) {
+		return this.getUrl('stream', {id: params.id});
+	}
+
 }

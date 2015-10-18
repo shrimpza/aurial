@@ -114,6 +114,7 @@ var Playlist = React.createClass({
 					<table className="ui selectable single line very basic compact table">
 						<thead>
 							<tr>
+								<th>&nbsp;</th>
 								<th>#</th>
 								<th>Artist</th>
 								<th>Title</th>
@@ -133,9 +134,33 @@ var Playlist = React.createClass({
 });
 
 var PlaylistItem = React.createClass({
+	onClick: function() {
+
+		// TODO useful for debug, replace in a Player object
+		console.log("play " + this.props.subsonic.getStreamUrl({id: this.props.data.id}));
+		var sound = soundManager.createSound({
+			url: this.props.subsonic.getStreamUrl({id: this.props.data.id})
+		});
+
+		sound.play({
+			onplay: function() {
+				console.log("start playing!");
+			},
+			whileplaying: function() {
+				console.log("playing at position: " + this.position);
+			},
+			onfinish: function() {
+				console.log("finished playing!");
+			}
+		});
+	},
+
 	render: function() {
 		return (
 			<tr>
+				<td>
+					<i className="play icon" onClick={this.onClick}></i>
+				</td>
 				<td>
 					{this.props.data.track}
 				</td>
@@ -185,6 +210,7 @@ var Selection = React.createClass({
 					<table className="ui selectable single line very basic compact table">
 						<thead>
 							<tr>
+								<th>&nbsp;</th>
 								<th>#</th>
 								<th>Artist</th>
 								<th>Title</th>

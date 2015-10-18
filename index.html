@@ -6,6 +6,8 @@
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
 
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/soundmanager2/2.97a.20150601/script/soundmanager2-jsmin.js"></script>
+	
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.js"></script>
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.css">
 
@@ -20,6 +22,15 @@
 
 	<script type="text/jsx">
 		$(document).ready(function() {
+			soundManager.setup({
+				url: '//cdnjs.cloudflare.com/ajax/libs/soundmanager2/2.97a.20150601/swf/',
+				flashVersion: 9, 
+				preferFlash: false,
+				onready: function() {
+					// Ready to use; soundManager.createSound() etc. can now be called.
+				}
+			});
+
 			// TODO these properties should be populated from local storage, supplied by the user via setup view
 			var subsonic = new Subsonic("http://192.168.0.3:4242", "admin", "hpserver", "1.12.0", "thing");
 
