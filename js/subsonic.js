@@ -61,6 +61,20 @@ Subsonic = function(url, user, password, version, appName) {
 		});
 	}
 
+	this.getAlbum = function(params) {
+		$.ajax({
+			url: this.getUrl('getAlbum', {id: params.id}),
+			dataType: 'json',
+			cache: false,
+			success: function(data) {
+				params.success({songs: data['subsonic-response'].album.song});
+			},
+			error: function(xhr, status, err) {
+				params.error(status, err.toString());
+			}
+		});
+	}
+
 	this.getPlaylists = function(params) {
 		$.ajax({
 			url: this.getUrl('getPlaylists', {}),

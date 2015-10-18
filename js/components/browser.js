@@ -88,10 +88,27 @@ var Artist = React.createClass({
 });
 
 var Album = React.createClass({
+
+	loadAlbum: function() {
+		this.props.subsonic.getAlbum({
+			id: this.props.data.id,
+			success: function(data) {
+				//this.setState({albums: data.albums, loaded:true});
+			}.bind(this),
+			error: function(status, err) {
+				console.error(this, status, err.toString());
+			}.bind(this)
+		});
+	},
+
+	onClick: function() {
+		this.loadAlbum();
+	},
+
 	render: function() {
 		var year = this.props.data.year ? '[' + this.props.data.year + ']' : '';
 		return (
-			<div className="item">
+			<div className="item" onClick={this.onClick}>
 				<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
 				<div className="content">
 					<div className="header">{this.props.data.name}</div>
