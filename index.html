@@ -23,18 +23,23 @@
 			// TODO these properties should be populated from local storage, supplied by the user via setup view
 			var subsonic = new Subsonic("http://192.168.0.3:4242", "admin", "hpserver", "1.12.0", "thing");
 
-			React.render(
+			var playlists = React.render(
 				<PlaylistManager subsonic={subsonic} iconSize="20" />,
 				document.getElementById('playlist-playlists')
 			);
 
+			var selection = React.render(
+				<Selection subsonic={subsonic} iconSize="30" />,
+				document.getElementById('playlist-selection')
+			);
+
 			React.render(
-				<ArtistList subsonic={subsonic} iconSize="30" />,
+				<ArtistList subsonic={subsonic} iconSize="30" selection={selection} />,
 				document.getElementById('artistList')
 			);
 
 			var tabs = [];
-			tabs.push({id:"selection", title: "Selection"});
+			tabs.push({id:"selection", title: "Selection", active: true});
 			tabs.push({id:"playlists", title: "Playlists"});
 			tabs.push({id:"playing", title: "Playing"});
 
@@ -58,7 +63,7 @@
 		<div id="playlist-frame">
 			<div id="playlist-menu"></div>
 			<div id="playlist-content">
-				<div id="playlist-selection" data-tab="selection" class="ui tab"></div>
+				<div id="playlist-selection" data-tab="selection" class="ui active tab"></div>
 				<div id="playlist-playlists" data-tab="playlists" class="ui tab"></div>
 				<div id="playlist-playing" data-tab="playing" class="ui tab"></div>
 			</div>

@@ -22,7 +22,7 @@ var ArtistList = React.createClass({
 		var _this = this;
 		var artists = this.state.artists.map(function (artist) {
 			return (
-				<Artist key={artist.id} subsonic={_this.props.subsonic} data={artist} iconSize={_this.props.iconSize} />
+				<Artist key={artist.id} subsonic={_this.props.subsonic} data={artist} iconSize={_this.props.iconSize} selection={_this.props.selection} />
 			);
 		});
 
@@ -63,7 +63,7 @@ var Artist = React.createClass({
 		var _this = this;
 		var albums = this.state.albums.map(function (album) {
 			return (
-				<Album key={album.id} subsonic={_this.props.subsonic} data={album} iconSize={_this.props.iconSize} />
+				<Album key={album.id} subsonic={_this.props.subsonic} data={album} iconSize={_this.props.iconSize} selection={_this.props.selection} />
 			);
 		});
 
@@ -93,7 +93,7 @@ var Album = React.createClass({
 		this.props.subsonic.getAlbum({
 			id: this.props.data.id,
 			success: function(data) {
-				//this.setState({albums: data.albums, loaded:true});
+				this.props.selection.setState({album: data.album});
 			}.bind(this),
 			error: function(status, err) {
 				console.error(this, status, err.toString());

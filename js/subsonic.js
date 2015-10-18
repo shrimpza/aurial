@@ -67,7 +67,7 @@ Subsonic = function(url, user, password, version, appName) {
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
-				params.success({songs: data['subsonic-response'].album.song});
+				params.success({album: data['subsonic-response'].album});
 			},
 			error: function(xhr, status, err) {
 				params.error(status, err.toString());

@@ -93,32 +93,42 @@ var PlaylistSelectorItem = React.createClass({
 
 var Playlist = React.createClass({
 	render: function() {
-		var _this = this;
-		var playlist = this.props.playlist.map(function (entry) {
+		if (this.props.playlist.length == 0) {
 			return (
-				<PlaylistItem key={entry.id} subsonic={_this.props.subsonic} data={entry} iconSize={_this.props.iconSize} />
+				<div className="playlistView">
+					<IconMessage icon="info circle" header="Nothing Selected!" message="Select a playlist." />
+				</div>
 			);
-		});
 
-		return (
-			<div className="ui basic segment playlistView">
-				<table className="ui selectable single line very basic compact table">
-					<thead>
-						<tr>
-							<th>#</th>
-							<th>Artist</th>
-							<th>Title</th>
-							<th>Album</th>
-							<th>Date</th>
-							<th className="right aligned">Duration</th>
-						</tr>
-					</thead>
-					<tbody>
-						{playlist}
-					</tbody>
-				</table>
-			</div>
-		);
+		} else {
+
+			var _this = this;
+			var playlist = this.props.playlist.map(function (entry) {
+				return (
+					<PlaylistItem key={entry.id} subsonic={_this.props.subsonic} data={entry} iconSize={_this.props.iconSize} />
+				);
+			});
+
+			return (
+				<div className="ui basic segment playlistView">
+					<table className="ui selectable single line very basic compact table">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Artist</th>
+								<th>Title</th>
+								<th>Album</th>
+								<th>Date</th>
+								<th className="right aligned">Duration</th>
+							</tr>
+						</thead>
+						<tbody>
+							{playlist}
+						</tbody>
+					</table>
+				</div>
+			);
+		}
 	}
 });
 
@@ -147,5 +157,48 @@ var PlaylistItem = React.createClass({
 				</td>
 			</tr>
 		);
+	}
+});
+
+var Selection = React.createClass({
+	getInitialState: function() {
+		return {album: null};
+	},
+
+	render: function() {
+		if (this.state.album == null) {
+			return (
+				<IconMessage icon="info circle" header="Nothing Selected!" message="Select an album from the browser." />
+			);
+
+		} else {
+
+			var _this = this;
+			var tracks = this.state.album.song.map(function (entry) {
+				return (
+					<PlaylistItem key={entry.id} subsonic={_this.props.subsonic} data={entry} iconSize={_this.props.iconSize} />
+				);
+			});
+
+			return (
+				<div className="ui basic segment">
+					<table className="ui selectable single line very basic compact table">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Artist</th>
+								<th>Title</th>
+								<th>Album</th>
+								<th>Date</th>
+								<th className="right aligned">Duration</th>
+							</tr>
+						</thead>
+						<tbody>
+							{tracks}
+						</tbody>
+					</table>
+				</div>
+			);
+		}
 	}
 });
