@@ -39,7 +39,7 @@ var PlaylistManager = React.createClass({
 		return (
 			<div className="playlistManager">
 				<PlaylistSelector subsonic={this.props.subsonic} playlists={this.state.playlists} iconSize={this.props.iconSize} selected={this.loadPlaylist} />
-				<Playlist subsonic={this.props.subsonic} iconSize={this.props.iconSize} playlist={this.state.playlist} />
+				<Playlist subsonic={this.props.subsonic} player={this.props.player} iconSize={this.props.iconSize} playlist={this.state.playlist} />
 			</div>
 		);
 	}
@@ -105,7 +105,7 @@ var Playlist = React.createClass({
 			var _this = this;
 			var playlist = this.props.playlist.map(function (entry) {
 				return (
-					<PlaylistItem key={entry.id} subsonic={_this.props.subsonic} data={entry} iconSize={_this.props.iconSize} />
+					<PlaylistItem key={entry.id} subsonic={_this.props.subsonic} player={_this.props.player} data={entry} iconSize={_this.props.iconSize} />
 				);
 			});
 
@@ -135,31 +135,14 @@ var Playlist = React.createClass({
 
 var PlaylistItem = React.createClass({
 	onClick: function() {
-
-		// TODO useful for debug, replace in a Player object
-		console.log("play " + this.props.subsonic.getStreamUrl({id: this.props.data.id}));
-		var sound = soundManager.createSound({
-			url: this.props.subsonic.getStreamUrl({id: this.props.data.id})
-		});
-
-		sound.play({
-			onplay: function() {
-				console.log("start playing!");
-			},
-			whileplaying: function() {
-				console.log("playing at position: " + this.position);
-			},
-			onfinish: function() {
-				console.log("finished playing!");
-			}
-		});
+		this.props.player.setState({playing: this.props.data});
 	},
 
 	render: function() {
 		return (
 			<tr>
 				<td>
-					<i className="play icon" onClick={this.onClick}></i>
+					<i className="grey play icon" onClick={this.onClick}></i>
 				</td>
 				<td>
 					{this.props.data.track}
@@ -201,7 +184,7 @@ var Selection = React.createClass({
 			var _this = this;
 			var tracks = this.state.album.song.map(function (entry) {
 				return (
-					<PlaylistItem key={entry.id} subsonic={_this.props.subsonic} data={entry} iconSize={_this.props.iconSize} />
+					<PlaylistItem key={entry.id} subsonic={_this.props.subsonic} player={_this.props.player} data={entry} iconSize={_this.props.iconSize} />
 				);
 			});
 

@@ -15,6 +15,7 @@
 	<script type="text/javascript" src="js/subsonic.js"></script>
 
 	<script type="text/jsx" src="js/components/common.js"></script>
+	<script type="text/jsx" src="js/components/player.js"></script>
 	<script type="text/jsx" src="js/components/browser.js"></script>
 	<script type="text/jsx" src="js/components/playlist.js"></script>
 
@@ -34,13 +35,18 @@
 			// TODO these properties should be populated from local storage, supplied by the user via setup view
 			var subsonic = new Subsonic("http://192.168.0.3:4242", "admin", "hpserver", "1.12.0", "thing");
 
+			var player = React.render(
+				<Player subsonic={subsonic} />,
+				document.getElementById('player-frame')
+			);
+
 			var playlists = React.render(
-				<PlaylistManager subsonic={subsonic} iconSize="20" />,
+				<PlaylistManager subsonic={subsonic} player={player} iconSize="20" />,
 				document.getElementById('playlist-playlists')
 			);
 
 			var selection = React.render(
-				<Selection subsonic={subsonic} iconSize="30" />,
+				<Selection subsonic={subsonic} player={player} iconSize="30" />,
 				document.getElementById('playlist-selection')
 			);
 
