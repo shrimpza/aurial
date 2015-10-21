@@ -6,7 +6,7 @@
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
 
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/soundmanager2/2.97a.20150601/script/soundmanager2-jsmin.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/soundmanager2/2.97a.20150601/script/soundmanager2-nodebug-jsmin.js"></script>
 	
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.js"></script>
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.css">
@@ -27,6 +27,7 @@
 				url: '//cdnjs.cloudflare.com/ajax/libs/soundmanager2/2.97a.20150601/swf/',
 				flashVersion: 9, 
 				preferFlash: false,
+				useFastPolling: true,
 				onready: function() {
 					// Ready to use; soundManager.createSound() etc. can now be called.
 				}

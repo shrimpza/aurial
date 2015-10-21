@@ -1,40 +1,40 @@
 var Player = React.createClass({
-
-	getDefaultProps: function() {
-		return {listeners: [], sound: null};
-	},
+	listeners: [],
+	sound: null,
+	playing: null,
 
 	getInitialState: function() {
-		return {queue: [], playing: null};
+		return {
+			queue: [], 
+			playing: null
+		};
 	},
 
 	addListener: function(listener) {
-		this.props.listeners.push(listener);
+		this.listeners.push(listener);
 	},
 
 	removeListener: function(listener) {
-		var i = this.props.listeners.indexOf(listener);
-		if (i > -1) this.props.listeners.splice(i, 1);
+		var i = this.listeners.indexOf(listener);
+		if (i > -1) this.listeners.splice(i, 1);
 	},
 
 	render: function() {
-		if (this.props.sound == null && this.state.playing != null) {
-			console.log("play " + this.props.subsonic.getStreamUrl({id: this.state.playing.id}));
-			var sound = soundManager.createSound({
-				url: this.props.subsonic.getStreamUrl({id: this.state.playing.id})
-			});
-
+		if (this.sound == null && this.state.playing != null) {
 			var _this = this;
+			var streamUrl = this.props.subsonic.getStreamUrl({id: this.state.playing.id});
 
-			sound.play({
+			this.sound = soundManager.createSound({
+				url: streamUrl
+			}).play({
 				onplay: function() {
-					for (var i in _this.props.listeners) _this.props.listeners[i].playerStart(_this.state.playing);
+					for (var i in _this.listeners) _this.listeners[i].playerStart(_this.state.playing);
 				},
 				whileplaying: function() {
-					for (var i in _this.props.listeners) _this.props.listeners[i].playerUpdate(_this.state.playing, this.duration, this.position);
+					for (var i in _this.listeners) _this.listeners[i].playerUpdate(_this.state.playing, this.duration, this.position);
 				},
 				onfinish: function() {
-					for (var i in _this.props.listeners) _this.props.listeners[i].playerFinish(_this.state.playing);
+					for (var i in _this.listeners) _this.listeners[i].playerFinish(_this.state.playing);
 				}
 			});
 		}
@@ -69,10 +69,7 @@ var PlayerProgress = React.createClass({
 	},
 
 	playerUpdate: function(playing, length, position) {
-		console.log(position + "/" + length);
-
 		var percent = (position / length) * 100;
-
 		$('#' + this._id + " .bar").css("width", percent + "%");
 	},
 
