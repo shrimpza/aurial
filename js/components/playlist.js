@@ -135,7 +135,7 @@ var Playlist = React.createClass({
 
 var PlaylistItem = React.createClass({
 	onClick: function() {
-		this.props.player.setState({playing: this.props.data});
+		this.props.player().setState({playing: this.props.data});
 	},
 
 	render: function() {

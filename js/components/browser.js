@@ -93,7 +93,7 @@ var Album = React.createClass({
 		this.props.subsonic.getAlbum({
 			id: this.props.data.id,
 			success: function(data) {
-				this.props.selection.setState({album: data.album});
+				this.props.selection().setState({album: data.album});
 			}.bind(this),
 			error: function(status, err) {
 				console.error(this, status, err.toString());
