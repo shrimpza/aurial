@@ -189,7 +189,7 @@ var Track = React.createClass({
 					{this.props.data.year}
 				</td>
 				<td className="right aligned">
-					{this.props.data.duration.asTime()}
+					{this.props.data.duration ? this.props.data.duration.asTime() : '?:??'}
 				</td>
 			</tr>
 		);
