@@ -189,7 +189,7 @@ var Selection = React.createClass({
 			});
 
 			return (
-				<div className="ui basic segment">
+				<div className="ui basic segment selectionView">
 					<table className="ui selectable single line very basic compact table">
 						<thead>
 							<tr>

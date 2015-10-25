@@ -50,6 +50,17 @@ body {
         top: 45px; right: 0; bottom: 0; left: 0;
     }
 
+    #playlist-content #playlist-selection {
+        position: absolute;
+        top: 0; right: 0; bottom: 0; left: 0;
+    }
+
+    #playlist-content #playlist-selection .selectionView {
+        position: absolute;
+        top: 0; right: 0; bottom: 0; left: 0;
+        overflow: auto;
+    }
+
     #playlist-content #playlist-playlists {
         position: absolute;
         top: 0; right: 0; bottom: 0; left: 0;

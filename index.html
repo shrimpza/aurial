@@ -37,38 +37,6 @@
 			// TODO these properties should be populated from local storage, supplied by the user via setup view
 			var subsonic = new Subsonic("http://192.168.0.3:4242", "admin", "enc:" + "hpserver".hexEncode(), "1.12.0", "thing");
 
-			/*var player = React.render(
-				<Player subsonic={subsonic} />,
-				document.getElementById('player-frame')
-			);
-
-			var playlists = React.render(
-				<PlaylistManager subsonic={subsonic} player={player} iconSize="20" />,
-				document.getElementById('playlist-playlists')
-			);
-
-			var selection = React.render(
-				<Selection subsonic={subsonic} player={player} iconSize="30" />,
-				document.getElementById('playlist-selection')
-			);
-
-			React.render(
-				<ArtistList subsonic={subsonic} iconSize="30" selection={selection} />,
-				document.getElementById('artistList')
-			);
-
-			var tabs = [];
-			tabs.push({id:"selection", title: "Selection", active: true});
-			tabs.push({id:"playlists", title: "Playlists"});
-			tabs.push({id:"playing", title: "Playing"});
-
-			var tabGroup = <TabGroup tabs={tabs} iconSize="20" />;
-
-			React.render(
-				tabGroup,
-				document.getElementById('playlist-menu')
-			);*/
-
 			React.render(
 				<App subsonic={subsonic} />,
 				document.getElementById('frames')
