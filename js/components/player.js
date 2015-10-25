@@ -43,8 +43,10 @@ var Player = React.createClass({
 		return (
 			<div className="ui basic segment player">
 				<div>{nowPlaying}</div>
+				<PlayerPriorButton />
 				<PlayerPlayToggleButton />
 				<PlayerStopButton />
+				<PlayerNextButton />
 				<PlayerProgress key="progress" player={this} />
 			</div>
 		);
@@ -89,12 +91,12 @@ var PlayerProgress = React.createClass({
 
 var PlayerPlayToggleButton = React.createClass({
 	getInitialState: function() {
-		return {paused: false};
+		return {paused: false, enabled: false};
 	},
 
 	render: function() {
 		return (
-			<button className="ui circular icon button" onClick={this.props.onClick}>
+			<button className={"ui circular icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.props.onClick}>
 				<i className={this.state.paused ? "pause icon" : "play icon"} />
 			</button>
 		);
@@ -103,13 +105,41 @@ var PlayerPlayToggleButton = React.createClass({
 
 var PlayerStopButton = React.createClass({
 	getInitialState: function() {
-		return {stopped: true};
+		return {enabled: false};
 	},
 
 	render: function() {
 		return (
-			<button className={"ui circular icon button " + (this.state.stopped ? "disabled" : "")} onClick={this.props.onClick}>
+			<button className={"ui circular icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.props.onClick}>
 				<i className="stop icon" />
+			</button>
+		);
+	}
+});
+
+var PlayerNextButton = React.createClass({
+	getInitialState: function() {
+		return {enabled: false};
+	},
+
+	render: function() {
+		return (
+			<button className={"ui circular icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.props.onClick}>
+				<i className="fast forward icon" />
+			</button>
+		);
+	}
+});
+
+var PlayerPriorButton = React.createClass({
+	getInitialState: function() {
+		return {enabled: false};
+	},
+
+	render: function() {
+		return (
+			<button className={"ui circular icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.props.onClick}>
+				<i className="fast backward icon" />
 			</button>
 		);
 	}
