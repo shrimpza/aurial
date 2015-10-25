@@ -43,6 +43,8 @@ var Player = React.createClass({
 		return (
 			<div className="ui basic segment player">
 				<div>{nowPlaying}</div>
+				<PlayerPlayToggleButton />
+				<PlayerStopButton />
 				<PlayerProgress key="progress" player={this} />
 			</div>
 		);
@@ -51,6 +53,7 @@ var Player = React.createClass({
 
 var PlayerProgress = React.createClass({
 	_id: UniqueID(),
+	_bar: null,
 
 	componentDidMount: function() {
 		this.props.player.addListener(this);
@@ -69,8 +72,10 @@ var PlayerProgress = React.createClass({
 	},
 
 	playerUpdate: function(playing, length, position) {
+		if (this._bar == null) this._bar = $('#' + this._id + " .bar");
+
 		var percent = (position / length) * 100;
-		$('#' + this._id + " .bar").css("width", percent + "%");
+		this._bar.css("width", percent + "%");
 	},
 
 	render: function() {
@@ -78,6 +83,34 @@ var PlayerProgress = React.createClass({
 			<div className="ui red progress" id={this._id}>
 				<div className="bar"></div>
 			</div>
+		);
+	}
+});
+
+var PlayerPlayToggleButton = React.createClass({
+	getInitialState: function() {
+		return {paused: false};
+	},
+
+	render: function() {
+		return (
+			<button className="ui circular icon button" onClick={this.props.onClick}>
+				<i className={this.state.paused ? "pause icon" : "play icon"} />
+			</button>
+		);
+	}
+});
+
+var PlayerStopButton = React.createClass({
+	getInitialState: function() {
+		return {stopped: true};
+	},
+
+	render: function() {
+		return (
+			<button className={"ui circular icon button " + (this.state.stopped ? "disabled" : "")} onClick={this.props.onClick}>
+				<i className="stop icon" />
+			</button>
 		);
 	}
 });
