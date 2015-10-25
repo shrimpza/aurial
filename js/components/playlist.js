@@ -105,35 +105,43 @@ var Playlist = React.createClass({
 			var _this = this;
 			var playlist = this.props.playlist.map(function (entry) {
 				return (
-					<PlaylistItem key={entry.id} subsonic={_this.props.subsonic} player={_this.props.player} data={entry} iconSize={_this.props.iconSize} />
+					<Track key={entry.id} subsonic={_this.props.subsonic} player={_this.props.player} data={entry} iconSize={_this.props.iconSize} />
 				);
 			});
 
 			return (
 				<div className="ui basic segment playlistView">
-					<table className="ui selectable single line very basic compact table">
-						<thead>
-							<tr>
-								<th>&nbsp;</th>
-								<th>#</th>
-								<th>Artist</th>
-								<th>Title</th>
-								<th>Album</th>
-								<th>Date</th>
-								<th className="right aligned">Duration</th>
-							</tr>
-						</thead>
-						<tbody>
-							{playlist}
-						</tbody>
-					</table>
+					<TrackList tracks={playlist}/>
 				</div>
 			);
 		}
 	}
 });
 
-var PlaylistItem = React.createClass({
+var TrackList = React.createClass({
+	render: function() {
+		return (
+			<table className="ui selectable single line very basic compact table trackList">
+				<thead>
+					<tr>
+						<th className="controls">&nbsp;</th>
+						<th className="number">#</th>
+						<th className="artist">Artist</th>
+						<th className="title">Title</th>
+						<th className="album">Album</th>
+						<th className="date">Date</th>
+						<th className="right aligned duration">Duration</th>
+					</tr>
+				</thead>
+				<tbody>
+					{this.props.tracks}
+				</tbody>
+			</table>
+		);
+	}
+});
+
+var Track = React.createClass({
 	onClick: function() {
 		this.props.player().setState({playing: this.props.data});
 	},
@@ -184,28 +192,13 @@ var Selection = React.createClass({
 			var _this = this;
 			var tracks = this.state.album.song.map(function (entry) {
 				return (
-					<PlaylistItem key={entry.id} subsonic={_this.props.subsonic} player={_this.props.player} data={entry} iconSize={_this.props.iconSize} />
+					<Track key={entry.id} subsonic={_this.props.subsonic} player={_this.props.player} data={entry} iconSize={_this.props.iconSize} />
 				);
 			});
 
 			return (
 				<div className="ui basic segment selectionView">
-					<table className="ui selectable single line very basic compact table">
-						<thead>
-							<tr>
-								<th>&nbsp;</th>
-								<th>#</th>
-								<th>Artist</th>
-								<th>Title</th>
-								<th>Album</th>
-								<th>Date</th>
-								<th className="right aligned">Duration</th>
-							</tr>
-						</thead>
-						<tbody>
-							{tracks}
-						</tbody>
-					</table>
+					<TrackList tracks={tracks} />
 				</div>
 			);
 		}
