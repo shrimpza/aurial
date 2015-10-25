@@ -101,17 +101,30 @@ var Playlist = React.createClass({
 			);
 
 		} else {
-
-			var _this = this;
-			var playlist = this.props.playlist.map(function (entry) {
-				return (
-					<Track key={entry.id} subsonic={_this.props.subsonic} player={_this.props.player} data={entry} iconSize={_this.props.iconSize} />
-				);
-			});
-
 			return (
 				<div className="ui basic segment playlistView">
-					<TrackList tracks={playlist}/>
+					<TrackList subsonic={this.props.subsonic} subsonic={this.props.subsonic} player={this.props.player} tracks={this.props.playlist} iconSize={this.props.iconSize} />
+				</div>
+			);
+		}
+	}
+});
+
+var Selection = React.createClass({
+	getInitialState: function() {
+		return {album: null};
+	},
+
+	render: function() {
+		if (this.state.album == null) {
+			return (
+				<IconMessage icon="info circle" header="Nothing Selected!" message="Select an album from the browser." />
+			);
+
+		} else {
+			return (
+				<div className="ui basic segment selectionView">
+					<TrackList subsonic={this.props.subsonic} player={this.props.player} tracks={this.state.album.song} iconSize={this.props.iconSize} />
 				</div>
 			);
 		}
@@ -120,6 +133,13 @@ var Playlist = React.createClass({
 
 var TrackList = React.createClass({
 	render: function() {
+		var _this = this;
+		var tracks = this.props.tracks.map(function (entry) {
+			return (
+				<Track key={entry.id} subsonic={_this.props.subsonic} player={_this.props.player} data={entry} iconSize={_this.props.iconSize} />
+			);
+		});
+
 		return (
 			<table className="ui selectable single line very basic compact table trackList">
 				<thead>
@@ -134,7 +154,7 @@ var TrackList = React.createClass({
 					</tr>
 				</thead>
 				<tbody>
-					{this.props.tracks}
+					{tracks}
 				</tbody>
 			</table>
 		);
@@ -173,34 +193,5 @@ var Track = React.createClass({
 				</td>
 			</tr>
 		);
-	}
-});
-
-var Selection = React.createClass({
-	getInitialState: function() {
-		return {album: null};
-	},
-
-	render: function() {
-		if (this.state.album == null) {
-			return (
-				<IconMessage icon="info circle" header="Nothing Selected!" message="Select an album from the browser." />
-			);
-
-		} else {
-
-			var _this = this;
-			var tracks = this.state.album.song.map(function (entry) {
-				return (
-					<Track key={entry.id} subsonic={_this.props.subsonic} player={_this.props.player} data={entry} iconSize={_this.props.iconSize} />
-				);
-			});
-
-			return (
-				<div className="ui basic segment selectionView">
-					<TrackList tracks={tracks} />
-				</div>
-			);
-		}
 	}
 });
