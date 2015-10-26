@@ -163,7 +163,7 @@ var TrackList = React.createClass({
 
 var Track = React.createClass({
 	onClick: function() {
-		this.props.player().setState({playing: this.props.data});
+		this.props.player().play(this.props.data);
 	},
 
 	render: function() {
