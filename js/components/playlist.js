@@ -136,7 +136,7 @@ var TrackList = React.createClass({
 		var _this = this;
 		var tracks = this.props.tracks.map(function (entry) {
 			return (
-				<Track key={entry.id} subsonic={_this.props.subsonic} player={_this.props.player} data={entry} iconSize={_this.props.iconSize} />
+				<Track key={entry.id} subsonic={_this.props.subsonic} player={_this.props.player} track={entry} iconSize={_this.props.iconSize} />
 			);
 		});
 
@@ -162,34 +162,39 @@ var TrackList = React.createClass({
 });
 
 var Track = React.createClass({
-	onClick: function() {
-		this.props.player().play(this.props.data);
+	play: function() {
+		this.props.player().play(this.props.track);
+	},
+
+	enqueue: function() {
+		this.props.player().enqueue([this.props.track]);
 	},
 
 	render: function() {
 		return (
 			<tr>
 				<td>
-					<i className="grey play icon" onClick={this.onClick}></i>
+					<i className="grey play icon" onClick={this.play}></i>
+					<i className="grey plus icon" onClick={this.enqueue}></i>
 				</td>
 				<td>
-					{this.props.data.track}
+					{this.props.track.track}
 				</td>
 				<td>
-					{this.props.data.artist}
+					{this.props.track.artist}
 				</td>
 				<td>
-					{this.props.data.title}
+					{this.props.track.title}
 				</td>
 				<td>
-					{/* <CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} /> */}
-					{this.props.data.album}
+					{/* <CoverArt subsonic={this.props.subsonic} id={this.props.track.coverArt} size={this.props.iconSize} /> */}
+					{this.props.track.album}
 				</td>
 				<td>
-					{this.props.data.year}
+					{this.props.track.year}
 				</td>
 				<td className="right aligned">
-					{this.props.data.duration ? this.props.data.duration.asTime() : '?:??'}
+					{this.props.track.duration ? this.props.track.duration.asTime() : '?:??'}
 				</td>
 			</tr>
 		);

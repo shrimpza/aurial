@@ -11,7 +11,9 @@ var Player = React.createClass({
 	},
 
 	play: function(track) {
-		if (this.sound != null) this.sound.destruct();
+		if (this.state.queue.indexOf(track) < 0) this.enqueue([track]);
+
+		this.stop();
 
 		var _this = this;
 		var streamUrl = this.props.subsonic.getStreamUrl({id: track.id});
@@ -29,11 +31,51 @@ var Player = React.createClass({
 				for (var i in _this.listeners) if (_this.listeners[i].playerUpdate) _this.listeners[i].playerUpdate(track, this.duration, this.position);
 			},
 			onfinish: function() {
+
+				// TODO onfinish not called for sound.destruct()
+
 				for (var i in _this.listeners) if (_this.listeners[i].playerFinish) _this.listeners[i].playerFinish(track);
+
+				if (_this.state.queue.length > 0) {
+					var idx = Math.max(0, _this.state.queue.indexOf(track));
+
+					console.log("completed " + idx);
+
+					if (idx < _this.state.queue.length - 1)	_this.play(_this.state.queue[++idx]);
+
+					console.log("playing next track at " + idx);
+				}
 			}
 		});
 
 		this.setState({playing: track});
+	},
+
+	togglePlay: function() {
+		if (this.sound != null) {
+			console.log("togglePlay: toggle");
+			this.sound.togglePause();
+		} else if (this.playing != null) {
+			console.log("togglePlay: restart");
+			this.play(this.playing);
+		} else if (this.state.queue.length > 0) {
+			console.log("togglePlay: start queue");
+			this.play(this.state.queue[0]);
+		}
+	},
+
+	stop: function() {
+		if (this.sound != null) this.sound.destruct();
+		this.sound = null;
+	},
+
+	enqueue: function(tracks) {
+		var queue = this.state.queue;
+		for (var i = 0; i < tracks.length; i++) queue.push(tracks[i]);
+
+		console.log("queue", queue);
+
+		this.setState({queue: queue});
 	},
 
 	addListener: function(listener) {
@@ -51,8 +93,8 @@ var Player = React.createClass({
 			<div className="ui basic segment player">
 				<div>{nowPlaying}</div>
 				<PlayerPriorButton key="prior" player={this} />
-				<PlayerPlayToggleButton key="play" player={this} />
-				<PlayerStopButton key="stop" player={this}/>
+				<PlayerPlayToggleButton key="play" player={this} onClick={this.togglePlay} />
+				<PlayerStopButton key="stop" player={this} onClick={this.stop} />
 				<PlayerNextButton key="next" player={this} />
 				<PlayerProgress key="progress" player={this} />
 			</div>
