@@ -32,6 +32,10 @@ var Player = React.createClass({
 				_this.props.events.publish({event: "playerStarted", data: track});
 				//for (var i in _this.listeners) if (_this.listeners[i].playerStart) _this.listeners[i].playerStart(track);
 			},
+			onresume: function() {
+				_this.props.events.publish({event: "playerStarted", data: track});
+				//for (var i in _this.listeners) if (_this.listeners[i].playerStart) _this.listeners[i].playerStart(track);
+			},
 			onpause: function() {
 				_this.props.events.publish({event: "playerPaused", data: track});
 				//for (var i in _this.listeners) if (_this.listeners[i].playerPause) _this.listeners[i].playerPause(track);
