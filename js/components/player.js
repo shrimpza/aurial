@@ -30,26 +30,24 @@ var Player = React.createClass({
 		}).play({
 			onplay: function() {
 				_this.props.events.publish({event: "playerStarted", data: track});
-				//for (var i in _this.listeners) if (_this.listeners[i].playerStart) _this.listeners[i].playerStart(track);
 			},
 			onresume: function() {
 				_this.props.events.publish({event: "playerStarted", data: track});
-				//for (var i in _this.listeners) if (_this.listeners[i].playerStart) _this.listeners[i].playerStart(track);
+			},
+			onstop: function() {
+				_this.props.events.publish({event: "playerStopped", data: track});
 			},
 			onpause: function() {
 				_this.props.events.publish({event: "playerPaused", data: track});
-				//for (var i in _this.listeners) if (_this.listeners[i].playerPause) _this.listeners[i].playerPause(track);
 			},
 			whileplaying: function() {
 				_this.props.events.publish({event: "playerUpdated", data: {track: track, duration: this.duration, position: this.position}});
-				//for (var i in _this.listeners) if (_this.listeners[i].playerUpdate) _this.listeners[i].playerUpdate(track, this.duration, this.position);
 			},
 			onfinish: function() {
 
 				// TODO onfinish not called for sound.destruct()
 
 				_this.props.events.publish({event: "playerFinished", data: track});
-				//for (var i in _this.listeners) if (_this.listeners[i].playerFinish) _this.listeners[i].playerFinish(track);
 
 				if (_this.state.queue.length > 0) {
 					var idx = Math.max(0, _this.state.queue.indexOf(track));
@@ -100,16 +98,9 @@ var Player = React.createClass({
 		console.log("queue", queue);
 
 		this.setState({queue: queue});
-	},
 
-	/*addListener: function(listener) {
-		this.listeners.push(listener);
+		this.props.events.publish({event: "playerEnqueued", data: queue});
 	},
-
-	removeListener: function(listener) {
-		var i = this.listeners.indexOf(listener);
-		if (i > -1) this.listeners.splice(i, 1);
-	},*/
 
 	render: function() {
 		var nowPlaying = this.state.playing != null ? this.state.playing.title : "Nothing playing";
@@ -172,7 +163,7 @@ var PlayerPlayToggleButton = React.createClass({
 	componentDidMount: function() {
 		this.props.events.subscribe({
 			subscriber: this,
-			event: ["playerStarted", "playerFinished", "playerPaused"]
+			event: ["playerStarted", "playerStopped", "playerFinished", "playerPaused", "playerEnqueued"]
 		});
 	},
 
@@ -182,8 +173,10 @@ var PlayerPlayToggleButton = React.createClass({
 	receive: function(event) {
 		switch (event.event) {
 			case "playerStarted": this.playerStart(event.data); break;
+			case "playerStopped": 
 			case "playerFinished": this.playerFinish(event.data); break;
 			case "playerPaused": this.playerPause(event.data); break;
+			case "playerEnqueued": this.playerEnqueue(event.data); break;
 		}
 	},
 
@@ -197,6 +190,10 @@ var PlayerPlayToggleButton = React.createClass({
 
 	playerPause: function(playing) {
 		this.setState({paused: true});
+	},
+
+	playerEnqueue: function(queue) {
+		this.setState({enabled: queue.length > 0});
 	},
 
 	onClick: function() {
@@ -220,7 +217,7 @@ var PlayerStopButton = React.createClass({
 	componentDidMount: function() {
 		this.props.events.subscribe({
 			subscriber: this,
-			event: ["playerStarted", "playerFinished"]
+			event: ["playerStarted", "playerStopped", "playerFinished"]
 		});
 	},
 
@@ -231,6 +228,7 @@ var PlayerStopButton = React.createClass({
 	receive: function(event) {
 		switch (event.event) {
 			case "playerStarted": this.playerStart(event.data); break;
+			case "playerStopped": 
 			case "playerFinished": this.playerFinish(event.data); break;
 		}
 	},
