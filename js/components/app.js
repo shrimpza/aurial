@@ -8,12 +8,14 @@ var App = React.createClass({
 	},
 
 	render: function() {
-		var player = <Player subsonic={this.props.subsonic} ref={(c) => this._player = c} />;
+		var events = new EventBus();
 
-		var playlists = <PlaylistManager subsonic={this.props.subsonic} player={this.getPlayer} iconSize="20" />;
-		var selection = <Selection subsonic={this.props.subsonic} player={this.getPlayer} iconSize="30" ref={(c) => this._selection = c} />;
+		var player = <Player subsonic={this.props.subsonic} events={events} ref={(c) => this._player = c} />;
 
-		var artistList = <ArtistList subsonic={this.props.subsonic} iconSize="30" selection={this.getSelection} />;
+		var playlists = <PlaylistManager subsonic={this.props.subsonic} events={events} player={this.getPlayer} iconSize="20" />;
+		var selection = <Selection subsonic={this.props.subsonic} events={events} player={this.getPlayer} iconSize="30" ref={(c) => this._selection = c} />;
+
+		var artistList = <ArtistList subsonic={this.props.subsonic} events={events} iconSize="30" selection={this.getSelection} />;
 
 		var tabs = [];
 		tabs.push({id:"selection", title: "Selection", active: true});

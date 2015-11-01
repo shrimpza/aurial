@@ -39,7 +39,7 @@ var PlaylistManager = React.createClass({
 		return (
 			<div className="playlistManager">
 				<PlaylistSelector subsonic={this.props.subsonic} playlists={this.state.playlists} iconSize={this.props.iconSize} selected={this.loadPlaylist} />
-				<Playlist subsonic={this.props.subsonic} player={this.props.player} iconSize={this.props.iconSize} playlist={this.state.playlist} />
+				<Playlist subsonic={this.props.subsonic} events={this.props.events} iconSize={this.props.iconSize} playlist={this.state.playlist} />
 			</div>
 		);
 	}
@@ -103,7 +103,7 @@ var Playlist = React.createClass({
 		} else {
 			return (
 				<div className="ui basic segment playlistView">
-					<TrackList subsonic={this.props.subsonic} subsonic={this.props.subsonic} player={this.props.player} tracks={this.props.playlist} iconSize={this.props.iconSize} />
+					<TrackList subsonic={this.props.subsonic} subsonic={this.props.subsonic} events={this.props.events} iconSize={this.props.iconSize} />
 				</div>
 			);
 		}
@@ -124,7 +124,7 @@ var Selection = React.createClass({
 		} else {
 			return (
 				<div className="ui basic segment selectionView">
-					<TrackList subsonic={this.props.subsonic} player={this.props.player} tracks={this.state.album.song} iconSize={this.props.iconSize} />
+					<TrackList subsonic={this.props.subsonic} events={this.props.events} tracks={this.state.album.song} iconSize={this.props.iconSize} />
 				</div>
 			);
 		}
@@ -136,7 +136,7 @@ var TrackList = React.createClass({
 		var _this = this;
 		var tracks = this.props.tracks.map(function (entry) {
 			return (
-				<Track key={entry.id} subsonic={_this.props.subsonic} player={_this.props.player} track={entry} iconSize={_this.props.iconSize} />
+				<Track key={entry.id} subsonic={_this.props.subsonic} events={_this.props.events} track={entry} iconSize={_this.props.iconSize} />
 			);
 		});
 
@@ -163,11 +163,11 @@ var TrackList = React.createClass({
 
 var Track = React.createClass({
 	play: function() {
-		this.props.player().play(this.props.track);
+		this.props.events.publish({event: "playerPlay", data: this.props.track});
 	},
 
 	enqueue: function() {
-		this.props.player().enqueue([this.props.track]);
+		this.props.events.publish({event: "playerEnqueue", data: [this.props.track]});
 	},
 
 	render: function() {
