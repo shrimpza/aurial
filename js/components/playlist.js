@@ -103,7 +103,7 @@ var Playlist = React.createClass({
 		} else {
 			return (
 				<div className="ui basic segment playlistView">
-					<TrackList subsonic={this.props.subsonic} subsonic={this.props.subsonic} events={this.props.events} iconSize={this.props.iconSize} />
+					<TrackList subsonic={this.props.subsonic} subsonic={this.props.subsonic} tracks={this.props.playlist} events={this.props.events} iconSize={this.props.iconSize} />
 				</div>
 			);
 		}
