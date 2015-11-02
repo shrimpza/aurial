@@ -1,5 +1,4 @@
 var Player = React.createClass({
-	//listeners: [],
 	sound: null,
 	playing: null,
 
@@ -103,15 +102,36 @@ var Player = React.createClass({
 	},
 
 	render: function() {
-		var nowPlaying = this.state.playing != null ? this.state.playing.title : "Nothing playing";
+		var nowPlaying = "Nothing playing";
+		var coverArt = <img src="px.png" />;
+
+		if (this.state.playing != null) {
+			nowPlaying = this.state.playing.title;
+			coverArt = <CoverArt subsonic={this.props.subsonic} id={this.state.playing.coverArt} size={80} />;
+		}
+
 		return (
 			<div className="ui basic segment player">
-				<div>{nowPlaying}</div>
-				<PlayerPriorButton key="prior" events={this.props.events} />
-				<PlayerPlayToggleButton key="play" events={this.props.events} />
-				<PlayerStopButton key="stop" events={this.props.events} />
-				<PlayerNextButton key="next" events={this.props.events} />
-				<PlayerProgress key="progress" events={this.props.events} />
+				<div className="ui items">
+					<div className="ui item">
+						<div className="ui tiny image">
+							{coverArt}
+						</div>
+						<div className="content">
+							<div className="header">{nowPlaying}</div>
+							<div className="meta">
+								<span className="stuff">moop</span>
+							</div>
+							<div className="description">
+								<PlayerPriorButton key="prior" events={this.props.events} />
+								<PlayerPlayToggleButton key="play" events={this.props.events} />
+								<PlayerStopButton key="stop" events={this.props.events} />
+								<PlayerNextButton key="next" events={this.props.events} />
+								<PlayerProgress key="progress" events={this.props.events} />
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		);
 	}
@@ -148,7 +168,7 @@ var PlayerProgress = React.createClass({
 
 	render: function() {
 		return (
-			<div className="ui red progress" id={this._id}>
+			<div className="ui tiny red progress" id={this._id}>
 				<div className="bar"></div>
 			</div>
 		);
