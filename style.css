@@ -35,6 +35,19 @@ body {
         min-width: 0;
     }
 
+    #player-frame .player table {
+        width: 100%;
+    }
+
+    #player-frame .player table td.controls {
+        width: 1%;
+        white-space: nowrap;
+    }
+
+    #player-frame .player table td.progress .progress {
+        margin: 3px;
+    }
+
     #playlist-frame {
     	position: absolute;
     	top: 100px; right: 0px; bottom: 0px; left: 380px;

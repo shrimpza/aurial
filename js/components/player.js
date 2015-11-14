@@ -1,4 +1,6 @@
 var Player = React.createClass({
+	noImage: 'data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
+
 	sound: null,
 	playing: null,
 
@@ -103,7 +105,7 @@ var Player = React.createClass({
 
 	render: function() {
 		var nowPlaying = "Nothing playing";
-		var coverArt = <img src="px.png" />;
+		var coverArt = <img src={this.noImage} />;
 
 		if (this.state.playing != null) {
 			nowPlaying = this.state.playing.title;
@@ -123,11 +125,21 @@ var Player = React.createClass({
 								<span className="stuff">moop</span>
 							</div>
 							<div className="description">
-								<PlayerPriorButton key="prior" events={this.props.events} />
-								<PlayerPlayToggleButton key="play" events={this.props.events} />
-								<PlayerStopButton key="stop" events={this.props.events} />
-								<PlayerNextButton key="next" events={this.props.events} />
-								<PlayerProgress key="progress" events={this.props.events} />
+								<table>
+									<tr>
+										<td className="controls">
+											<div className="ui compact icon buttons">
+												<PlayerPriorButton key="prior" events={this.props.events} />
+												<PlayerPlayToggleButton key="play" events={this.props.events} />
+												<PlayerStopButton key="stop" events={this.props.events} />
+												<PlayerNextButton key="next" events={this.props.events} />
+											</div>
+										</td>
+										<td className="progress">
+											<PlayerProgress key="progress" events={this.props.events} />
+										</td>
+									</tr>
+								</table>
 							</div>
 						</div>
 					</div>
@@ -168,7 +180,7 @@ var PlayerProgress = React.createClass({
 
 	render: function() {
 		return (
-			<div className="ui tiny red progress" id={this._id}>
+			<div className="ui red progress" id={this._id}>
 				<div className="bar"></div>
 			</div>
 		);
@@ -222,7 +234,7 @@ var PlayerPlayToggleButton = React.createClass({
 
 	render: function() {
 		return (
-			<button className={"ui circular icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.onClick}>
+			<button className={"ui icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.onClick}>
 				<i className={this.state.paused || !this.state.playing ? "play icon" : "pause icon"} />
 			</button>
 		);
@@ -267,7 +279,7 @@ var PlayerStopButton = React.createClass({
 
 	render: function() {
 		return (
-			<button className={"ui circular icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.onClick}>
+			<button className={"ui icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.onClick}>
 				<i className="stop icon" />
 			</button>
 		);
@@ -281,7 +293,7 @@ var PlayerNextButton = React.createClass({
 
 	render: function() {
 		return (
-			<button className={"ui circular icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.onClick}>
+			<button className={"ui icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.onClick}>
 				<i className="fast forward icon" />
 			</button>
 		);
@@ -295,7 +307,7 @@ var PlayerPriorButton = React.createClass({
 
 	render: function() {
 		return (
-			<button className={"ui circular icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.onClick}>
+			<button className={"ui icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.onClick}>
 				<i className="fast backward icon" />
 			</button>
 		);
