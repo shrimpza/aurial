@@ -22,7 +22,7 @@ var ArtistList = React.createClass({
 		var _this = this;
 		var artists = this.state.artists.map(function (artist) {
 			return (
-				<Artist key={artist.id} subsonic={_this.props.subsonic} data={artist} iconSize={_this.props.iconSize} selection={_this.props.selection} />
+				<Artist key={artist.id} subsonic={_this.props.subsonic} events={_this.props.events} data={artist} iconSize={_this.props.iconSize} />
 			);
 		});
 
@@ -63,7 +63,7 @@ var Artist = React.createClass({
 		var _this = this;
 		var albums = this.state.albums.map(function (album) {
 			return (
-				<Album key={album.id} subsonic={_this.props.subsonic} data={album} iconSize={_this.props.iconSize} selection={_this.props.selection} />
+				<Album key={album.id} subsonic={_this.props.subsonic} events={_this.props.events} data={album} iconSize={_this.props.iconSize} />
 			);
 		});
 
@@ -93,7 +93,7 @@ var Album = React.createClass({
 		this.props.subsonic.getAlbum({
 			id: this.props.data.id,
 			success: function(data) {
-				this.props.selection().setState({album: data.album});
+				this.props.events.publish({event: "browserSelected", data: data.album});
 			}.bind(this),
 			error: function(status, err) {
 				console.error(this, status, err.toString());
@@ -114,7 +114,6 @@ var Album = React.createClass({
 					<div className="header">{this.props.data.name}</div>
 					<div className="description">{year} {this.props.data.songCount} tracks</div>
 					<div className="extra">
-						
 					</div>
 				</div>
 				{/*<div className="ui inverted right floated compact basic tiny icon button">

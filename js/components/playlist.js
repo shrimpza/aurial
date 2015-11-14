@@ -115,6 +115,19 @@ var Selection = React.createClass({
 		return {album: null};
 	},
 
+	componentDidMount: function() {
+		this.props.events.subscribe({
+			subscriber: this,
+			event: ["browserSelected"]
+		});
+	},
+
+	receive: function(event) {
+		switch (event.event) {
+			case "browserSelected": this.setState({album: event.data}); break;
+		}
+	},
+
 	render: function() {
 		if (this.state.album == null) {
 			return (
@@ -129,6 +142,43 @@ var Selection = React.createClass({
 			);
 		}
 	}
+});
+
+var PlaylistQueue = React.createClass({
+	getInitialState: function() {
+		return {queue: null};
+	},
+
+	componentDidMount: function() {
+		this.props.events.subscribe({
+			subscriber: this,
+			event: ["playerStarted", "playerStoped", "playerEnqueued"]
+		});
+	},
+
+	receive: function(event) {
+		switch (event.event) {
+			case "playerStarted": break;
+			case "playerStoped": break;
+			case "playerEnqueued": this.setState({queue: event.data}); break;
+		}
+	},
+
+	render: function() {
+		if (this.state.queue == null) {
+			return (
+				<IconMessage icon="info circle" header="Nothing in the queue!" message="Add some tracks to the queue by browsing, or selecting a playlist." />
+			);
+
+		} else {
+			return (
+				<div className="ui basic segment queueView">
+					<TrackList subsonic={this.props.subsonic} events={this.props.events} tracks={this.state.queue} iconSize={this.props.iconSize} />
+				</div>
+			);
+		}
+	}
+
 });
 
 var TrackList = React.createClass({
