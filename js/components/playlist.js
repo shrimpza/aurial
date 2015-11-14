@@ -152,14 +152,12 @@ var PlaylistQueue = React.createClass({
 	componentDidMount: function() {
 		this.props.events.subscribe({
 			subscriber: this,
-			event: ["playerStarted", "playerStoped", "playerEnqueued"]
+			event: ["playerEnqueued"]
 		});
 	},
 
 	receive: function(event) {
 		switch (event.event) {
-			case "playerStarted": break;
-			case "playerStoped": break;
 			case "playerEnqueued": this.setState({queue: event.data}); break;
 		}
 	},
@@ -182,11 +180,32 @@ var PlaylistQueue = React.createClass({
 });
 
 var TrackList = React.createClass({
+	getInitialState: function() {
+		return {queue: [], playing: null};
+	},
+
+	componentDidMount: function() {
+		this.props.events.subscribe({
+			subscriber: this,
+			event: ["playerStarted", "playerStopped", "playerEnqueued"]
+		});
+	},
+
+	receive: function(event) {
+		switch (event.event) {
+			case "playerStarted": this.setState({playing: event.data}); break;
+			case "playerStopped": this.setState({playing: null}); break;
+			case "playerEnqueued": this.setState({queue: event.data.map(function(q) {return q.id} )}); break;
+		}
+	},
+
 	render: function() {
 		var _this = this;
 		var tracks = this.props.tracks.map(function (entry) {
 			return (
-				<Track key={entry.id} subsonic={_this.props.subsonic} events={_this.props.events} track={entry} iconSize={_this.props.iconSize} />
+				<Track key={entry.id} subsonic={_this.props.subsonic} events={_this.props.events} track={entry} iconSize={_this.props.iconSize} 
+				 playing={_this.state.playing != null && _this.state.playing.id == entry.id} 
+				 queued={_this.state.queue.indexOf(entry.id) > -1} />
 			);
 		});
 
@@ -222,10 +241,10 @@ var Track = React.createClass({
 
 	render: function() {
 		return (
-			<tr>
+			<tr className={this.props.playing ? "positive" : ""}>
 				<td>
-					<i className="grey play icon" onClick={this.play}></i>
-					<i className="grey plus icon" onClick={this.enqueue}></i>
+					<i className={this.props.playing ? "play icon" : "grey play icon"} onClick={this.play}></i>
+					<i className={this.props.queued ? "minus icon" : "grey plus icon"} onClick={this.enqueue}></i>
 				</td>
 				<td>
 					{this.props.track.track}
