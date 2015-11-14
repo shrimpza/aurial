@@ -108,7 +108,6 @@ var Player = React.createClass({
 		var coverArt = <img src={this.noImage} />;
 
 		if (this.state.playing != null) {
-			nowPlaying = this.state.playing.title;
 			coverArt = <CoverArt subsonic={this.props.subsonic} id={this.state.playing.coverArt} size={80} />;
 		}
 
@@ -120,9 +119,11 @@ var Player = React.createClass({
 							{coverArt}
 						</div>
 						<div className="content">
-							<div className="header">{nowPlaying}</div>
+							<div className="header">
+								<PlayerPlayingTitle events={this.props.events} playing={this.state.playing} />
+							</div>
 							<div className="meta">
-								<span className="stuff">moop</span>
+								<PlayerPlayingInfo events={this.props.events} playing={this.state.playing} />
 							</div>
 							<div className="description">
 								<table>
@@ -133,6 +134,7 @@ var Player = React.createClass({
 												<PlayerPlayToggleButton key="play" events={this.props.events} />
 												<PlayerStopButton key="stop" events={this.props.events} />
 												<PlayerNextButton key="next" events={this.props.events} />
+												<PlayerPositionDisplay key="time" events={this.props.events} />
 											</div>
 										</td>
 										<td className="progress">
@@ -145,6 +147,32 @@ var Player = React.createClass({
 					</div>
 				</div>
 			</div>
+		);
+	}
+});
+
+var PlayerPlayingTitle = React.createClass({
+	render: function() {
+		return (
+			<span>
+				{this.props.playing == null ? "Nothing playing" : this.props.playing.title}
+			</span>
+		);
+	}
+});
+
+var PlayerPlayingInfo = React.createClass({
+	render: function() {
+		var album = "Nothing playing";
+		if (this.props.playing != null) {
+			album = this.props.playing.artist + " - " + this.props.playing.album;
+			if (this.props.playing.date) album += " (" + this.props.playing.date + ")";
+		}
+
+		return (
+			<span>
+				{album}
+			</span>
 		);
 	}
 });
@@ -182,6 +210,39 @@ var PlayerProgress = React.createClass({
 		return (
 			<div className="ui red progress" id={this._id}>
 				<div className="bar"></div>
+			</div>
+		);
+	}
+});
+
+var PlayerPositionDisplay = React.createClass({
+	getInitialState: function() {
+		return {duration: 0, position: 0};
+	},
+
+	componentDidMount: function() {
+		this.props.events.subscribe({
+			subscriber: this,
+			event: ["playerUpdated"]
+		});
+	},
+
+	componentWillUnmount: function() {
+	},
+
+	receive: function(event) {
+		switch (event.event) {
+			case "playerUpdated": 
+				this.setState({duration: event.data.duration, position: event.data.position});
+				break;
+		}
+	},
+
+	render: function() {
+		return (
+			<div className="ui label">
+				<i className="clock icon"></i>
+				{(this.state.position / 1000).asTime()}/{(this.state.duration / 1000).asTime()}
 			</div>
 		);
 	}

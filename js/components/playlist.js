@@ -187,14 +187,15 @@ var TrackList = React.createClass({
 	componentDidMount: function() {
 		this.props.events.subscribe({
 			subscriber: this,
-			event: ["playerStarted", "playerStopped", "playerEnqueued"]
+			event: ["playerStarted", "playerStopped", "playerFinished", "playerEnqueued"]
 		});
 	},
 
 	receive: function(event) {
 		switch (event.event) {
 			case "playerStarted": this.setState({playing: event.data}); break;
-			case "playerStopped": this.setState({playing: null}); break;
+			case "playerStopped":
+			case "playerFinished": this.setState({playing: null}); break;
 			case "playerEnqueued": this.setState({queue: event.data.map(function(q) {return q.id} )}); break;
 		}
 	},
