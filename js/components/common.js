@@ -14,7 +14,7 @@ var TabGroup = React.createClass({
 	render: function() {
 		var tabs = this.props.tabs.map(function (tab) {
 			return (
-				<Tab key={tab.id} id={tab.id} title={tab.title} active={tab.active} />
+				<Tab key={tab.id} id={tab.id} title={tab.title} active={tab.active} icon={tab.icon} />
 			);
 		});
 
@@ -28,9 +28,12 @@ var TabGroup = React.createClass({
 
 var Tab = React.createClass({
 	render: function() {
-		var className = this.props.active ? "active item" : "item";
+		var icon = this.props.icon != null ? <i className={this.props.icon + " icon"}></i> : null;
 		return (
-			<a className={className} data-tab={this.props.id}>{this.props.title}</a>
+			<a className={this.props.active ? "active item" : "item"} data-tab={this.props.id}>
+				{icon}
+				{this.props.title}
+			</a>
 		);
 	}
 });

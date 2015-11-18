@@ -9,7 +9,7 @@ Subsonic = function(url, user, password, version, appName) {
 		var result = this.url + "/rest/" + func + ".view?";
 		var _params = {
 			u: this.user,
-			p: this.password,
+			p: "enc:" + this.password.hexEncode(),
 			v: this.version,
 			c: appName,
 			f: "json"

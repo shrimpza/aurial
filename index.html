@@ -20,6 +20,7 @@
 	<script type="text/jsx" src="js/components/player.js"></script>
 	<script type="text/jsx" src="js/components/browser.js"></script>
 	<script type="text/jsx" src="js/components/playlist.js"></script>
+	<script type="text/jsx" src="js/components/settings.js"></script>
 
 	<link rel="stylesheet" href="style.css">
 
@@ -36,19 +37,17 @@
 			});
 
 			// TODO these properties should be populated from local storage, supplied by the user via setup view
-			var subsonic = new Subsonic("http://192.168.0.3:4242", "admin", "enc:" + "hpserver".hexEncode(), "1.12.0", "thing");
+			var subsonic = new Subsonic("http://192.168.0.3:4242", "admin", "", "1.12.0", "thing");
 
 			React.render(
 				<App subsonic={subsonic} />,
-				document.getElementById('frames')
+				document.body
 			);
 		});
 
 	</script>
 </head>
 <body>
-	<div id="frames">
-		
-	</div>
+	
 </body>
 </html>
