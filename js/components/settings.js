@@ -11,12 +11,13 @@ var Settings = React.createClass({
 									localStorage.getItem('password'), 
 									"1.12.0", "thing");
 
-		this.props.app.setState({subsonic: subsonic});
-
-		//React.render(
-		//	<App subsonic={subsonic} />,
-		//	document.body
-		//);
+		// completely replace the app node with a new one, with the new settings
+		if (React.unmountComponentAtNode(document.body)) {
+			React.render(
+				<App subsonic={subsonic} />,
+				document.body
+			);
+		}
 	},
 
 	render: function() {

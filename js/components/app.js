@@ -1,22 +1,16 @@
 var App = React.createClass({
-	getInitialState: function() {
-		return {subsonic: this.props.subsonic};
-	},
-
 	render: function() {
-		console.log("state is ", this.state.subsonic);
-
 		var events = new EventBus();
 
-		var player = <Player subsonic={this.state.subsonic} events={events} />;
+		var player = <Player subsonic={this.props.subsonic} events={events} />;
 
-		var playlists = <PlaylistManager subsonic={this.state.subsonic} events={events} iconSize="20" />;
-		var selection = <Selection subsonic={this.state.subsonic} events={events} iconSize="20" />;
-		var queue = <PlaylistQueue subsonic={this.state.subsonic} events={events} iconSize="20" />;
+		var playlists = <PlaylistManager subsonic={this.props.subsonic} events={events} iconSize="20" />;
+		var selection = <Selection subsonic={this.props.subsonic} events={events} iconSize="20" />;
+		var queue = <PlaylistQueue subsonic={this.props.subsonic} events={events} iconSize="20" />;
 
-		var artistList = <ArtistList subsonic={this.state.subsonic} events={events} iconSize="30" />;
+		var artistList = <ArtistList subsonic={this.props.subsonic} events={events} iconSize="30" />;
 
-		var settings = <Settings subsonic={this.state.subsonic} events={events} app={this} />;
+		var settings = <Settings subsonic={this.props.subsonic} events={events} />;
 
 		var tabs = [];
 		tabs.push({id:"selection", title: "Selection", active: true, icon: "chevron right"});

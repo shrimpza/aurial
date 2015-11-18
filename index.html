@@ -36,8 +36,10 @@
 				}
 			});
 
-			// TODO these properties should be populated from local storage, supplied by the user via setup view
-			var subsonic = new Subsonic("http://192.168.0.3:4242", "admin", "", "1.12.0", "thing");
+			var subsonic = new Subsonic(localStorage.getItem('url') || 'http://localhost:4040/', 
+										localStorage.getItem('username') || '', 
+										localStorage.getItem('password') || '', 
+										"1.12.0", "thing");
 
 			React.render(
 				<App subsonic={subsonic} />,
