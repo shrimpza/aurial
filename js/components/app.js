@@ -1,16 +1,12 @@
 var App = React.createClass({
-	getPlayer: function() {
-		return this._player;
-	},
-
 	render: function() {
 		var events = new EventBus();
 
-		var player = <Player subsonic={this.props.subsonic} events={events} ref={(c) => this._player = c} />;
+		var player = <Player subsonic={this.props.subsonic} events={events} />;
 
-		var playlists = <PlaylistManager subsonic={this.props.subsonic} events={events} player={this.getPlayer} iconSize="20" />;
-		var selection = <Selection subsonic={this.props.subsonic} events={events} player={this.getPlayer} iconSize="20" />;
-		var queue = <PlaylistQueue subsonic={this.props.subsonic} events={events} player={this.getPlayer} iconSize="20" />;
+		var playlists = <PlaylistManager subsonic={this.props.subsonic} events={events} iconSize="20" />;
+		var selection = <Selection subsonic={this.props.subsonic} events={events} iconSize="20" />;
+		var queue = <PlaylistQueue subsonic={this.props.subsonic} events={events} iconSize="20" />;
 
 		var artistList = <ArtistList subsonic={this.props.subsonic} events={events} iconSize="30" />;
 

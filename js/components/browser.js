@@ -1,12 +1,14 @@
 var ArtistList = React.createClass({
+	_id: UniqueID(),
+
 	getInitialState: function() {
-		return {artists: []};
+		return {artists: [], loaded: false};
 	},
 
 	componentDidMount: function() {
 		this.props.subsonic.getArtists({
 			success: function(data) {
-				this.setState({artists: data.artists});
+				this.setState({artists: data.artists, loaded: true});
 			}.bind(this),
 			error: function(status, err) {
 				console.error(this, status, err.toString());
@@ -15,7 +17,7 @@ var ArtistList = React.createClass({
 	},
 
 	componentDidUpdate: function() {
-		$('.artistList').accordion({exclusive: false});
+		$('#' + this._id).accordion({exclusive: false});
 	},
 
 	render: function() {
@@ -26,9 +28,14 @@ var ArtistList = React.createClass({
 			);
 		});
 
+
+		if (!this.state.loaded && artists.length == 0) {
+			artists = <div className="ui inverted active centered inline loader"></div>
+		}
+
 		return (
 			<div className="ui inverted basic segment">
-				<div className="ui inverted fluid accordion artistList">
+				<div className="ui inverted fluid accordion" id={this._id}>
 					{artists}
 				</div>
 			</div>
@@ -45,7 +52,7 @@ var Artist = React.createClass({
 		this.props.subsonic.getArtist({
 			id: this.props.data.id,
 			success: function(data) {
-				this.setState({albums: data.albums, loaded:true});
+				this.setState({albums: data.albums, loaded: true});
 			}.bind(this),
 			error: function(status, err) {
 				console.error(this, status, err.toString());
