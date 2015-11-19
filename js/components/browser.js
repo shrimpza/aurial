@@ -28,7 +28,6 @@ var ArtistList = React.createClass({
 			);
 		});
 
-
 		if (!this.state.loaded && artists.length == 0) {
 			artists = <div className="ui inverted active centered inline loader"></div>
 		}
