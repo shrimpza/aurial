@@ -3,6 +3,7 @@ var Player = React.createClass({
 
 	sound: null,
 	playing: null,
+	shuffle: false,
 
 	getInitialState: function() {
 		return {
@@ -14,7 +15,7 @@ var Player = React.createClass({
 	componentDidMount: function() {
 		this.props.events.subscribe({
 			subscriber: this,
-			event: ["playerPlay", "playerToggle", "playerStop", "playerEnqueue"]
+			event: ["playerPlay", "playerToggle", "playerStop", "playerEnqueue", "playerShuffle"]
 		});
 	},
 
@@ -45,24 +46,28 @@ var Player = React.createClass({
 				_this.props.events.publish({event: "playerUpdated", data: {track: track, duration: this.duration, position: this.position}});
 			},
 			onfinish: function() {
-
 				// TODO onfinish not called for sound.destruct()
-
 				_this.props.events.publish({event: "playerFinished", data: track});
-
-				if (_this.state.queue.length > 0) {
-					var idx = Math.max(0, _this.state.queue.indexOf(track));
-
-					console.log("completed " + idx);
-
-					if (idx < _this.state.queue.length - 1)	_this.play(_this.state.queue[++idx]);
-
-					console.log("playing next track at " + idx);
-				}
+		
+				_this.next();
 			}
 		});
 
 		this.setState({playing: track});
+	},
+
+	next: function() {
+		if (this.state.queue.length > 0) {
+			if (this.shuffle) {
+				var idx = Math.round(Math.random() * (this.state.queue.length));
+				this.play(this.state.queue[idx]);
+				console.log("playing random track " + idx);
+			} else {
+				var idx = Math.max(0, this.state.queue.indexOf(this.state.playing));
+				if (idx < this.state.queue.length - 1) this.play(this.state.queue[++idx]);
+				console.log("playing next track at " + idx);
+			}
+		}
 	},
 
 	receive: function(event) {
@@ -71,6 +76,7 @@ var Player = React.createClass({
 			case "playerToggle": this.togglePlay(); break;
 			case "playerStop": this.stop(); break;
 			case "playerEnqueue": this.enqueue(event.data); break;
+			case "playerShuffle": this.shuffle = event.data; break;
 		}
 	},
 
@@ -134,6 +140,7 @@ var Player = React.createClass({
 												<PlayerPlayToggleButton key="play" events={this.props.events} />
 												<PlayerStopButton key="stop" events={this.props.events} />
 												<PlayerNextButton key="next" events={this.props.events} />
+												<PlayerShuffleButton key="shuffle" events={this.props.events} />
 												<PlayerPositionDisplay key="time" events={this.props.events} />
 											</div>
 										</td>
@@ -317,7 +324,6 @@ var PlayerStopButton = React.createClass({
 	componentWillUnmount: function() {
 	},
 
-
 	receive: function(event) {
 		switch (event.event) {
 			case "playerStarted": this.playerStart(event.data); break;
@@ -370,6 +376,26 @@ var PlayerPriorButton = React.createClass({
 		return (
 			<button className={"ui icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.onClick}>
 				<i className="fast backward icon" />
+			</button>
+		);
+	}
+});
+
+var PlayerShuffleButton = React.createClass({
+	getInitialState: function() {
+		return {shuffle: false};
+	},
+
+	onClick: function() {
+		var shuffle = !this.state.shuffle;
+		this.setState({shuffle: shuffle});
+		this.props.events.publish({event: "playerShuffle", data: shuffle});
+	},
+
+	render: function() {
+		return (
+			<button className="ui icon button" onClick={this.onClick}>
+				<i className={"random icon " + (this.state.shuffle ? "red" : "")} />
 			</button>
 		);
 	}
