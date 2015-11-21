@@ -39,6 +39,17 @@ Subsonic = function(url, user, password, version, appName) {
 					});
 				});
 
+				var ignoredArticles = data['subsonic-response'].artists.ignoredArticles.split(' ');
+				allArtists.sort(function(a, b) {
+					var at = a.name;
+					var bt = b.name;
+					for (var i = ignoredArticles.length - 1; i >= 0; i--) {
+						if (at.indexOf(ignoredArticles[i] + ' ') == 0) at = at.replace(ignoredArticles[i] + ' ', '');
+						if (bt.indexOf(ignoredArticles[i] + ' ') == 0) bt = bt.replace(ignoredArticles[i] + ' ', '');
+					};
+					return at.localeCompare(bt);
+				});
+
 				params.success({artists: allArtists});
 			},
 			error: function(xhr, status, err) {
