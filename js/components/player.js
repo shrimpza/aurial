@@ -59,6 +59,7 @@ var Player = React.createClass({
 	next: function() {
 		if (this.state.queue.length > 0) {
 			if (this.shuffle) {
+				// TODO shuffle is a bit dumb, and will repeat tracks a lot, keep some state relative to queue size, make sure we don't have repeats (or pre-compute and cache a random queue on enqueue)
 				var idx = Math.round(Math.random() * (this.state.queue.length));
 				this.play(this.state.queue[idx]);
 				console.log("playing random track " + idx);
