@@ -15,7 +15,7 @@ var Player = React.createClass({
 	componentDidMount: function() {
 		this.props.events.subscribe({
 			subscriber: this,
-			event: ["playerPlay", "playerToggle", "playerStop", "playerEnqueue", "playerShuffle"]
+			event: ["playerPlay", "playerToggle", "playerStop", "playerNext", "playerEnqueue", "playerShuffle"]
 		});
 	},
 
@@ -75,6 +75,7 @@ var Player = React.createClass({
 			case "playerPlay": this.play(event.data); break;
 			case "playerToggle": this.togglePlay(); break;
 			case "playerStop": this.stop(); break;
+			case "playerNext": this.next(); break;
 			case "playerEnqueue": this.enqueue(event.data); break;
 			case "playerShuffle": this.shuffle = event.data; break;
 		}
@@ -356,6 +357,26 @@ var PlayerStopButton = React.createClass({
 var PlayerNextButton = React.createClass({
 	getInitialState: function() {
 		return {enabled: false};
+	},
+
+	componentDidMount: function() {
+		this.props.events.subscribe({
+			subscriber: this,
+			event: ["playerEnqueued"]
+		});
+	},
+
+	componentWillUnmount: function() {
+	},
+
+	receive: function(event) {
+		switch (event.event) {
+			case "playerEnqueued": this.setState({enabled: event.data.length > 0}); break;
+		}
+	},
+
+	onClick: function() {
+		this.props.events.publish({event: "playerNext"});
 	},
 
 	render: function() {
