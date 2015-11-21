@@ -64,7 +64,15 @@ Subsonic = function(url, user, password, version, appName) {
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
-				params.success({albums: data['subsonic-response'].artist.album});
+				var albums = data['subsonic-response'].artist.album;
+
+				if (albums.length > 1) {
+					albums.sort(function(a, b) {
+						return (a.year || 0) - (b.year || 0);
+					});
+				}
+
+				params.success({albums: albums});
 			},
 			error: function(xhr, status, err) {
 				params.error(status, err.toString());
