@@ -16,13 +16,25 @@ var Player = React.createClass({
 	componentDidMount: function() {
 		this.props.events.subscribe({
 			subscriber: this,
-			event: ["playerPlay", "playerToggle", "playerStop", "playerNext", "playerEnqueue", "playerShuffle"]
+			event: ["playerPlay", "playerToggle", "playerStop", "playerNext", "playerPrevious", "playerEnqueue", "playerShuffle"]
 		});
 	},
 
 	componentWillUpdate: function(nextProps, nextState) {
 		if (nextState.queue.length != this.queue.length || nextState.shuffle != this.state.shuffle) {
 			this.queue = (this.state.shuffle || nextState.shuffle) ? nextState.queue.slice(0).shuffle() : nextState.queue.slice(0);
+		}
+	},
+
+	receive: function(event) {
+		switch (event.event) {
+			case "playerPlay": this.play(event.data); break;
+			case "playerToggle": this.togglePlay(); break;
+			case "playerStop": this.stop(); break;
+			case "playerNext": this.next(); break;
+			case "playerPrevious": this.previous(); break;
+			case "playerEnqueue": this.enqueue(event.data); break;
+			case "playerShuffle": this.setState({shuffle: event.data}); break;
 		}
 	},
 
@@ -68,20 +80,26 @@ var Player = React.createClass({
 
 		if (this.queue.length > 0) {
 			var idx = this.state.playing == null ? 0 : Math.max(0, this.queue.indexOf(this.state.playing));
-			if (idx < this.queue.length - 1) this.play(this.queue[++idx]);
-			else this.setState({playing: null});
+			
+			if (idx < this.queue.length - 1) idx++;
+			else idx = 0;
+			
+			this.play(this.queue[idx]);
 			console.log("playing next track at " + idx);
 		}
 	},
 
-	receive: function(event) {
-		switch (event.event) {
-			case "playerPlay": this.play(event.data); break;
-			case "playerToggle": this.togglePlay(); break;
-			case "playerStop": this.stop(); break;
-			case "playerNext": this.next(); break;
-			case "playerEnqueue": this.enqueue(event.data); break;
-			case "playerShuffle": this.setState({shuffle: event.data}); break;
+	previous: function() {
+		this.stop();
+
+		if (this.queue.length > 0) {
+			var idx = this.state.playing == null ? 0 : Math.max(0, this.queue.indexOf(this.state.playing));
+
+			if (idx > 0) idx--;
+			else idx = this.queue.length - 1;
+
+			this.play(this.queue[idx]);
+			console.log("playing previous track at " + idx);
 		}
 	},
 
@@ -401,6 +419,27 @@ var PlayerNextButton = React.createClass({
 var PlayerPriorButton = React.createClass({
 	getInitialState: function() {
 		return {enabled: false};
+	},
+
+
+	componentDidMount: function() {
+		this.props.events.subscribe({
+			subscriber: this,
+			event: ["playerEnqueued"]
+		});
+	},
+
+	componentWillUnmount: function() {
+	},
+
+	receive: function(event) {
+		switch (event.event) {
+			case "playerEnqueued": this.setState({enabled: event.data.length > 0}); break;
+		}
+	},
+
+	onClick: function() {
+		this.props.events.publish({event: "playerPrevious"});
 	},
 
 	render: function() {
