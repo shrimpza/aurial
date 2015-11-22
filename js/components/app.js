@@ -31,9 +31,7 @@ var App = React.createClass({
 				<div id="browser-frame">
 					<div id="artistList">{artistList}</div>
 				</div>
-				<div id="background-layer">
-					<div className="background-overlay"></div>
-				</div>
+				<div id="background-layer"></div>
 				<div id="player-frame">{player}</div>
 				<div id="playlist-frame">
 					<div id="playlist-menu">{tabGroup}</div>
