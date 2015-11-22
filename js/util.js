@@ -16,6 +16,21 @@ String.prototype.hexEncode = function() {
 Array.prototype.delete = function(element) {
 	var i = this.indexOf(element);
 	if (i > -1) this.splice(i, 1);
+	return this;
+}
+
+Array.prototype.shuffle = function() {
+    var counter = this.length, temp, index;
+
+    while (counter > 0) {
+        index = (Math.random() * counter--) | 0;
+
+        temp = this[counter];
+        this[counter] = this[index];
+        this[index] = temp;
+    }
+
+    return this;
 }
 
 UniqueID = function() {

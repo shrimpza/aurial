@@ -3,11 +3,12 @@ var Player = React.createClass({
 
 	sound: null,
 	playing: null,
-	shuffle: false,
+	queue: [],
 
 	getInitialState: function() {
 		return {
 			queue: [], 
+			shuffle: false,
 			playing: null
 		};
 	},
@@ -19,8 +20,14 @@ var Player = React.createClass({
 		});
 	},
 
+	componentWillUpdate: function(nextProps, nextState) {
+		if (nextState.queue.length != this.queue.length || nextState.shuffle != this.state.shuffle) {
+			this.queue = (this.state.shuffle || nextState.shuffle) ? nextState.queue.slice(0).shuffle() : nextState.queue.slice(0);
+		}
+	},
+
 	play: function(track) {
-		if (this.state.queue.indexOf(track) < 0) this.enqueue([track]);
+		if (this.queue.indexOf(track) < 0) this.enqueue([track]);
 
 		this.stop();
 
@@ -57,17 +64,13 @@ var Player = React.createClass({
 	},
 
 	next: function() {
-		if (this.state.queue.length > 0) {
-			if (this.shuffle) {
-				// TODO shuffle is a bit dumb, and will repeat tracks a lot, keep some state relative to queue size, make sure we don't have repeats (or pre-compute and cache a random queue on enqueue)
-				var idx = Math.round(Math.random() * (this.state.queue.length));
-				this.play(this.state.queue[idx]);
-				console.log("playing random track " + idx);
-			} else {
-				var idx = Math.max(0, this.state.queue.indexOf(this.state.playing));
-				if (idx < this.state.queue.length - 1) this.play(this.state.queue[++idx]);
-				console.log("playing next track at " + idx);
-			}
+		this.stop();
+
+		if (this.queue.length > 0) {
+			var idx = this.state.playing == null ? 0 : Math.max(0, this.queue.indexOf(this.state.playing));
+			if (idx < this.queue.length - 1) this.play(this.queue[++idx]);
+			else this.setState({playing: null});
+			console.log("playing next track at " + idx);
 		}
 	},
 
@@ -78,7 +81,7 @@ var Player = React.createClass({
 			case "playerStop": this.stop(); break;
 			case "playerNext": this.next(); break;
 			case "playerEnqueue": this.enqueue(event.data); break;
-			case "playerShuffle": this.shuffle = event.data; break;
+			case "playerShuffle": this.setState({shuffle: event.data}); break;
 		}
 	},
 
@@ -89,9 +92,9 @@ var Player = React.createClass({
 		} else if (this.playing != null) {
 			console.log("togglePlay: restart");
 			this.play(this.playing);
-		} else if (this.state.queue.length > 0) {
+		} else if (this.queue.length > 0) {
 			console.log("togglePlay: start queue");
-			this.play(this.state.queue[0]);
+			this.play(this.queue[0]);
 		}
 	},
 
@@ -102,9 +105,15 @@ var Player = React.createClass({
 
 	enqueue: function(tracks) {
 		var queue = this.state.queue;
-		for (var i = 0; i < tracks.length; i++) queue.push(tracks[i]);
+		var trackIds = queue.map(function(t) {
+			return t.id;
+		});
 
-		console.log("queue", queue);
+		for (var i = 0; i < tracks.length; i++) {
+			var idx = trackIds.indexOf(tracks[i].id);
+			if (idx == -1) queue.push(tracks[i]);
+			else queue.splice(idx, 1);
+		}
 
 		this.setState({queue: queue});
 
