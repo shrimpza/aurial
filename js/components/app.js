@@ -20,10 +20,19 @@ var App = React.createClass({
 
 		var tabGroup = <TabGroup tabs={tabs} iconSize="20" />;
 
+		// background cheese
+		events.subscribe({
+			subscriber: this,
+			event: ["playerStarted"]
+		});
+
 		return (
 			<div>
 				<div id="browser-frame">
 					<div id="artistList">{artistList}</div>
+				</div>
+				<div id="background-layer">
+					<div className="background-overlay"></div>
 				</div>
 				<div id="player-frame">{player}</div>
 				<div id="playlist-frame">
@@ -37,5 +46,13 @@ var App = React.createClass({
 				</div>
 			</div>
 		);
+	},
+
+	receive: function(event) {
+		switch (event.event) {
+			case "playerStarted":
+				$('#background-layer').css('background-image', 'url(' + this.props.subsonic.getUrl("getCoverArt", {id:event.data.coverArt}) + ')');
+				break;
+		}
 	}
 });

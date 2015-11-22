@@ -23,6 +23,14 @@ body {
         margin: 0 0 1rem 0;
     }
 
+    #background-layer {
+        position: absolute;
+        top: 0; right: 0; left: 380px; bottom: 0;
+        background-repeat: no-repeat;
+        background-size: 100% auto;
+        opacity: 0.25;
+    }
+
     #player-frame {
         position: absolute;
         top: 0; right: 0; left: 380px;
