@@ -39,10 +39,14 @@ var Tab = React.createClass({
 });
 
 var IconMessage = React.createClass({
+	getDefaultProps: function() {
+		return {type: "info", icon: "info circle"};
+	},
+
 	render: function() {
 		return (
 			<div className="ui basic segment">
-				<div className="ui icon message">
+				<div className={"ui icon message " + this.props.type}>
 					<i className={this.props.icon + " icon"}></i>
 					<div className="content">
 						<div className="header">{this.props.header}</div>

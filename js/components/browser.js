@@ -2,16 +2,16 @@ var ArtistList = React.createClass({
 	_id: UniqueID(),
 
 	getInitialState: function() {
-		return {artists: [], loaded: false};
+		return {artists: [], loaded: false, error: null};
 	},
 
 	componentDidMount: function() {
 		this.props.subsonic.getArtists({
 			success: function(data) {
-				this.setState({artists: data.artists, loaded: true});
+				this.setState({artists: data.artists, loaded: true, error: null});
 			}.bind(this),
 			error: function(status, err) {
-				console.error(this, status, err.toString());
+				this.setState({error: <IconMessage type="negative" icon="warning circle" header="" message="Failed to load artists. Check settings." />, loaded: true});
 			}.bind(this)
 		})
 	},
@@ -32,7 +32,7 @@ var ArtistList = React.createClass({
 			artists = <div className="ui inverted active centered inline loader"></div>
 		}
 
-		return (
+		return this.state.error || (
 			<div className="ui inverted basic segment">
 				<div className="ui inverted fluid accordion" id={this._id}>
 					{artists}
