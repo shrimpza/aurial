@@ -164,7 +164,7 @@ var Player = React.createClass({
 								<table>
 									<tr>
 										<td className="controls">
-											<div className="ui compact icon buttons">
+											<div className="ui black icon buttons">
 												<PlayerPriorButton key="prior" events={this.props.events} />
 												<PlayerPlayToggleButton key="play" events={this.props.events} />
 												<PlayerStopButton key="stop" events={this.props.events} />
@@ -276,7 +276,7 @@ var PlayerPositionDisplay = React.createClass({
 
 	render: function() {
 		return (
-			<div className="ui label">
+			<div className="ui disabled labeled icon button">
 				<i className="clock icon"></i>
 				{(this.state.position / 1000).asTime()}/{(this.state.duration / 1000).asTime()}
 			</div>

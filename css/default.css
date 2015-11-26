@@ -13,6 +13,8 @@ body {
         top: 0; bottom: 0; left: 0;
         width: 380px;
         overflow: auto;
+
+        background-color: #1B1C1D;
     }
 
     #browser-frame .segment {
@@ -28,7 +30,7 @@ body {
         top: 0; right: 0; left: 380px; bottom: 0;
         background-repeat: no-repeat;
         background-size: 100% auto;
-        opacity: 0.25;
+        opacity: 0.2;
     }
 
     #player-frame {
