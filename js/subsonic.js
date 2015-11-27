@@ -26,6 +26,20 @@ Subsonic = function(url, user, password, version, appName) {
 		return result;
 	}
 
+	this.ping = function(params) {
+		$.ajax({
+			url: this.getUrl('ping', {}),
+			dataType: 'json',
+			cache: false,
+			success: function(data) {
+				params.success(data['subsonic-response']);
+			},
+			error: function(xhr, status, err) {
+				params.error(status, err.toString());
+			}
+		});
+	}
+
 	this.getArtists = function(params) {
 		$.ajax({
 			url: this.getUrl('getArtists', {}),

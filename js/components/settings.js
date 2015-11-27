@@ -1,9 +1,16 @@
+var TEST_UNTESTED = 0;
+var TEST_BUSY = 1;
+var TEST_SUCCESS = 2;
+var TEST_FAILED = 3;
+
 var Settings = React.createClass({
+
 	getInitialState: function() {
 		return {
 			url: this.props.subsonic.url,
 			user: this.props.subsonic.user,
-			password: this.props.subsonic.password
+			password: this.props.subsonic.password,
+			testState: TEST_UNTESTED
 		};
 	},
 
@@ -17,7 +24,8 @@ var Settings = React.createClass({
 		var subsonic = new Subsonic(localStorage.getItem('url'), 
 									localStorage.getItem('username'), 
 									localStorage.getItem('password'), 
-									"1.12.0", "thing");
+									this.props.subsonic.version, 
+									this.props.subsonic.appName);
 
 		// completely replace the app node with a new one, with the new settings
 		if (React.unmountComponentAtNode(document.body)) {
@@ -39,6 +47,35 @@ var Settings = React.createClass({
 		}
 	},
 
+	test: function(e) {
+		e.preventDefault();
+
+		var subsonic = new Subsonic(this.state.url, 
+									this.state.user, 
+									this.state.password, 
+									this.props.subsonic.version, 
+									this.props.subsonic.appName);
+
+		var _this = this;
+		_this.setState({testState: TEST_BUSY});
+
+		subsonic.ping({
+			success: function(data) {
+				if (data.status == "ok") {
+					_this.setState({testState: TEST_SUCCESS});
+					alert("Success!");
+				} else {
+					_this.setState({testState: TEST_FAILED});
+					alert(data.error.message);
+				}
+			},
+			error: function(status, msg) {
+				_this.setState({testState: TEST_FAILED});
+				alert("Failed to ping server");
+			}
+		});
+	},
+
 	change: function(e) {
 		switch (e.target.name) {
 			case "url": 
@@ -51,9 +88,26 @@ var Settings = React.createClass({
 				this.setState({password: e.target.value});
 				break;
 		}
+
+		this.setState({testState: TEST_UNTESTED});
 	},
 
 	render: function() {
+		var testIcon = "circle thin";
+		switch (this.state.testState) {
+			case TEST_BUSY: 
+				testIcon = "loading spinner";
+				break;
+			case TEST_SUCCESS: 
+				testIcon = "green checkmark";
+				break;
+			case TEST_FAILED: 
+				testIcon = "red warning sign";
+				break;
+			default:
+				testIcon = "circle thin";
+		}
+
 		return (
 			<div className="ui basic segment" id="subsonic-settings">
 				<form className="ui form" onSubmit={this.save}>
@@ -73,6 +127,10 @@ var Settings = React.createClass({
 					</div>
 					<button className="ui green button" type="submit">Save</button>
 					<button className="ui button" onClick={this.demo}>Demo</button>
+					<button className="ui icon button" onClick={this.test}>
+						<i className={testIcon + " icon"}></i>
+						Test
+					</button>
 				</form>
 			</div>
 		);
