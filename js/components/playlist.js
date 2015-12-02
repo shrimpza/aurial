@@ -137,10 +137,42 @@ var Selection = React.createClass({
 		} else {
 			return (
 				<div className="ui basic segment selectionView">
+					<SelectionAlbum subsonic={this.props.subsonic} album={this.state.album} />
 					<TrackList subsonic={this.props.subsonic} events={this.props.events} tracks={this.state.album.song} iconSize={this.props.iconSize} />
 				</div>
 			);
 		}
+	}
+});
+
+var SelectionAlbum = React.createClass({
+	render: function() {
+		return (
+			<div className="ui items">
+				<div className="item">
+					<div className="ui tiny image">
+						<CoverArt subsonic={this.props.subsonic} id={this.props.album.coverArt} size={200} />
+					</div>
+					<div className="middle aligned content">
+						<div className="header">
+							<div className="artist">{this.props.album.artist}</div>
+							<div>{this.props.album.name}</div>
+						</div>
+						<div className="meta">
+							<span className="info">{this.props.album.year}</span>
+							<span className="info">{this.props.album.songCount} tracks</span>
+							<span className="info">{this.props.album.duration.asTime()}</span>
+						</div>
+						<div className="extra">
+							<div className="ui small labelled icon buttons">
+								<button className="ui button"><i className="play icon"></i> Play</button>
+								<button className="ui button"><i className="plus icon"></i> Add</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
 	}
 });
 
