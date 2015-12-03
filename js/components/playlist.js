@@ -150,24 +150,24 @@ var SelectionAlbum = React.createClass({
 		return (
 			<div className="ui items">
 				<div className="item">
-					<div className="ui tiny image">
+					<div className="ui small image">
 						<CoverArt subsonic={this.props.subsonic} id={this.props.album.coverArt} size={200} />
 					</div>
-					<div className="middle aligned content">
+					<div className="aligned content">
 						<div className="header">
 							<div className="artist">{this.props.album.artist}</div>
 							<div>{this.props.album.name}</div>
 						</div>
 						<div className="meta">
-							<span className="info">{this.props.album.year}</span>
-							<span className="info">{this.props.album.songCount} tracks</span>
-							<span className="info">{this.props.album.duration.asTime()}</span>
+							<div>{this.props.album.genre != '(255)' ? this.props.album.genre : ""}</div>
+							<div>{this.props.album.year ? "Year: " + this.props.album.year : ""}</div>
+							<div>Added: {new Date(this.props.album.created).toSimpleString()}</div>
+							<div>{this.props.album.songCount} tracks, {this.props.album.duration.asTime()}</div>
 						</div>
 						<div className="extra">
-							<div className="ui small labelled icon buttons">
-								<button className="ui button"><i className="play icon"></i> Play</button>
-								<button className="ui button"><i className="plus icon"></i> Add</button>
-							</div>
+							<button className="ui small compact labelled icon button"><i className="play icon"></i> Play</button>
+							<button className="ui small compact labelled icon button"><i className="plus icon"></i> Add to Queue</button>
+							<button className="ui small compact labelled icon button"><i className="list icon"></i> Add to Playlist</button>
 						</div>
 					</div>
 				</div>

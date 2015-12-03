@@ -33,6 +33,12 @@ Array.prototype.shuffle = function() {
     return this;
 }
 
+Date.prototype.toSimpleString = function() {
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    return this.getDate() + " " + months[this.getMonth()] + " " + this.getFullYear();
+}
+
 UniqueID = function() {
 	return Math.random().toString().replace(/[^A-Za-z0-9]/, "");
 }

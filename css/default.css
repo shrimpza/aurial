@@ -90,11 +90,10 @@ body {
     #playlist-content #playlist-selection .selectionView .item .header .artist {
         font-weight: normal;
         font-size: 0.8em;
-        margin-bottom: 0.25em;
     }
 
-    #playlist-content #playlist-selection .selectionView .item .meta .info {
-        padding-right: 1.0em;
+    #playlist-content #playlist-selection .selectionView .item .meta div {
+        line-height: 1.2em;
     }
 
     #playlist-content #playlist-playlists {
