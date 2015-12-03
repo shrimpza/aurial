@@ -22,7 +22,7 @@ var Player = React.createClass({
 
 	componentWillUpdate: function(nextProps, nextState) {
 		if (nextState.queue.length != this.queue.length || nextState.shuffle != this.state.shuffle) {
-			this.queue = (this.state.shuffle || nextState.shuffle) ? nextState.queue.slice(0).shuffle() : nextState.queue.slice(0);
+			this.queue = (this.state.shuffle || nextState.shuffle) ? nextState.queue.slice().shuffle() : nextState.queue.slice(0);
 		}
 	},
 
@@ -33,14 +33,12 @@ var Player = React.createClass({
 			case "playerStop": this.stop(); break;
 			case "playerNext": this.next(); break;
 			case "playerPrevious": this.previous(); break;
-			case "playerEnqueue": this.enqueue(event.data); break;
+			case "playerEnqueue": this.enqueue(event.data.action, event.data.tracks); break;
 			case "playerShuffle": this.setState({shuffle: event.data}); break;
 		}
 	},
 
 	play: function(track) {
-		if (this.queue.indexOf(track) < 0) this.enqueue([track]);
-
 		this.stop();
 
 		var _this = this;
@@ -121,16 +119,29 @@ var Player = React.createClass({
 		this.sound = null;
 	},
 
-	enqueue: function(tracks) {
-		var queue = this.state.queue;
+	enqueue: function(action, tracks) {
+		var queue = this.state.queue.slice();
 		var trackIds = queue.map(function(t) {
 			return t.id;
 		});
 
-		for (var i = 0; i < tracks.length; i++) {
-			var idx = trackIds.indexOf(tracks[i].id);
-			if (idx == -1) queue.push(tracks[i]);
-			else queue.splice(idx, 1);
+		switch (action) {
+			case "REPLACE":
+				queue = tracks.slice();
+				break;
+			case "ADD":
+			default:
+				for (var i = 0; i < tracks.length; i++) {
+					var idx = trackIds.indexOf(tracks[i].id);
+					if (idx == -1) {
+						queue.push(tracks[i]);
+						trackIds.push(tracks[i].id);
+					} else {
+						queue.splice(idx, 1);
+						trackIds.splice(idx, 1);
+					}
+				}
+				break;
 		}
 
 		this.setState({queue: queue});

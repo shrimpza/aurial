@@ -31,11 +31,6 @@ var PlaylistManager = React.createClass({
 	},
 
 	render: function() {
-		//var hash = 1;
-		//this.state.playlists.map(function (playlist) {
-		//	hash += 31 * playlist.id;
-		//});
-
 		return (
 			<div className="playlistManager">
 				<PlaylistSelector subsonic={this.props.subsonic} playlists={this.state.playlists} iconSize={this.props.iconSize} selected={this.loadPlaylist} />
@@ -137,7 +132,7 @@ var Selection = React.createClass({
 		} else {
 			return (
 				<div className="ui basic segment selectionView">
-					<SelectionAlbum subsonic={this.props.subsonic} album={this.state.album} />
+					<SelectionAlbum subsonic={this.props.subsonic} events={this.props.events} album={this.state.album} />
 					<TrackList subsonic={this.props.subsonic} events={this.props.events} tracks={this.state.album.song} iconSize={this.props.iconSize} />
 				</div>
 			);
@@ -146,6 +141,19 @@ var Selection = React.createClass({
 });
 
 var SelectionAlbum = React.createClass({
+	play: function() {
+		this.props.events.publish({event: "playerEnqueue", data: {action: "REPLACE", tracks: this.props.album.song}});
+		this.props.events.publish({event: "playerPlay", data: this.props.album.song[0]});
+	},
+
+	enqueue: function() {
+		this.props.events.publish({event: "playerEnqueue", data: {action: "ADD", tracks: this.props.album.song}});
+	},
+
+	playlist: function() {
+		// TODO
+	},
+
 	render: function() {
 		return (
 			<div className="ui items">
@@ -165,9 +173,9 @@ var SelectionAlbum = React.createClass({
 							<div>{this.props.album.songCount} tracks, {this.props.album.duration.asTime()}</div>
 						</div>
 						<div className="extra">
-							<button className="ui small compact labelled icon button"><i className="play icon"></i> Play</button>
-							<button className="ui small compact labelled icon button"><i className="plus icon"></i> Add to Queue</button>
-							<button className="ui small compact labelled icon button"><i className="list icon"></i> Add to Playlist</button>
+							<button className="ui small compact labelled icon button" onClick={this.play}><i className="play icon"></i> Play</button>
+							<button className="ui small compact labelled icon button" onClick={this.enqueue}><i className="plus icon"></i> Add to Queue</button>
+							<button className="ui small compact labelled icon button" onClick={this.playlist}><i className="list icon"></i> Add to Playlist</button>
 						</div>
 					</div>
 				</div>
@@ -269,7 +277,7 @@ var Track = React.createClass({
 	},
 
 	enqueue: function() {
-		this.props.events.publish({event: "playerEnqueue", data: [this.props.track]});
+		this.props.events.publish({event: "playerEnqueue", data: {action: "ADD", tracks: [this.props.track]}});
 	},
 
 	render: function() {
