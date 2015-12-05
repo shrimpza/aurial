@@ -1,3 +1,21 @@
+/**
+ * Subsonic API client.
+ *
+ * Exposes methods to make requests to Subsonic API endpoints, given the 
+ * configuration provided at initialisation time.
+ *
+ * In addition to whatever input the API methods require, success and failure
+ * callbacks may be provided to consume output. For example:
+ * 
+ * subsonic.ping({
+ *   success: function(response) {
+ *     // use response
+ *   }, 
+ *   failure: function(status, message) {
+ *     // ...
+ *   }
+ * })
+ */
 Subsonic = function(url, user, password, version, appName) {
 	this.url = url;
 	this.user = user;
