@@ -34,6 +34,11 @@ var ArtistList = React.createClass({
 
 		return this.state.error || (
 			<div className="ui inverted basic segment">
+				<div className="ui inverted transparent fluid left icon input">
+					<i className="search icon"></i>
+					<input type="text" placeholder="Search..."/>
+				</div>
+				<div className="ui inverted divider"></div>
 				<div className="ui inverted fluid accordion" id={this._id}>
 					{artists}
 				</div>

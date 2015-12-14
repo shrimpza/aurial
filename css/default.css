@@ -21,6 +21,10 @@ body {
         padding:0.25em;
     }
 
+    #browser-frame .segment .input {
+        margin-top: 1.0em;
+    }
+
     #browser-frame .accordion .segment {
         margin: 0 0 1rem 0;
     }
