@@ -160,7 +160,7 @@ Subsonic = function(url, user, password, version, appName) {
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
-				params.success({playlist: data['subsonic-response'].searchResult3});
+				params.success(data['subsonic-response'].searchResult3);
 			}.bind(this),
 			error: function(xhr, status, err) {
 				params.error(status, err.toString());

@@ -1,7 +1,4 @@
-body {
-	
-}
-
+/* style for desktop and larger displays */
 @media screen and (min-width: 1000px) {
     #frames {
     	position: absolute;
