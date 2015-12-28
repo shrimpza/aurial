@@ -154,6 +154,20 @@ Subsonic = function(url, user, password, version, appName) {
 		});
 	}
 
+	this.search = function(params) {
+		$.ajax({
+			url: this.getUrl('search3', {query: params.query}),
+			dataType: 'json',
+			cache: false,
+			success: function(data) {
+				params.success(data['subsonic-response'].searchResult3);
+			}.bind(this),
+			error: function(xhr, status, err) {
+				params.error(status, err.toString());
+			}.bind(this)
+		});
+	}
+
 	this.getStreamUrl = function(params) {
 		return this.getUrl('stream', {id: params.id, format: params.format ? params.format : 'mp3'});
 	}

@@ -20,6 +20,26 @@ var ArtistList = React.createClass({
 		$('#' + this._id).accordion({exclusive: false});
 	},
 
+	search: function(e) {
+		e.preventDefault();
+
+		var search = $(e.target).find("input").val();
+
+		// TODO if search is blank, clear current search
+		// TODO if search is too short, prompt for more input
+
+		this.props.subsonic.search({
+			query: search,
+			success: function(result) {
+				// TODO build result into a filter structure that can be applied to artists and albums and add to state
+				console.log(result);
+			},
+			error: function(status, error) {
+				alert("Failed to search.\n\n" + error);
+			}
+		});
+	},
+
 	render: function() {
 		var _this = this;
 		var artists = this.state.artists.map(function (artist) {
@@ -34,6 +54,13 @@ var ArtistList = React.createClass({
 
 		return this.state.error || (
 			<div className="ui inverted basic segment">
+				<form onSubmit={this.search}>
+					<div className="ui inverted transparent fluid left icon input">
+						<i className="search icon"></i>
+						<input type="text" placeholder="Search..." />
+					</div>
+				</form>
+				<div className="ui inverted divider"></div>
 				<div className="ui inverted fluid accordion" id={this._id}>
 					{artists}
 				</div>

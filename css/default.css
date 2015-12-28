@@ -1,7 +1,4 @@
-body {
-	
-}
-
+/* style for desktop and larger displays */
 @media screen and (min-width: 1000px) {
     #frames {
     	position: absolute;
@@ -19,6 +16,10 @@ body {
 
     #browser-frame .segment {
         padding:0.25em;
+    }
+
+    #browser-frame .segment .input {
+        margin-top: 1.0em;
     }
 
     #browser-frame .accordion .segment {
