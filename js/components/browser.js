@@ -160,20 +160,16 @@ var Artist = React.createClass({
 
 var Album = React.createClass({
 
-	loadAlbum: function() {
+	onClick: function() {
 		this.props.subsonic.getAlbum({
 			id: this.props.data.id,
 			success: function(data) {
-				this.props.events.publish({event: "browserSelected", data: data.album});
+				this.props.events.publish({event: "browserSelected", data: {tracks: data.album, highlight: this.props.filter}});
 			}.bind(this),
 			error: function(status, err) {
 				console.error(this, status, err.toString());
 			}.bind(this)
 		});
-	},
-
-	onClick: function() {
-		this.loadAlbum();
 	},
 
 	render: function() {

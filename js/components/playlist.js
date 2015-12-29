@@ -107,7 +107,7 @@ var Playlist = React.createClass({
 
 var Selection = React.createClass({
 	getInitialState: function() {
-		return {album: null};
+		return {album: null, highlight: null};
 	},
 
 	componentDidMount: function() {
@@ -119,7 +119,7 @@ var Selection = React.createClass({
 
 	receive: function(event) {
 		switch (event.event) {
-			case "browserSelected": this.setState({album: event.data}); break;
+			case "browserSelected": this.setState({album: event.data.tracks, highlight: event.data.highlight}); break;
 		}
 	},
 
@@ -133,7 +133,7 @@ var Selection = React.createClass({
 			return (
 				<div className="ui basic segment selectionView">
 					<SelectionAlbum subsonic={this.props.subsonic} events={this.props.events} album={this.state.album} />
-					<TrackList subsonic={this.props.subsonic} events={this.props.events} tracks={this.state.album.song} iconSize={this.props.iconSize} />
+					<TrackList subsonic={this.props.subsonic} events={this.props.events} tracks={this.state.album.song} highlight={this.state.highlight} iconSize={this.props.iconSize} />
 				</div>
 			);
 		}
@@ -246,6 +246,7 @@ var TrackList = React.createClass({
 			return (
 				<Track key={entry.id} subsonic={_this.props.subsonic} events={_this.props.events} track={entry} iconSize={_this.props.iconSize} 
 				 playing={_this.state.playing != null && _this.state.playing.id == entry.id} 
+				 highlight={_this.props.highlight != null && _this.props.highlight.indexOf(entry.id) > -1}
 				 queued={_this.state.queue.indexOf(entry.id) > -1} />
 			);
 		});
@@ -282,7 +283,7 @@ var Track = React.createClass({
 
 	render: function() {
 		return (
-			<tr className={this.props.playing ? "positive" : ""}>
+			<tr className={this.props.playing ? "positive" : (this.props.highlight ? "active" : "")}>
 				<td>
 					<i className={this.props.playing ? "play icon" : "grey play icon"} onClick={this.play}></i>
 					<i className={this.props.queued ? "minus icon" : "grey plus icon"} onClick={this.enqueue}></i>
