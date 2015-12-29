@@ -31,7 +31,6 @@ var ArtistList = React.createClass({
 			alert('Search term too short');
 		} else {
 			var filter = {};
-			var _this = this;
 			this.props.subsonic.search({
 				query: search,
 				songCount: 100,
@@ -61,8 +60,8 @@ var ArtistList = React.createClass({
 						});
 					}
 
-					_this.setState({filter: filter});
-				},
+					this.setState({filter: filter});
+				}.bind(this),
 				error: function(status, error) {
 					alert("Failed to search.\n\n" + error);
 				}
