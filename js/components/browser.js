@@ -187,9 +187,6 @@ var Album = React.createClass({
 					<div className="extra">
 					</div>
 				</div>
-				{/*<div className="ui inverted right floated compact basic tiny icon button">
-					<i className="play icon"></i>
-				</div>*/}
 			</div>
 		);
 	}
