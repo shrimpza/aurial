@@ -156,7 +156,7 @@ Subsonic = function(url, user, password, version, appName) {
 
 	this.search = function(params) {
 		$.ajax({
-			url: this.getUrl('search3', {query: params.query}),
+			url: this.getUrl('search3', {query: params.query, songCount: params.songCount}),
 			dataType: 'json',
 			cache: false,
 			success: function(data) {

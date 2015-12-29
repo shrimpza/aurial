@@ -2,7 +2,7 @@ var ArtistList = React.createClass({
 	_id: UniqueID(),
 
 	getInitialState: function() {
-		return {artists: [], loaded: false, error: null};
+		return {artists: [], loaded: false, error: null, filter: {}};
 	},
 
 	componentDidMount: function() {
@@ -25,28 +25,62 @@ var ArtistList = React.createClass({
 
 		var search = $(e.target).find("input").val();
 
-		// TODO if search is blank, clear current search
-		// TODO if search is too short, prompt for more input
+		if (search == null || search == '') {
+			this.setState({filter: {}});
+		} else if (search.length < 3) {
+			alert('Search term too short');
+		} else {
+			var filter = {};
+			var _this = this;
+			this.props.subsonic.search({
+				query: search,
+				songCount: 100,
+				success: function(result) {
+					if (result.artist) {
+						result.artist
+							.filter(function (artist) {
+								return filter[artist.id] == null;
+							})
+							.forEach(function (artist) {
+								filter[artist.id] = [];
+							});
+					}
 
-		this.props.subsonic.search({
-			query: search,
-			success: function(result) {
-				// TODO build result into a filter structure that can be applied to artists and albums and add to state
-				console.log(result);
-			},
-			error: function(status, error) {
-				alert("Failed to search.\n\n" + error);
-			}
-		});
+					if (result.album) {
+						result.album.forEach(function (album) {
+							if (filter[album.artistId] == null) filter[album.artistId] = {};
+							filter[album.artistId][album.id] = [];
+						});
+					}
+
+					if (result.song) {
+						result.song.forEach(function (song) {
+							if (filter[song.artistId] == null) filter[song.artistId] = {};
+							if (filter[song.artistId][song.albumId] == null) filter[song.artistId][song.albumId] = [];
+							if (filter[song.artistId][song.albumId].indexOf(song.id) == -1) filter[song.artistId][song.albumId].push(song.id);
+						});
+					}
+
+					_this.setState({filter: filter});
+				},
+				error: function(status, error) {
+					alert("Failed to search.\n\n" + error);
+				}
+			});
+		}
 	},
 
 	render: function() {
 		var _this = this;
-		var artists = this.state.artists.map(function (artist) {
-			return (
-				<Artist key={artist.id} subsonic={_this.props.subsonic} events={_this.props.events} data={artist} iconSize={_this.props.iconSize} />
-			);
-		});
+		var artists = this.state.artists
+			.filter(function (artist) {
+				return Object.keys(_this.state.filter).length == 0 || _this.state.filter.hasOwnProperty(artist.id);
+			})
+			.map(function (artist) {
+				return (
+					<Artist key={artist.id} subsonic={_this.props.subsonic} events={_this.props.events} data={artist} iconSize={_this.props.iconSize} filter={_this.state.filter[artist.id]} />
+				);
+			});
 
 		if (!this.state.loaded && artists.length == 0) {
 			artists = <div className="ui inverted active centered inline loader"></div>
@@ -94,9 +128,14 @@ var Artist = React.createClass({
 
 	render: function() {
 		var _this = this;
-		var albums = this.state.albums.map(function (album) {
+		var albums = this.state.albums
+			.filter(function (album) {
+				return _this.props.filter == null || Object.keys(_this.props.filter).length == 0 || _this.props.filter.hasOwnProperty(album.id);
+			})
+			.map(function (album) {
 			return (
-				<Album key={album.id} subsonic={_this.props.subsonic} events={_this.props.events} data={album} iconSize={_this.props.iconSize} />
+				<Album key={album.id} subsonic={_this.props.subsonic} events={_this.props.events} data={album} iconSize={_this.props.iconSize} 
+					filter={_this.props.filter != null ? _this.props.filter[album.id] : null}/>
 			);
 		});
 
@@ -108,7 +147,7 @@ var Artist = React.createClass({
 			<div key={this.props.data.id} onClick={this.onClick}>
 				<div className="title">
 					<i className="dropdown icon"></i>
-					{this.props.data.name} ({this.props.data.albumCount})
+					{this.props.data.name} ({this.props.filter ? Object.keys(this.props.filter).length : this.props.data.albumCount})
 				</div>
 				<div className="ui secondary inverted segment content">
 					<div className="ui inverted tiny selection list">
