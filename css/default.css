@@ -118,6 +118,12 @@
         top: 51px; right: 0; bottom:0; left: 0;
         overflow: auto;
     }
+
+    #playlist-content #playlist-playing .queueView {
+        position: absolute;
+        top: 0; right: 0; bottom: 0; left: 0;
+        overflow: auto;
+    }
 }
 
 .trackList .controls {
