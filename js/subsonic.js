@@ -161,10 +161,24 @@ Subsonic = function(url, user, password, version, appName) {
 			cache: false,
 			success: function(data) {
 				params.success(data['subsonic-response'].searchResult3);
-			}.bind(this),
+			},
 			error: function(xhr, status, err) {
 				params.error(status, err.toString());
-			}.bind(this)
+			}
+		});
+	}
+
+	this.scrobble = function(params) {
+		$.ajax({
+			url: this.getUrl('scrobble', {id: params.id}),
+			dataType: 'json',
+			cache: false,
+			success: function(data) {
+				params.success();
+			},
+			error: function(xhr, status, err) {
+				params.error(status, err.toString());
+			}
 		});
 	}
 

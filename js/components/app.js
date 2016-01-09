@@ -20,11 +20,7 @@ var App = React.createClass({
 
 		var tabGroup = <TabGroup tabs={tabs} iconSize="20" />;
 
-		// background cheese
-		events.subscribe({
-			subscriber: this,
-			event: ["playerStarted"]
-		});
+		var playerExtras = new PlayerExtras(this.props.subsonic, this, events);
 
 		return (
 			<div>
@@ -44,13 +40,5 @@ var App = React.createClass({
 				</div>
 			</div>
 		);
-	},
-
-	receive: function(event) {
-		switch (event.event) {
-			case "playerStarted":
-				$('#background-layer').css('background-image', 'url(' + this.props.subsonic.getUrl("getCoverArt", {id:event.data.coverArt}) + ')');
-				break;
-		}
 	}
 });
