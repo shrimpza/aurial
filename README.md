@@ -12,16 +12,14 @@ to configure and use.
 
 ## Screenshots
 
-Node: The media in these images is from the 
-[Subsonic demo server](http://demo.subsonic.org/). Also note that the current
-look and functionality may differ from what is shown here, as the application
-is still under rapid development.
+Note that the current look and functionality may differ from what is shown 
+here, as the application is still under development.
 
-![Browsing the library](https://i.imgur.com/SjHkOLF.png)
+![Browsing the library](https://i.imgur.com/JmWY5Z3.png)
 
-![Playing some music](https://i.imgur.com/PObxmhQ.png)
+![Playing some music](https://i.imgur.com/1ImtXGR.png)
 
-![Playlist support (work in progress)](https://i.imgur.com/Qgd7cr7.png)
+![Playlist support (work in progress)](https://i.imgur.com/ebDbB2T.png)
 
 
 ## Installation and Configuration
