@@ -5,6 +5,7 @@ PlayerExtras = function(subsonic, app, events) {
 
 	var scrobbler = new Scrobbler(subsonic, events);
 	var albumBackgroundChanger = new AlbumBackgroundChanger(subsonic, events);
+	var notifier = new Notifier(subsonic, events);
 
 }
 
@@ -70,6 +71,37 @@ AlbumBackgroundChanger = function(s, e) {
 		switch (event.event) {
 			case "playerStarted":
 				$('#background-layer').css('background-image', 'url(' + this.subsonic.getUrl("getCoverArt", {id: event.data.coverArt}) + ')');
+				break;
+		}
+	}
+}
+
+/**
+ * Sets the page background to the currently playing track's album art.
+ */
+Notifier = function(s, e) {
+
+	this.subsonic = s;
+	this.events = e;
+
+	var _this = this;
+	Notification.requestPermission(function (permission) {
+		if (permission === "granted") {
+			e.subscribe({
+				subscriber: _this,
+				event: ["playerStarted"]
+			});
+		}
+	});
+
+	this.receive = function(event) {
+		switch (event.event) {
+			case "playerStarted":
+				var notification = new Notification(event.data.title, {
+					body: event.data.artist + '\n\n' + event.data.album,
+					icon: this.subsonic.getUrl("getCoverArt", {id: event.data.coverArt}),
+					silent: true
+				});
 				break;
 		}
 	}
