@@ -14,8 +14,8 @@ var App = React.createClass({
 
 		var tabs = [];
 		tabs.push({id:"selection", title: "Selection", active: true, icon: "chevron right"});
-		tabs.push({id:"playlists", title: "Playlists", icon: "list"});
-		tabs.push({id:"playing", title: "Queue", icon: "play"});
+		tabs.push({id:"playlists", title: "Playlists", icon: "teal list"});
+		tabs.push({id:"playing", title: "Queue", icon: "olive play"});
 		tabs.push({id:"settings", title: "Settings", icon: "setting"});
 
 		var tabGroup = <TabGroup tabs={tabs} iconSize="20" />;
