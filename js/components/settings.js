@@ -125,11 +125,11 @@ var Settings = React.createClass({
 							<input name="password" placeholder="password" type="password" onChange={this.change} value={this.state.password} />
 						</div>
 					</div>
-					<button className="ui green button" type="submit">Save</button>
+					<button className="ui blue button" type="submit">Save</button>
 					<button className="ui button" onClick={this.demo}>Demo</button>
 					<button className="ui icon button" onClick={this.test}>
 						<i className={testIcon + " icon"}></i>
-						Test
+						Test Connection
 					</button>
 				</form>
 			</div>
