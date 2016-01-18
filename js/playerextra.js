@@ -62,6 +62,8 @@ AlbumBackgroundChanger = function(s, e) {
 	this.subsonic = s;
 	this.events = e;
 
+	this.currentArt = 0;
+
 	e.subscribe({
 		subscriber: this,
 		event: ["playerStarted"]
@@ -70,7 +72,10 @@ AlbumBackgroundChanger = function(s, e) {
 	this.receive = function(event) {
 		switch (event.event) {
 			case "playerStarted":
-				$('#background-layer').css('background-image', 'url(' + this.subsonic.getUrl("getCoverArt", {id: event.data.coverArt}) + ')');
+				if (this.currentArt != event.data.coverArt) {
+					this.currentArt = event.data.coverArt;
+					$('#background-layer').css('background-image', 'url(' + this.subsonic.getUrl("getCoverArt", {id: event.data.coverArt}) + ')');
+				}
 				break;
 		}
 	}
