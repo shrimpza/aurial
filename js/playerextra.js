@@ -4,9 +4,14 @@
 PlayerExtras = function(subsonic, app, events) {
 
 	var scrobbler = new Scrobbler(subsonic, events);
-	var albumBackgroundChanger = new AlbumBackgroundChanger(subsonic, events);
-	var notifier = new Notifier(subsonic, events);
 
+	if (localStorage.getItem('notifications') === 'true') {
+		var notifier = new Notifier(subsonic, events);
+	}
+
+	if (localStorage.getItem('backgroundArt') === 'true') {
+		var albumBackgroundChanger = new AlbumBackgroundChanger(subsonic, events);
+	}
 }
 
 /**
