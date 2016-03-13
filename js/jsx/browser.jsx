@@ -1,8 +1,16 @@
 var ArtistList = React.createClass({
-	_id: UniqueID(),
+	getDefaultProps: function() {
+		return {};
+	},
 
 	getInitialState: function() {
-		return {artists: [], loaded: false, error: null, filter: {}};
+		return {
+			artists: [], 
+			loaded: false, 
+			error: null, 
+			filter: {}, 
+			uid: UniqueID()
+		};
 	},
 
 	componentDidMount: function() {
@@ -17,7 +25,7 @@ var ArtistList = React.createClass({
 	},
 
 	componentDidUpdate: function() {
-		$('#' + this._id).accordion({exclusive: false});
+		$('#' + this.state.uid).accordion({exclusive: false});
 	},
 
 	search: function(e) {
@@ -94,7 +102,7 @@ var ArtistList = React.createClass({
 					</div>
 				</form>
 				<div className="ui inverted divider"></div>
-				<div className="ui inverted fluid accordion" id={this._id}>
+				<div className="ui inverted fluid accordion" id={this.state.uid}>
 					{artists}
 				</div>
 			</div>

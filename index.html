@@ -1,58 +1,25 @@
-<html>
+<html lang="en">
 <head>
+	<meta charset="utf-8" />
+
 	<title>Aurial</title>
 
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react/0.14.6/react.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react/0.14.6/react-dom.js"></script>
 
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/soundmanager2/2.97a.20150601/script/soundmanager2-nodebug-jsmin.js"></script>
 
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.js"></script>
-	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.css">
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
 
 	<link rel="icon" type="image/png" href="css/favicon.png">
 
-	<script type="text/javascript" src="js/util.js"></script>
-	<script type="text/javascript" src="js/subsonic.js"></script>
-	<script type="text/javascript" src="js/eventbus.js"></script>
-	<script type="text/javascript" src="js/playerextra.js"></script>
-
-	<script type="text/jsx" src="js/components/app.js"></script>
-	<script type="text/jsx" src="js/components/common.js"></script>
-	<script type="text/jsx" src="js/components/player.js"></script>
-	<script type="text/jsx" src="js/components/browser.js"></script>
-	<script type="text/jsx" src="js/components/playlist.js"></script>
-	<script type="text/jsx" src="js/components/settings.js"></script>
+	<script type="text/javascript" src="build/script.js"></script>
 
 	<link rel="stylesheet" href="css/default.css">
-
-	<script type="text/jsx">
-		$(document).ready(function() {
-			soundManager.setup({
-				url: '//cdnjs.cloudflare.com/ajax/libs/soundmanager2/2.97a.20150601/swf/',
-				flashVersion: 9, 
-				preferFlash: false,
-				useFastPolling: true,
-				onready: function() {
-					// Ready to use; soundManager.createSound() etc. can now be called.
-				}
-			});
-
-			var subsonic = new Subsonic(localStorage.getItem('url') || 'http://localhost:4040/', 
-										localStorage.getItem('username') || '', 
-										localStorage.getItem('password') || '', 
-										"1.12.0", "Aurial");
-
-			React.render(
-				<App subsonic={subsonic} />,
-				document.body
-			);
-		});
-
-	</script>
 </head>
 <body>
-	
+	<div id="app"></div>
 </body>
 </html>

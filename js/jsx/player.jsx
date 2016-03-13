@@ -172,7 +172,7 @@ var Player = React.createClass({
 								<PlayerPlayingInfo events={this.props.events} playing={this.state.playing} />
 							</div>
 							<div className="description">
-								<table>
+								<table><tbody>
 									<tr>
 										<td className="controls">
 											<div className="ui black icon buttons">
@@ -188,7 +188,7 @@ var Player = React.createClass({
 											<PlayerProgress key="progress" events={this.props.events} />
 										</td>
 									</tr>
-								</table>
+								</tbody></table>
 							</div>
 						</div>
 					</div>
@@ -225,8 +225,13 @@ var PlayerPlayingInfo = React.createClass({
 });
 
 var PlayerProgress = React.createClass({
-	_id: UniqueID(),
 	_bar: null,
+
+	getInitialState: function() {
+		return {
+			uid: UniqueID()
+		};
+	},
 
 	componentDidMount: function() {
 		this.props.events.subscribe({
@@ -247,7 +252,7 @@ var PlayerProgress = React.createClass({
 	},
 
 	playerUpdate: function(playing, length, position) {
-		if (this._bar == null) this._bar = $('#' + this._id + " .bar");
+		if (this._bar == null) this._bar = $('#' + this.state.uid + " .bar");
 
 		var percent = (position / length) * 100;
 		this._bar.css("width", percent + "%");
@@ -255,7 +260,7 @@ var PlayerProgress = React.createClass({
 
 	render: function() {
 		return (
-			<div className="ui red progress" id={this._id}>
+			<div className="ui red progress" id={this.state.uid}>
 				<div className="bar"></div>
 			</div>
 		);
