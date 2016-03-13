@@ -28,3 +28,19 @@ Download and place the contents of this repository in any HTTP-accessible
 location, and browse to that location.
 
 Configuration is done on the "Settings" tab of the main application interface.
+
+## Building
+
+It is necessary to build the JavaScript components before the application
+can be used:
+
+```
+$ npm install --global babel-cli  # you may need to sudo this
+$ npm install babel-preset-react
+
+# execute from within the project root direcory
+babel --presets react js/ --out-file build/script.js --watch
+```
+
+Include or ommit `--watch` to have changes recompiled as source files are 
+saved.
