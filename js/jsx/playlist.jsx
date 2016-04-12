@@ -98,7 +98,7 @@ var Playlist = React.createClass({
 		} else {
 			return (
 				<div className="ui basic segment playlistView">
-					<TrackList subsonic={this.props.subsonic} subsonic={this.props.subsonic} tracks={this.props.playlist.playlist} events={this.props.events} 
+					<TrackList subsonic={this.props.subsonic} subsonic={this.props.subsonic} tracks={this.props.playlist.playlist} events={this.props.events}
 					iconSize={this.props.iconSize} playlist={this.props.playlist.id} />
 				</div>
 			);
@@ -245,10 +245,10 @@ var TrackList = React.createClass({
 		var _this = this;
 		var tracks = this.props.tracks.map(function (entry) {
 			return (
-				<Track key={entry.id} subsonic={_this.props.subsonic} events={_this.props.events} track={entry} iconSize={_this.props.iconSize} 
-				 playing={_this.state.playing != null && _this.state.playing.id == entry.id} 
+				<Track key={entry.id} subsonic={_this.props.subsonic} events={_this.props.events} track={entry} iconSize={_this.props.iconSize}
+				 playing={_this.state.playing != null && _this.state.playing.id == entry.id}
 				 highlight={_this.props.highlight != null && _this.props.highlight.indexOf(entry.id) > -1}
-				 queued={_this.state.queue.indexOf(entry.id) > -1} 
+				 queued={_this.state.queue.indexOf(entry.id) > -1}
 				 playlist={_this.props.playlist} />
 			);
 		});
@@ -298,7 +298,7 @@ var Track = React.createClass({
 					{playlistButton}
 				</td>
 				<td>
-					{this.props.track.track}
+					{this.props.track.discNumber ? (this.props.track.discNumber + '.' + this.props.track.track) : this.props.track.track}
 				</td>
 				<td>
 					{this.props.track.artist}

@@ -1,16 +1,16 @@
 /**
  * Subsonic API client.
  *
- * Exposes methods to make requests to Subsonic API endpoints, given the 
+ * Exposes methods to make requests to Subsonic API endpoints, given the
  * configuration provided at initialisation time.
  *
  * In addition to whatever input the API methods require, success and failure
  * callbacks may be provided to consume output. For example:
- * 
+ *
  * subsonic.ping({
  *   success: function(response) {
  *     // use response
- *   }, 
+ *   },
  *   failure: function(status, message) {
  *     // ...
  *   }
@@ -118,7 +118,13 @@ Subsonic = function(url, user, password, version, appName) {
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
-				params.success({album: data['subsonic-response'].album});
+				var album = data['subsonic-response'].album;
+				album.song.sort(function(a, b) {
+					return a.discNumber && b.discNumber
+									? ((a.discNumber*1000) + a.track) - ((b.discNumber*1000) + b.track)
+									: a.track - b.track;
+				});
+				params.success({album: album});
 			},
 			error: function(xhr, status, err) {
 				params.error(status, err.toString());
