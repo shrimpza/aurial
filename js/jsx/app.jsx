@@ -49,7 +49,7 @@ var App = React.createClass({
 $(document).ready(function() {
 	soundManager.setup({
 		url: '//cdnjs.cloudflare.com/ajax/libs/soundmanager2/2.97a.20150601/swf/',
-		flashVersion: 9, 
+		flashVersion: 9,
 		preferFlash: false,
 		useFastPolling: true,
 		onready: function() {
@@ -57,10 +57,10 @@ $(document).ready(function() {
 		}
 	});
 
-	var subsonic = new Subsonic(localStorage.getItem('url') || 'http://localhost:4040/', 
-								localStorage.getItem('username') || '', 
-								localStorage.getItem('password') || '', 
-								"1.12.0", "Aurial");
+	var subsonic = new Subsonic(localStorage.getItem('url') || 'http://localhost:4040/',
+								localStorage.getItem('username') || '',
+								localStorage.getItem('password') || '',
+								"1.14.0", "Aurial");
 
 	ReactDOM.render(
 		<App subsonic={subsonic} />,

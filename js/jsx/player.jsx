@@ -7,7 +7,7 @@ var Player = React.createClass({
 
 	getInitialState: function() {
 		return {
-			queue: [], 
+			queue: [],
 			shuffle: false,
 			playing: null
 		};
@@ -60,12 +60,21 @@ var Player = React.createClass({
 				_this.props.events.publish({event: "playerPaused", data: track});
 			},
 			whileplaying: function() {
-				_this.props.events.publish({event: "playerUpdated", data: {track: track, duration: this.duration, position: this.position}});
+				/* work-around for known subsonic bug where downsampled FLAC tracks
+				 * duration is reported by the stream as multiple times the actual
+				 * length of the track. */
+				var duration = Math.min(track.duration * 1000, this.duration);
+				if (this.position > duration) {
+					_this.props.events.publish({event: "playerFinished", data: track});
+					_this.next();
+				} else {
+					_this.props.events.publish({event: "playerUpdated", data: {track: track, duration: duration, position: this.position}});
+				}
 			},
 			onfinish: function() {
 				// TODO onfinish not called for sound.destruct()
 				_this.props.events.publish({event: "playerFinished", data: track});
-		
+
 				_this.next();
 			}
 		});
@@ -78,10 +87,10 @@ var Player = React.createClass({
 
 		if (this.queue.length > 0) {
 			var idx = this.state.playing == null ? 0 : Math.max(0, this.queue.indexOf(this.state.playing));
-			
+
 			if (idx < this.queue.length - 1) idx++;
 			else idx = 0;
-			
+
 			this.play(this.queue[idx]);
 			console.log("playing next track at " + idx);
 		}
@@ -245,7 +254,7 @@ var PlayerProgress = React.createClass({
 
 	receive: function(event) {
 		switch (event.event) {
-			case "playerUpdated": 
+			case "playerUpdated":
 				this.playerUpdate(event.data.track, event.data.duration, event.data.position);
 				break;
 		}
@@ -284,7 +293,7 @@ var PlayerPositionDisplay = React.createClass({
 
 	receive: function(event) {
 		switch (event.event) {
-			case "playerUpdated": 
+			case "playerUpdated":
 				this.setState({duration: event.data.duration, position: event.data.position});
 				break;
 		}
@@ -318,7 +327,7 @@ var PlayerPlayToggleButton = React.createClass({
 	receive: function(event) {
 		switch (event.event) {
 			case "playerStarted": this.playerStart(event.data); break;
-			case "playerStopped": 
+			case "playerStopped":
 			case "playerFinished": this.playerFinish(event.data); break;
 			case "playerPaused": this.playerPause(event.data); break;
 			case "playerEnqueued": this.playerEnqueue(event.data); break;
@@ -372,7 +381,7 @@ var PlayerStopButton = React.createClass({
 	receive: function(event) {
 		switch (event.event) {
 			case "playerStarted": this.playerStart(event.data); break;
-			case "playerStopped": 
+			case "playerStopped":
 			case "playerFinished": this.playerFinish(event.data); break;
 		}
 	},
