@@ -60,7 +60,7 @@ $(document).ready(function() {
 	var subsonic = new Subsonic(localStorage.getItem('url') || 'http://localhost:4040/',
 								localStorage.getItem('username') || '',
 								localStorage.getItem('password') || '',
-								"1.14.0", "Aurial");
+								"1.13.0", "Aurial");
 
 	ReactDOM.render(
 		<App subsonic={subsonic} />,

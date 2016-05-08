@@ -1,7 +1,7 @@
 # Aurial
 
 Aurial is a browser-based HTML/JavaScript client interface for streaming music
-from a [Subsonic](http://subsonic.org/) service (Subsonic version 5.2 or later
+from a [Subsonic](http://subsonic.org/) service (Subsonic version 5.3 or later
 is currently required).
 
 Born from my personal need for a music browser/player which met my needs, 
