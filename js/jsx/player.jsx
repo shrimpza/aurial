@@ -48,12 +48,18 @@ var Player = React.createClass({
 			url: streamUrl
 		}).play({
 			onplay: function() {
+				if (_this.nextTrackDelay) clearTimeout(_this.nextTrackDelay);
+				_this.nextTrackDelay = null;
+
 				_this.props.events.publish({event: "playerStarted", data: track});
 			},
 			onresume: function() {
 				_this.props.events.publish({event: "playerStarted", data: track});
 			},
 			onstop: function() {
+				if (_this.nextTrackDelay) clearTimeout(_this.nextTrackDelay);
+				_this.nextTrackDelay = null;
+
 				_this.props.events.publish({event: "playerStopped", data: track});
 			},
 			onpause: function() {
@@ -64,14 +70,24 @@ var Player = React.createClass({
 				 * duration is reported by the stream as multiple times the actual
 				 * length of the track. */
 				var duration = Math.min(track.duration * 1000, this.duration);
-				if (this.position > duration) {
-					_this.props.events.publish({event: "playerFinished", data: track});
-					_this.next();
+				if (this.position >= duration - 5000 && _this.nextTrackDelay == null) {
+					console.log("Schedule track change");
+					_this.nextTrackDelay = setTimeout(function() {
+						_this.nextTrackDelay = null;
+
+						console.log("Track changed after schedule");
+
+						_this.props.events.publish({event: "playerFinished", data: track});
+						_this.next();
+					}.bind(this), 5000);
 				} else {
 					_this.props.events.publish({event: "playerUpdated", data: {track: track, duration: duration, position: this.position}});
 				}
 			},
 			onfinish: function() {
+				if (_this.nextTrackDelay) clearTimeout(_this.nextTrackDelay);
+				_this.nextTrackDelay = null;
+
 				// TODO onfinish not called for sound.destruct()
 				_this.props.events.publish({event: "playerFinished", data: track});
 
@@ -124,6 +140,9 @@ var Player = React.createClass({
 	},
 
 	stop: function() {
+		if (this.nextTrackDelay) clearTimeout(this.nextTrackDelay);
+		this.nextTrackDelay = null;
+
 		if (this.sound != null) this.sound.destruct();
 		this.sound = null;
 	},
