@@ -33,7 +33,7 @@ Scrobbler = function(s, e) {
 
 	this.receive = function(event) {
 		switch (event.event) {
-			case "playerUpdated": 
+			case "playerUpdated":
 				this.update(event.data.track, event.data.duration, event.data.position);
 				break;
 		}
@@ -109,7 +109,10 @@ Notifier = function(s, e) {
 			case "playerStarted":
 				var notification = new Notification(event.data.title, {
 					body: event.data.artist + '\n\n' + event.data.album,
-					icon: this.subsonic.getUrl("getCoverArt", {id: event.data.coverArt}),
+					icon: this.subsonic.getUrl("getCoverArt", {
+						id: event.data.coverArt,
+						size: 48 // small icon for notifications
+					}),
 					silent: true
 				});
 				break;
