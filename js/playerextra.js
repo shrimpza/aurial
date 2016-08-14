@@ -1,6 +1,6 @@
 /**
- * The Player Extras class initialises a bunch of extra non-critical things.
- */
+* The Player Extras class initialises a bunch of extra non-critical things.
+*/
 PlayerExtras = function(subsonic, app, events) {
 
 	var scrobbler = new Scrobbler(subsonic, events);
@@ -15,10 +15,10 @@ PlayerExtras = function(subsonic, app, events) {
 }
 
 /**
- * Scrobbles the currently playing track when it has played 50% or more.
- *
- * On submission failure, will retry.
- */
+* Scrobbles the currently playing track when it has played 50% or more.
+*
+* On submission failure, will retry.
+*/
 Scrobbler = function(s, e) {
 
 	this.subsonic = s;
@@ -33,9 +33,10 @@ Scrobbler = function(s, e) {
 
 	this.receive = function(event) {
 		switch (event.event) {
-			case "playerUpdated":
+			case "playerUpdated": {
 				this.update(event.data.track, event.data.duration, event.data.position);
 				break;
+			}
 		}
 	}
 
@@ -60,8 +61,8 @@ Scrobbler = function(s, e) {
 }
 
 /**
- * Sets the page background to the currently playing track's album art.
- */
+* Sets the page background to the currently playing track's album art.
+*/
 AlbumBackgroundChanger = function(s, e) {
 
 	this.subsonic = s;
@@ -76,19 +77,20 @@ AlbumBackgroundChanger = function(s, e) {
 
 	this.receive = function(event) {
 		switch (event.event) {
-			case "playerStarted":
+			case "playerStarted": {
 				if (this.currentArt != event.data.coverArt) {
 					this.currentArt = event.data.coverArt;
 					$('#background-layer').css('background-image', 'url(' + this.subsonic.getUrl("getCoverArt", {id: event.data.coverArt}) + ')');
 				}
 				break;
+			}
 		}
 	}
 }
 
 /**
- * Sets the page background to the currently playing track's album art.
- */
+* Sets the page background to the currently playing track's album art.
+*/
 Notifier = function(s, e) {
 
 	this.subsonic = s;
@@ -106,7 +108,7 @@ Notifier = function(s, e) {
 
 	this.receive = function(event) {
 		switch (event.event) {
-			case "playerStarted":
+			case "playerStarted": {
 				var notification = new Notification(event.data.title, {
 					body: event.data.artist + '\n\n' + event.data.album,
 					icon: this.subsonic.getUrl("getCoverArt", {
@@ -116,6 +118,7 @@ Notifier = function(s, e) {
 					silent: true
 				});
 				break;
+			}
 		}
 	}
 }

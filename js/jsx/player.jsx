@@ -70,8 +70,8 @@ var Player = React.createClass({
 			},
 			onProgress: function(position, duration) {
 				/* work-around for known subsonic bug where downsampled FLAC tracks
-				 * duration is reported by the stream as multiple times the actual
-				 * length of the track. */
+				* duration is reported by the stream as multiple times the actual
+				* length of the track. */
 				var duration = Math.min(track.duration * 1000, duration);
 				if (position >= duration - 5000 && _this.nextTrackDelay == null) {
 					console.log("Schedule track change");
@@ -160,11 +160,9 @@ var Player = React.createClass({
 		});
 
 		switch (action) {
-			case "REPLACE":
-				queue = tracks.slice();
-				break;
+			case "REPLACE": queue = tracks.slice(); break;
 			case "ADD":
-			default:
+			default: {
 				for (var i = 0; i < tracks.length; i++) {
 					var idx = trackIds.indexOf(tracks[i].id);
 					if (idx == -1) {
@@ -176,6 +174,7 @@ var Player = React.createClass({
 					}
 				}
 				break;
+			}
 		}
 
 		this.setState({queue: queue});
@@ -279,9 +278,7 @@ var PlayerProgress = React.createClass({
 
 	receive: function(event) {
 		switch (event.event) {
-			case "playerUpdated":
-				this.playerUpdate(event.data.track, event.data.duration, event.data.position);
-				break;
+			case "playerUpdated": this.playerUpdate(event.data.track, event.data.duration, event.data.position); break;
 		}
 	},
 
@@ -318,9 +315,7 @@ var PlayerPositionDisplay = React.createClass({
 
 	receive: function(event) {
 		switch (event.event) {
-			case "playerUpdated":
-				this.setState({duration: event.data.duration, position: event.data.position});
-				break;
+			case "playerUpdated": this.setState({duration: event.data.duration, position: event.data.position}); break;
 		}
 	},
 
