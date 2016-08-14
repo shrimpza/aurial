@@ -47,25 +47,21 @@ var Player = React.createClass({
 		this.sound = new AudioHax({
 			url: streamUrl,
 			onPlay: function() {
-				console.log("onPlay");
 				if (_this.nextTrackDelay) clearTimeout(_this.nextTrackDelay);
 				_this.nextTrackDelay = null;
 
 				_this.props.events.publish({event: "playerStarted", data: track});
 			},
 			onResume: function() {
-				console.log("onResume");
 				_this.props.events.publish({event: "playerStarted", data: track});
 			},
 			onStop: function() {
-				console.log("onStop");
 				if (_this.nextTrackDelay) clearTimeout(_this.nextTrackDelay);
 				_this.nextTrackDelay = null;
 
 				_this.props.events.publish({event: "playerStopped", data: track});
 			},
 			onPause: function() {
-				console.log("noPause");
 				_this.props.events.publish({event: "playerPaused", data: track});
 			},
 			onProgress: function(position, duration) {
