@@ -44,33 +44,36 @@ var Player = React.createClass({
 		var _this = this;
 		var streamUrl = this.props.subsonic.getStreamUrl({id: track.id});
 
-		this.sound = soundManager.createSound({
-			url: streamUrl
-		}).play({
-			onplay: function() {
+		this.sound = new AudioHax({
+			url: streamUrl,
+			onPlay: function() {
+				console.log("onPlay");
 				if (_this.nextTrackDelay) clearTimeout(_this.nextTrackDelay);
 				_this.nextTrackDelay = null;
 
 				_this.props.events.publish({event: "playerStarted", data: track});
 			},
-			onresume: function() {
+			onResume: function() {
+				console.log("onResume");
 				_this.props.events.publish({event: "playerStarted", data: track});
 			},
-			onstop: function() {
+			onStop: function() {
+				console.log("onStop");
 				if (_this.nextTrackDelay) clearTimeout(_this.nextTrackDelay);
 				_this.nextTrackDelay = null;
 
 				_this.props.events.publish({event: "playerStopped", data: track});
 			},
-			onpause: function() {
+			onPause: function() {
+				console.log("noPause");
 				_this.props.events.publish({event: "playerPaused", data: track});
 			},
-			whileplaying: function() {
+			onProgress: function(position, duration) {
 				/* work-around for known subsonic bug where downsampled FLAC tracks
 				 * duration is reported by the stream as multiple times the actual
 				 * length of the track. */
-				var duration = Math.min(track.duration * 1000, this.duration);
-				if (this.position >= duration - 5000 && _this.nextTrackDelay == null) {
+				var duration = Math.min(track.duration * 1000, duration);
+				if (position >= duration - 5000 && _this.nextTrackDelay == null) {
 					console.log("Schedule track change");
 					_this.nextTrackDelay = setTimeout(function() {
 						_this.nextTrackDelay = null;
@@ -81,10 +84,10 @@ var Player = React.createClass({
 						_this.next();
 					}.bind(this), 5000);
 				} else {
-					_this.props.events.publish({event: "playerUpdated", data: {track: track, duration: duration, position: this.position}});
+					_this.props.events.publish({event: "playerUpdated", data: {track: track, duration: duration, position: position}});
 				}
 			},
-			onfinish: function() {
+			onComplete: function() {
 				if (_this.nextTrackDelay) clearTimeout(_this.nextTrackDelay);
 				_this.nextTrackDelay = null;
 
@@ -93,7 +96,7 @@ var Player = React.createClass({
 
 				_this.next();
 			}
-		});
+		}).play();
 
 		this.setState({playing: track});
 	},
@@ -143,7 +146,10 @@ var Player = React.createClass({
 		if (this.nextTrackDelay) clearTimeout(this.nextTrackDelay);
 		this.nextTrackDelay = null;
 
-		if (this.sound != null) this.sound.destruct();
+		if (this.sound != null) {
+			this.sound.stop();
+			this.sound.unload();
+		}
 		this.sound = null;
 	},
 
