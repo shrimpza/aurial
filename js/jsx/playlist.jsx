@@ -54,11 +54,14 @@ var PlaylistSelector = React.createClass({
 
 	render: function() {
 		var _this = this;
-		var playlists = this.props.playlists.map(function (playlist) {
-			return (
-				<PlaylistSelectorItem key={playlist.id} subsonic={_this.props.subsonic} data={playlist} iconSize={_this.props.iconSize} />
-			);
-		});
+		var playlists = [];
+		if (this.props.playlists) {
+			this.props.playlists.map(function (playlist) {
+				return (
+					<PlaylistSelectorItem key={playlist.id} subsonic={_this.props.subsonic} data={playlist} iconSize={_this.props.iconSize} />
+				);
+			});
+		}
 
 		return (
 			<div className="ui basic segment playlistSelector">
