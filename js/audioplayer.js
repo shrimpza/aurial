@@ -1,4 +1,4 @@
-AudioHax = function(params) {
+AudioPlayer = function(params) {
   var audio = new Audio();
   audio.src = params.url;
 
