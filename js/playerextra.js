@@ -93,6 +93,8 @@ AlbumBackgroundChanger = function(s, e) {
 */
 Notifier = function(s, e) {
 
+	const ICON_SIZE = 48; // small icon for notifications
+
 	this.subsonic = s;
 	this.events = e;
 
@@ -109,14 +111,38 @@ Notifier = function(s, e) {
 	this.receive = function(event) {
 		switch (event.event) {
 			case "playerStarted": {
-				var notification = new Notification(event.data.title, {
-					body: event.data.artist + '\n\n' + event.data.album,
-					icon: this.subsonic.getUrl("getCoverArt", {
-						id: event.data.coverArt,
-						size: 48 // small icon for notifications
-					}),
-					silent: true
+				/*
+				to support desktop notification daemons which don't render JPEG images
+				the following hack has been put in place. it loads an image, draws it
+				onto a canvas, and gets the canvas a data url in png format. the data
+				url is then used for the notification icon.
+				*/
+
+				var canvas = document.createElement('canvas');
+				canvas.width = ICON_SIZE;
+				canvas.height = ICON_SIZE;
+				var ctx = canvas.getContext('2d');
+
+				var img = document.createElement('img');
+
+				// we can only render to canvas and display the notification once the image has loaded
+				img.onload = function() {
+					ctx.drawImage(img, 0, 0);
+
+					var notification = new Notification(event.data.title, {
+						body: event.data.artist + '\n\n' + event.data.album,
+						icon: canvas.toDataURL('image/png'),
+						silent: true
+					});
+				};
+
+				img.crossOrigin = "anonymous"; // if this isn't the most obscure thing you've ever seen, then i don't know...
+
+				img.src = this.subsonic.getUrl("getCoverArt", {
+					id: event.data.coverArt,
+					size: ICON_SIZE
 				});
+
 				break;
 			}
 		}
