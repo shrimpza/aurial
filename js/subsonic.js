@@ -191,7 +191,11 @@ Subsonic = function(url, user, password, version, appName) {
 	}
 
 	this.getStreamUrl = function(params) {
-		return this.getUrl('stream', {id: params.id, format: params.format ? params.format : 'mp3'});
+		return this.getUrl('stream', {
+			id: params.id,
+			format: params.format ? params.format : 'mp3',
+			maxBitRate: params.bitrate ? params.bitrate : 0
+		});
 	}
 
 }
