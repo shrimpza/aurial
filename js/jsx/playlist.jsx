@@ -111,7 +111,7 @@ var Playlist = React.createClass({
 
 var Selection = React.createClass({
 	getInitialState: function() {
-		return {album: null, highlight: null};
+		return {album: null};
 	},
 
 	componentDidMount: function() {
@@ -123,7 +123,7 @@ var Selection = React.createClass({
 
 	receive: function(event) {
 		switch (event.event) {
-			case "browserSelected": this.setState({album: event.data.tracks, highlight: event.data.highlight}); break;
+			case "browserSelected": this.setState({album: event.data.tracks}); break;
 		}
 	},
 
@@ -137,7 +137,7 @@ var Selection = React.createClass({
 			return (
 				<div className="ui basic segment selectionView">
 					<SelectionAlbum subsonic={this.props.subsonic} events={this.props.events} album={this.state.album} />
-					<TrackList subsonic={this.props.subsonic} events={this.props.events} tracks={this.state.album.song} highlight={this.state.highlight} iconSize={this.props.iconSize} />
+					<TrackList subsonic={this.props.subsonic} events={this.props.events} tracks={this.state.album.song} iconSize={this.props.iconSize} />
 				</div>
 			);
 		}
@@ -250,7 +250,6 @@ var TrackList = React.createClass({
 			return (
 				<Track key={entry.id} subsonic={_this.props.subsonic} events={_this.props.events} track={entry} iconSize={_this.props.iconSize}
 				 playing={_this.state.playing != null && _this.state.playing.id == entry.id}
-				 highlight={_this.props.highlight != null && _this.props.highlight.indexOf(entry.id) > -1}
 				 queued={_this.state.queue.indexOf(entry.id) > -1}
 				 playlist={_this.props.playlist} />
 			);
@@ -292,7 +291,7 @@ var Track = React.createClass({
 			: <button className="ui mini compact icon teal button" title="Add to playlist"><i className="list icon"></i></button>;
 
 		return (
-			<tr className={this.props.playing ? "positive" : (this.props.highlight ? "active" : "")}>
+			<tr className={this.props.playing ? "positive" : ""}>
 				<td>
 					<button className="ui mini compact icon green button" onClick={this.play} title="Play now"><i className="play icon"></i></button>
 					<button className="ui mini compact icon olive button" onClick={this.enqueue} title={this.props.queued ? "Remove from queue" : "Add to queue"}>
