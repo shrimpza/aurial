@@ -13,7 +13,9 @@ For convenience, the latest automated build is available for download, so you do
 
 - [aurial.tar.gz](https://drone.io/github.com/shrimpza/aurial/files/dist/aurial.tar.gz)
 
-To "install", simply extract the archive into a directory exposed via an HTTP service (there's no need for any server-side scripting or database).
+To "install", simply extract the archive into a directory exposed via an HTTP service (there's no need for any server-side scripting or database), and browse to that location.
+
+Configuration is done on the "Settings" tab of the main application interface.
 
 
 ## Screenshots
@@ -26,12 +28,6 @@ Note that the current look and functionality may differ from what is shown here,
 
 ![Playlist support (work in progress)](https://i.imgur.com/ebDbB2T.png)
 
-
-## Installation and Configuration
-
-Download and place the contents of this repository in any HTTP-accessible location, and browse to that location.
-
-Configuration is done on the "Settings" tab of the main application interface.
 
 ## Building
 
