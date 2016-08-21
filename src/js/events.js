@@ -1,8 +1,8 @@
 import {ArrayDeleteElement} from './util'
 
 /**
- * A stupidly simple publish-subscribe event bus implementation.
- */
+* A stupidly simple publish-subscribe event bus implementation.
+*/
 export default class Events {
 	subscribers = {};
 

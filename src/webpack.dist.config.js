@@ -31,23 +31,23 @@ module.exports = {
       title: 'Aurial',
       template: 'src/index.html'
     }),
-    new CopyWebpackPlugin([
-      {from: 'src/css'}
-    ])
+    new CopyWebpackPlugin([{
+      from: 'src/css',
+      to: 'css'
+    }])
   ],
   module: {
     loaders: [
       {
-          test: /\.js$/,
-          loader: 'babel',
-          exclude: /node_modules/,
-          query: {
-            "plugins": [
-              "transform-react-inline-elements"
-            ],
-            "presets": ["es2015", "stage-0", "react"]
-          }
-
+        test: /\.js$/,
+        loader: 'babel',
+        exclude: /node_modules/,
+        query: {
+          "plugins": [
+            "transform-react-inline-elements"
+          ],
+          "presets": ["es2015", "stage-0", "react"]
+        }
       }
     ]
   }

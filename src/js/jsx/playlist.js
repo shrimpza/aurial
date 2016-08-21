@@ -113,8 +113,8 @@ class Playlist extends React.Component {
 		} else {
 			return (
 				<div className="ui basic segment playlistView">
-					<TrackList subsonic={this.props.subsonic} subsonic={this.props.subsonic} tracks={this.props.playlist.playlist} events={this.props.events}
-					iconSize={this.props.iconSize} playlist={this.props.playlist.id} />
+					<TrackList subsonic={this.props.subsonic} subsonic={this.props.subsonic} tracks={this.props.playlist.playlist}
+						 events={this.props.events} playlist={this.props.playlist.id} iconSize={this.props.iconSize} />
 				</div>
 			);
 		}
@@ -271,10 +271,10 @@ class TrackList extends React.Component {
 	render() {
 		var tracks = this.props.tracks.map(function (entry) {
 			return (
-				<Track key={entry.id} subsonic={this.props.subsonic} events={this.props.events} track={entry} iconSize={this.props.iconSize}
-				 playing={this.state.playing != null && this.state.playing.id == entry.id}
-				 queued={this.state.queue.indexOf(entry.id) > -1}
-				 playlist={this.props.playlist} />
+				<Track key={entry.id} subsonic={this.props.subsonic} events={this.props.events} track={entry}
+					playing={this.state.playing != null && this.state.playing.id == entry.id}
+					queued={this.state.queue.indexOf(entry.id) > -1} playlist={this.props.playlist}
+					iconSize={this.props.iconSize} />
 			);
 		}.bind(this));
 
@@ -300,6 +300,14 @@ class TrackList extends React.Component {
 }
 
 class Track extends React.Component {
+
+	constructor(props, context) {
+		super(props, context);
+
+		this.play = this.play.bind(this);
+		this.enqueue = this.enqueue.bind(this);
+	}
+
 	play() {
 		this.props.events.publish({event: "playerPlay", data: this.props.track});
 	}
@@ -309,9 +317,20 @@ class Track extends React.Component {
 	}
 
 	render() {
-		var playlistButton = this.props.playlist
-			? <button className="ui mini compact icon teal button" title="Remove from playlist"><i className="minus icon"></i></button>
-			: <button className="ui mini compact icon teal button" title="Add to playlist"><i className="list icon"></i></button>;
+		var playlistButton;
+		if (this.props.playlist) {
+			playlistButton = (
+				<button className="ui mini compact icon teal button" title="Remove from playlist">
+					<i className="minus icon"></i>
+				</button>
+			);
+		} else {
+			playlistButton = (
+				<button className="ui mini compact icon teal button" title="Add to playlist">
+					<i className="list icon"></i>
+				</button>
+			);
+		}
 
 		return (
 			<tr className={this.props.playing ? "positive" : ""}>
