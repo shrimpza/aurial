@@ -22,7 +22,7 @@ import {UniqueID} from './util'
 export default class Subsonic {
 
 	constructor(url, user, password, version, appName) {
-		this.url = url;
+		this.url = url.endsWith('/') ? url.substring(0, url.length - 1) : url.trim();
 		this.user = user;
 		this.password = password;
 		this.version = version;
