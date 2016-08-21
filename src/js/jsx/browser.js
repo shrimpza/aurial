@@ -1,48 +1,54 @@
-var ArtistList = React.createClass({
-	getDefaultProps: function() {
-		return {};
-	},
+import React from 'react'
+import {UniqueID} from '../util'
+import {IconMessage,CoverArt} from './common'
 
-	getInitialState: function() {
-		return {
-			artists: [],
-			loaded: false,
-			error: null,
-			search: "",
-			uid: UniqueID()
-		};
-	},
+export default class ArtistList extends React.Component {
 
-	componentDidMount: function() {
+	state = {
+		artists: [],
+		loaded: false,
+		error: null,
+		search: "",
+		uid: UniqueID()
+	}
+
+	constructor(props, context) {
+		super(props, context);
+
+		this.search = this.search.bind(this);
+	}
+
+	componentDidMount() {
 		this.props.subsonic.getArtists({
 			success: function(data) {
 				this.setState({artists: data.artists, loaded: true, error: null});
 			}.bind(this),
-			error: function(status, err) {
+			error: function(err) {
 				this.setState({error: <IconMessage type="negative" icon="warning circle" header="" message="Failed to load artists. Check settings." />, loaded: true});
+				console.log(this, err);
 			}.bind(this)
 		})
-	},
+	}
 
-	componentDidUpdate: function() {
+	componentDidUpdate() {
+		// TODO jquery crap https://github.com/shrimpza/aurial/issues/1
 		$('#' + this.state.uid).accordion({exclusive: false});
-	},
+	}
 
-	search: function(e) {
+	search(e) {
 		this.setState({search: e.target.value});
-	},
+	}
 
-	render: function() {
-		var _this = this;
+	render() {
 		var artists = this.state.artists
-			.filter(function (artist) {
-				return _this.state.search == '' || artist.name.toLowerCase().indexOf(_this.state.search.toLowerCase()) !== -1;
-			})
-			.map(function (artist) {
-				return (
-					<Artist key={artist.id} subsonic={_this.props.subsonic} events={_this.props.events} data={artist} iconSize={_this.props.iconSize} />
-				);
-			});
+		.filter(function (artist) {
+			return this.state.search == '' || artist.name.toLowerCase().indexOf(this.state.search.toLowerCase()) !== -1;
+		}.bind(this))
+		.map(function (artist) {
+			return (
+				<Artist key={artist.id} subsonic={this.props.subsonic} events={this.props.events} data={artist} iconSize={this.props.iconSize} />
+			);
+		}.bind(this));
 
 		if (!this.state.loaded && artists.length == 0) {
 			artists = <div className="ui inverted active centered inline loader"></div>
@@ -61,38 +67,46 @@ var ArtistList = React.createClass({
 			</div>
 		);
 	}
-});
+}
 
-var Artist = React.createClass({
-	getInitialState: function() {
-		return {albums: [], loaded: false};
-	},
+export class Artist extends React.Component {
 
-	loadAlbums: function() {
+	state = {
+		albums: [],
+		loaded: false
+	}
+
+	constructor(props, context) {
+		super(props, context);
+
+		this.loadAlbums = this.loadAlbums.bind(this);
+		this.onClick = this.onClick.bind(this);
+	}
+
+	loadAlbums() {
 		this.props.subsonic.getArtist({
 			id: this.props.data.id,
 			success: function(data) {
 				this.setState({albums: data.albums, loaded: true});
 			}.bind(this),
-			error: function(status, err) {
-				console.error(this, status, err.toString());
+			error: function(err) {
+				console.error(this, err);
 			}.bind(this)
 		});
-	},
+	}
 
-	onClick: function() {
+	onClick() {
 		if (!this.state.loaded) {
 			this.loadAlbums();
 		}
-	},
+	}
 
-	render: function() {
-		var _this = this;
+	render() {
 		var albums = this.state.albums.map(function (album) {
 			return (
-				<Album key={album.id} subsonic={_this.props.subsonic} events={_this.props.events} data={album} iconSize={_this.props.iconSize} />
+				<Album key={album.id} subsonic={this.props.subsonic} events={this.props.events} data={album} iconSize={this.props.iconSize} />
 			);
-		});
+		}.bind(this));
 
 		if (!this.state.loaded && albums.length == 0) {
 			albums = <div className="ui inverted active centered inline loader"></div>
@@ -112,23 +126,29 @@ var Artist = React.createClass({
 			</div>
 		);
 	}
-});
+}
 
-var Album = React.createClass({
+class Album extends React.Component {
 
-	onClick: function() {
+	constructor(props, context) {
+		super(props, context);
+
+		this.onClick = this.onClick.bind(this);
+	}
+
+	onClick() {
 		this.props.subsonic.getAlbum({
 			id: this.props.data.id,
 			success: function(data) {
 				this.props.events.publish({event: "browserSelected", data: {tracks: data.album}});
 			}.bind(this),
-			error: function(status, err) {
-				console.error(this, status, err.toString());
+			error: function(err) {
+				console.error(this, err);
 			}.bind(this)
 		});
-	},
+	}
 
-	render: function() {
+	render() {
 		var year = this.props.data.year ? '[' + this.props.data.year + ']' : '';
 		return (
 			<div className="item" onClick={this.onClick}>
@@ -142,4 +162,4 @@ var Album = React.createClass({
 			</div>
 		);
 	}
-});
+}

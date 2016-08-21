@@ -7,6 +7,17 @@ Aurial's aim is to provide a simple, intuitive and straight-forward interface to
 As such, it focusses exclusively on playback of your music library, and by design does not support Subsonic's other media types, such as video, podcasts and internet radio.
 
 
+## Download and Installation
+
+For convenience, the latest automated build is available for download, so you do not need to configure or set up a build environment (if you do want to build it yourself, see the instructions below).
+
+- [aurial.tar.gz](https://drone.io/github.com/shrimpza/aurial/files/dist/aurial.tar.gz)
+
+To "install", simply extract the archive into a directory exposed via an HTTP service (there's no need for any server-side scripting or database), and browse to that location.
+
+Configuration is done on the "Settings" tab of the main application interface.
+
+
 ## Screenshots
 
 Note that the current look and functionality may differ from what is shown here, as the application is still under development.
@@ -18,22 +29,17 @@ Note that the current look and functionality may differ from what is shown here,
 ![Playlist support (work in progress)](https://i.imgur.com/ebDbB2T.png)
 
 
-## Installation and Configuration
-
-Download and place the contents of this repository in any HTTP-accessible location, and browse to that location.
-
-Configuration is done on the "Settings" tab of the main application interface.
-
 ## Building
 
-It is necessary to build the JavaScript components before the application can be used:
+The project is built via NPM and [Webpack](https://webpack.github.io/).
+
+Install `npm` for your platform, and then execute the following in the project root directory:
 
 ```
-$ npm install --global babel-cli  # you may need to sudo this
-$ npm install babel-preset-react
-
-# execute from within the project root direcory
-babel --presets react js/ --out-file build/script.js --watch
+$ npm install
+$ npm run <watch|dist>
 ```
 
-Include or ommit `--watch` to have changes recompiled as source files are saved.
+A `dist` directory will be produced containing the built output, which may be served via an HTTP server and accessed via a web browser.
+
+`watch` includes additional debug information, which may not be optimal for production or general-use deployments, and produces a significantly larger download. `dist` will produce uglified and minified output suitable for general usage.

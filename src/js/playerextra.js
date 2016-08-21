@@ -1,16 +1,17 @@
 /**
 * The Player Extras class initialises a bunch of extra non-critical things.
 */
-PlayerExtras = function(subsonic, app, events) {
+export default class PlayerExtras {
+	constructor(subsonic, app, events) {
+		this.scrobbler = new Scrobbler(subsonic, events);
 
-	var scrobbler = new Scrobbler(subsonic, events);
+		if (localStorage.getItem('notifications') === 'true') {
+			this.notifier = new Notifier(subsonic, events);
+		}
 
-	if (localStorage.getItem('notifications') === 'true') {
-		var notifier = new Notifier(subsonic, events);
-	}
-
-	if (localStorage.getItem('backgroundArt') === 'true') {
-		var albumBackgroundChanger = new AlbumBackgroundChanger(subsonic, events);
+		if (localStorage.getItem('backgroundArt') === 'true') {
+			this.albumBackgroundChanger = new AlbumBackgroundChanger(subsonic, events);
+		}
 	}
 }
 
@@ -19,19 +20,21 @@ PlayerExtras = function(subsonic, app, events) {
 *
 * On submission failure, will retry.
 */
-Scrobbler = function(s, e) {
+class Scrobbler {
 
-	this.subsonic = s;
-	this.events = e;
+	constructor(subsonic, events) {
+		this.subsonic = subsonic;
+		this.events = events;
 
-	this.submitted = null;
+		this.submitted = null;
 
-	e.subscribe({
-		subscriber: this,
-		event: ["playerUpdated"]
-	});
+		events.subscribe({
+			subscriber: this,
+			event: ["playerUpdated"]
+		});
+	}
 
-	this.receive = function(event) {
+	receive(event) {
 		switch (event.event) {
 			case "playerUpdated": {
 				this.update(event.data.track, event.data.duration, event.data.position);
@@ -40,7 +43,7 @@ Scrobbler = function(s, e) {
 		}
 	}
 
-	this.update = function(playing, length, position) {
+	update(playing, length, position) {
 		if (this.submitted != playing.id) {
 			var percent = (position / length) * 100;
 			if (percent > 50) {
@@ -52,7 +55,7 @@ Scrobbler = function(s, e) {
 					},
 					error: function(e) {
 						this.submitted = null;
-						console.log("Scrobble failed for track " + playing.title);
+						console.log("Scrobble failed for track " + playing.title, e);
 					}
 				});
 			}
@@ -63,19 +66,21 @@ Scrobbler = function(s, e) {
 /**
 * Sets the page background to the currently playing track's album art.
 */
-AlbumBackgroundChanger = function(s, e) {
+class AlbumBackgroundChanger {
 
-	this.subsonic = s;
-	this.events = e;
+	constructor(subsonic, events) {
+		this.subsonic = subsonic;
+		this.events = events;
 
-	this.currentArt = 0;
+		this.currentArt = 0;
 
-	e.subscribe({
-		subscriber: this,
-		event: ["playerStarted"]
-	});
+		events.subscribe({
+			subscriber: this,
+			event: ["playerStarted"]
+		});
+	}
 
-	this.receive = function(event) {
+	receive(event) {
 		switch (event.event) {
 			case "playerStarted": {
 				if (this.currentArt != event.data.coverArt) {
@@ -91,24 +96,27 @@ AlbumBackgroundChanger = function(s, e) {
 /**
 * Sets the page background to the currently playing track's album art.
 */
-Notifier = function(s, e) {
+class Notifier {
 
-	const ICON_SIZE = 48; // small icon for notifications
+	ICON_SIZE = 48; // small icon for notifications
 
-	this.subsonic = s;
-	this.events = e;
+	constructor(subsonic, events) {
+		this.subsonic = subsonic;
+		this.events = events;
 
-	var _this = this;
-	Notification.requestPermission(function (permission) {
-		if (permission === "granted") {
-			e.subscribe({
-				subscriber: _this,
-				event: ["playerStarted"]
-			});
-		}
-	});
+		Notification.requestPermission(function (permission) {
+			if (permission === "granted") {
+				events.subscribe({
+					subscriber: this,
+					event: ["playerStarted"]
+				});
+			}
+		}.bind(this));
+	}
 
-	this.receive = function(event) {
+	receive(event) {
+		// TODO only update the image if `event.data.coverArt` has changed
+
 		switch (event.event) {
 			case "playerStarted": {
 				/*
@@ -119,8 +127,8 @@ Notifier = function(s, e) {
 				*/
 
 				var canvas = document.createElement('canvas');
-				canvas.width = ICON_SIZE;
-				canvas.height = ICON_SIZE;
+				canvas.width = this.ICON_SIZE;
+				canvas.height = this.ICON_SIZE;
 				var ctx = canvas.getContext('2d');
 
 				var img = document.createElement('img');
@@ -140,7 +148,7 @@ Notifier = function(s, e) {
 
 				img.src = this.subsonic.getUrl("getCoverArt", {
 					id: event.data.coverArt,
-					size: ICON_SIZE
+					size: this.ICON_SIZE
 				});
 
 				break;

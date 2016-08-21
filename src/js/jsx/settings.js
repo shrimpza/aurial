@@ -1,22 +1,32 @@
-var TEST_UNTESTED = 0;
-var TEST_BUSY = 1;
-var TEST_SUCCESS = 2;
-var TEST_FAILED = 3;
+import React from 'react'
+import Subsonic from '../subsonic'
 
-var Settings = React.createClass({
+const TEST_UNTESTED = 0;
+const TEST_BUSY = 1;
+const TEST_SUCCESS = 2;
+const TEST_FAILED = 3;
 
-	getInitialState: function() {
-		return {
-			url: this.props.subsonic.url,
-			user: this.props.subsonic.user,
-			password: this.props.subsonic.password,
-			notifications: localStorage.getItem('notifications') === 'true',
-			backgroundArt: localStorage.getItem('backgroundArt') === 'true',
-			testState: TEST_UNTESTED
-		};
-	},
+export default class Settings extends React.Component {
 
-	save: function(e) {
+	state = {
+		url: this.props.subsonic.url,
+		user: this.props.subsonic.user,
+		password: this.props.subsonic.password,
+		notifications: localStorage.getItem('notifications') === 'true',
+		backgroundArt: localStorage.getItem('backgroundArt') === 'true',
+		testState: TEST_UNTESTED
+	}
+
+	constructor(props, context) {
+		super(props, context);
+
+		this.save = this.save.bind(this);
+		this.change = this.change.bind(this);
+		this.demo = this.demo.bind(this);
+		this.test = this.test.bind(this);
+	}
+
+	save(e) {
 		e.preventDefault();
 
 		localStorage.setItem('url', this.state.url);
@@ -26,22 +36,25 @@ var Settings = React.createClass({
 		localStorage.setItem('notifications', this.state.notifications);
 		localStorage.setItem('backgroundArt', this.state.backgroundArt);
 
-		var subsonic = new Subsonic(localStorage.getItem('url'), 
-									localStorage.getItem('username'), 
-									localStorage.getItem('password'), 
-									this.props.subsonic.version, 
-									this.props.subsonic.appName);
+		// TODO reload app with new settings
+		// var subsonic = new Subsonic(
+		// 	localStorage.getItem('url'),
+		// 	localStorage.getItem('username'),
+		// 	localStorage.getItem('password'),
+		// 	this.props.subsonic.version,
+		// 	this.props.subsonic.appName
+		// );
+		//
+		// // completely replace the app node with a new one, with the new settings
+		// if (React.unmountComponentAtNode(document.body)) {
+		// 	React.render(
+		// 		<App subsonic={subsonic} />,
+		// 		document.body
+		// 	);
+		// }
+	}
 
-		// completely replace the app node with a new one, with the new settings
-		if (React.unmountComponentAtNode(document.body)) {
-			React.render(
-				<App subsonic={subsonic} />,
-				document.body
-			);
-		}
-	},
-
-	demo: function(e) {
+	demo(e) {
 		e.preventDefault();
 		if (confirm("Reconfigure to use the Subsonic demo server?")) {
 			this.setState({
@@ -50,82 +63,64 @@ var Settings = React.createClass({
 				password: "guest"
 			});
 		}
-	},
+	}
 
-	test: function(e) {
+	test(e) {
 		e.preventDefault();
 
-		var subsonic = new Subsonic(this.state.url, 
-									this.state.user, 
-									this.state.password, 
-									this.props.subsonic.version, 
-									this.props.subsonic.appName);
+		var subsonic = new Subsonic(
+			this.state.url,
+			this.state.user,
+			this.state.password,
+			this.props.subsonic.version,
+			this.props.subsonic.appName
+		);
 
-		var _this = this;
-		_this.setState({testState: TEST_BUSY});
+		this.setState({testState: TEST_BUSY});
 
 		subsonic.ping({
 			success: function(data) {
 				if (data.status == "ok") {
-					_this.setState({testState: TEST_SUCCESS});
+					this.setState({testState: TEST_SUCCESS});
 					alert("Success!");
 				} else {
-					_this.setState({testState: TEST_FAILED});
+					this.setState({testState: TEST_FAILED});
 					alert(data.error.message);
 				}
-			},
+			}.bind(this),
 			error: function(status, msg) {
-				_this.setState({testState: TEST_FAILED});
+				this.setState({testState: TEST_FAILED});
 				alert("Failed to ping server");
-			}
+			}.bind(this)
 		});
-	},
+	}
 
-	change: function(e) {
+	change(e) {
 		switch (e.target.name) {
-			case "url": 
-				this.setState({url: e.target.value});
-				break;
-			case "user": 
-				this.setState({user: e.target.value});
-				break;
-			case "password": 
-				this.setState({password: e.target.value});
-				break;
-			case "notifications": 
-				this.setState({notifications: e.target.checked});
-				break;
-			case "backgroundArt": 
-				this.setState({backgroundArt: e.target.checked});
-				break;
+			case "url": this.setState({url: e.target.value}); break;
+			case "user": this.setState({user: e.target.value}); break;
+			case "password": this.setState({password: e.target.value}); break;
+			case "notifications": this.setState({notifications: e.target.checked}); break;
+			case "backgroundArt": this.setState({backgroundArt: e.target.checked}); break;
 		}
 
-		console.log(this.state);
-
 		this.setState({testState: TEST_UNTESTED});
-	},
+	}
 
-	render: function() {
+	render() {
 		var testIcon = "circle thin";
 		switch (this.state.testState) {
-			case TEST_BUSY: 
-				testIcon = "loading spinner";
-				break;
-			case TEST_SUCCESS: 
-				testIcon = "green checkmark";
-				break;
-			case TEST_FAILED: 
-				testIcon = "red warning sign";
-				break;
-			default:
-				testIcon = "circle thin";
+			case TEST_BUSY: testIcon = "loading spinner"; break;
+			case TEST_SUCCESS: testIcon = "green checkmark"; break;
+			case TEST_FAILED: testIcon = "red warning sign"; break;
+			default: testIcon = "circle thin";
 		}
 
 		return (
 			<div className="ui basic segment" id="subsonic-settings">
 				<form className="ui form" onSubmit={this.save}>
 					<h3 className="ui dividing header">
-	  					Subsonic Connection
+						Subsonic Connection
 					</h3>
 					<div className="field">
 						<label>Subsonic URL</label>
@@ -143,7 +138,7 @@ var Settings = React.createClass({
 					</div>
 
 					<h3 className="ui dividing header">
-	  					Preferences
+						Preferences
 					</h3>
 					<div className="field">
 						<div className="ui checkbox">
@@ -170,4 +165,4 @@ var Settings = React.createClass({
 			</div>
 		);
 	}
-});
+}

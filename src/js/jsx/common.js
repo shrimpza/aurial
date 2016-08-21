@@ -1,17 +1,29 @@
-var CoverArt = React.createClass({
-	render: function() {
+import React from 'react'
+
+export class CoverArt extends React.Component {
+	static defaultProps = {
+		id: 0,
+		size: 20
+	}
+
+	render() {
 		return (
-			<img className="ui image" src={this.props.subsonic.getUrl("getCoverArt", {id:this.props.id, size:this.props.size})} />
+			<img className="ui image" src={this.props.subsonic.getUrl("getCoverArt", {id: this.props.id, size: this.props.size})} />
 		);
 	}
-});
+}
 
-var TabGroup = React.createClass({
-	componentDidMount: function() {
+export class TabGroup extends React.Component {
+	static defaultProps = {
+		tabs: []
+	}
+
+	componentDidMount() {
+		// TODO jquery crap https://github.com/shrimpza/aurial/issues/1
 		$('.menu .item').tab();
-	},
+	}
 
-	render: function() {
+	render() {
 		var tabs = this.props.tabs.map(function (tab) {
 			return (
 				<Tab key={tab.id} id={tab.id} title={tab.title} active={tab.active} icon={tab.icon} />
@@ -24,10 +36,15 @@ var TabGroup = React.createClass({
 			</div>
 		);
 	}
-});
+}
 
-var Tab = React.createClass({
-	render: function() {
+class Tab extends React.Component {
+	static defaultProps = {
+		icon: null,
+		active: false
+	}
+
+	render() {
 		var icon = this.props.icon != null ? <i className={this.props.icon + " icon"}></i> : null;
 		return (
 			<a className={this.props.active ? "active item" : "item"} data-tab={this.props.id}>
@@ -36,14 +53,15 @@ var Tab = React.createClass({
 			</a>
 		);
 	}
-});
+}
 
-var IconMessage = React.createClass({
-	getDefaultProps: function() {
-		return {type: "info", icon: "info circle"};
-	},
+export class IconMessage extends React.Component {
+	static defaultProps = {
+		icon: "info circle",
+		type: "info"
+	}
 
-	render: function() {
+	render() {
 		return (
 			<div className="ui basic segment">
 				<div className={"ui icon message " + this.props.type}>
@@ -56,4 +74,4 @@ var IconMessage = React.createClass({
 			</div>
 		);
 	}
-});
+}

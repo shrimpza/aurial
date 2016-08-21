@@ -1,32 +1,37 @@
-var Player = React.createClass({
-	noImage: 'data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
+import React from 'react'
+import AudioPlayer from '../audioplayer'
+import {UniqueID,SecondsToTime,ArrayShuffle} from '../util'
+import {CoverArt} from './common'
 
-	sound: null,
-	playing: null,
-	queue: [],
+export default class Player extends React.Component {
+	noImage = 'data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
 
-	getInitialState: function() {
-		return {
-			queue: [],
-			shuffle: false,
-			playing: null
-		};
-	},
+	sound = null;
+	playing = null;
+	queue = []; // the queue we use internally for jumping between tracks, shuffling, etc
 
-	componentDidMount: function() {
-		this.props.events.subscribe({
+	state = {
+		queue: [], // the input queue
+		shuffle: false,
+		playing: null
+	}
+
+	constructor(props, context) {
+		super(props, context);
+		props.events.subscribe({
 			subscriber: this,
 			event: ["playerPlay", "playerToggle", "playerStop", "playerNext", "playerPrevious", "playerEnqueue", "playerShuffle"]
 		});
-	},
+	}
 
-	componentWillUpdate: function(nextProps, nextState) {
+	componentWillUpdate(nextProps, nextState) {
+		// TODO this is painfully insufficent way of determining if the playlist changed
 		if (nextState.queue.length != this.queue.length || nextState.shuffle != this.state.shuffle) {
-			this.queue = (this.state.shuffle || nextState.shuffle) ? nextState.queue.slice().shuffle() : nextState.queue.slice(0);
+			this.queue = (this.state.shuffle || nextState.shuffle) ? ArrayShuffle(nextState.queue.slice()) : nextState.queue.slice();
 		}
-	},
+	}
 
-	receive: function(event) {
+	receive(event) {
 		switch (event.event) {
 			case "playerPlay": this.play(event.data); break;
 			case "playerToggle": this.togglePlay(); break;
@@ -36,9 +41,9 @@ var Player = React.createClass({
 			case "playerEnqueue": this.enqueue(event.data.action, event.data.tracks); break;
 			case "playerShuffle": this.setState({shuffle: event.data}); break;
 		}
-	},
+	}
 
-	play: function(track) {
+	play(track) {
 		this.stop();
 
 		var streamUrl = this.props.subsonic.getStreamUrl({id: track.id});
@@ -69,9 +74,9 @@ var Player = React.createClass({
 		}).play();
 
 		this.setState({playing: track});
-	},
+	}
 
-	next: function() {
+	next() {
 		this.stop();
 
 		if (this.queue.length > 0) {
@@ -83,9 +88,9 @@ var Player = React.createClass({
 			this.play(this.queue[idx]);
 			console.log("playing next track at " + idx);
 		}
-	},
+	}
 
-	previous: function() {
+	previous() {
 		this.stop();
 
 		if (this.queue.length > 0) {
@@ -97,9 +102,9 @@ var Player = React.createClass({
 			this.play(this.queue[idx]);
 			console.log("playing previous track at " + idx);
 		}
-	},
+	}
 
-	togglePlay: function() {
+	togglePlay() {
 		if (this.sound != null) {
 			console.log("togglePlay: toggle");
 			this.sound.togglePause();
@@ -110,17 +115,17 @@ var Player = React.createClass({
 			console.log("togglePlay: start queue");
 			this.play(this.queue[0]);
 		}
-	},
+	}
 
-	stop: function() {
+	stop() {
 		if (this.sound != null) {
 			this.sound.stop();
 			this.sound.unload();
 		}
 		this.sound = null;
-	},
+	}
 
-	enqueue: function(action, tracks) {
+	enqueue(action, tracks) {
 		var queue = this.state.queue.slice();
 		var trackIds = queue.map(function(t) {
 			return t.id;
@@ -147,9 +152,9 @@ var Player = React.createClass({
 		this.setState({queue: queue});
 
 		this.props.events.publish({event: "playerEnqueued", data: queue});
-	},
+	}
 
-	render: function() {
+	render() {
 		var nowPlaying = "Nothing playing";
 		var coverArt = <img src={this.noImage} />;
 
@@ -196,20 +201,20 @@ var Player = React.createClass({
 			</div>
 		);
 	}
-});
+}
 
-var PlayerPlayingTitle = React.createClass({
-	render: function() {
+class PlayerPlayingTitle extends React.Component {
+	render() {
 		return (
 			<span>
 				{this.props.playing == null ? "Nothing playing" : this.props.playing.title}
 			</span>
 		);
 	}
-});
+}
 
-var PlayerPlayingInfo = React.createClass({
-	render: function() {
+class PlayerPlayingInfo extends React.Component {
+	render() {
 		var album = "Nothing playing";
 		if (this.props.playing != null) {
 			album = this.props.playing.artist + " - " + this.props.playing.album;
@@ -222,96 +227,104 @@ var PlayerPlayingInfo = React.createClass({
 			</span>
 		);
 	}
-});
+}
 
-var PlayerProgress = React.createClass({
-	_bar: null,
+class PlayerProgress extends React.Component {
+	state = {
+		uid: UniqueID()
+	}
 
-	getInitialState: function() {
-		return {
-			uid: UniqueID()
-		};
-	},
+	bar = null;
 
-	componentDidMount: function() {
-		this.props.events.subscribe({
+	constructor(props, context) {
+		super(props, context);
+		props.events.subscribe({
 			subscriber: this,
 			event: ["playerUpdated"]
 		});
-	},
+	}
 
-	componentWillUnmount: function() {
-	},
+	componentWillUnmount() {
+	}
 
-	receive: function(event) {
+	receive(event) {
 		switch (event.event) {
 			case "playerUpdated": this.playerUpdate(event.data.track, event.data.duration, event.data.position); break;
 		}
-	},
+	}
 
-	playerUpdate: function(playing, length, position) {
-		if (this._bar == null) this._bar = $('#' + this.state.uid + " .bar");
+	playerUpdate(playing, length, position) {
+		// TODO jquery crap. also what's with this way of updating it? wtf?!
+		if (this.bar == null) this.bar = $('#' + this.state.uid + " .bar");
 
 		var percent = (position / length) * 100;
-		this._bar.css("width", percent + "%");
-	},
+		this.bar.css("width", percent + "%");
+	}
 
-	render: function() {
+	render() {
 		return (
 			<div className="ui red progress" id={this.state.uid}>
 				<div className="bar"></div>
 			</div>
 		);
 	}
-});
+}
 
-var PlayerPositionDisplay = React.createClass({
-	getInitialState: function() {
-		return {duration: 0, position: 0};
-	},
+class PlayerPositionDisplay extends React.Component {
+	state = {
+		duration: 0,
+		position: 0
+	}
 
-	componentDidMount: function() {
-		this.props.events.subscribe({
+	constructor(props, context) {
+		super(props, context);
+		props.events.subscribe({
 			subscriber: this,
 			event: ["playerUpdated"]
 		});
-	},
+	}
 
-	componentWillUnmount: function() {
-	},
+	componentWillUnmount() {
+	}
 
-	receive: function(event) {
+	receive(event) {
 		switch (event.event) {
 			case "playerUpdated": this.setState({duration: event.data.duration, position: event.data.position}); break;
 		}
-	},
+	}
 
-	render: function() {
+	render() {
 		return (
 			<div className="ui disabled labeled icon button">
 				<i className="clock icon"></i>
-				{(this.state.position / 1000).asTime()}/{(this.state.duration / 1000).asTime()}
+				{SecondsToTime(this.state.position / 1000)}/{SecondsToTime(this.state.duration / 1000)}
 			</div>
 		);
 	}
-});
+}
 
-var PlayerPlayToggleButton = React.createClass({
-	getInitialState: function() {
-		return {paused: false, playing: false, enabled: false};
-	},
+class PlayerPlayToggleButton extends React.Component {
+	state = {
+		paused: false,
+		playing: false,
+		enabled: false
+	}
 
-	componentDidMount: function() {
-		this.props.events.subscribe({
+	constructor(props, context) {
+		super(props, context);
+
+		this.onClick = this.onClick.bind(this);
+
+		props.events.subscribe({
 			subscriber: this,
 			event: ["playerStarted", "playerStopped", "playerFinished", "playerPaused", "playerEnqueued"]
 		});
-	},
+	}
 
-	componentWillUnmount: function() {
-	},
+	componentWillUnmount() {
+	}
 
-	receive: function(event) {
+	receive(event) {
 		switch (event.event) {
 			case "playerStarted": this.playerStart(event.data); break;
 			case "playerStopped":
@@ -319,166 +332,183 @@ var PlayerPlayToggleButton = React.createClass({
 			case "playerPaused": this.playerPause(event.data); break;
 			case "playerEnqueued": this.playerEnqueue(event.data); break;
 		}
-	},
+	}
 
-	playerStart: function(playing) {
+	playerStart(playing) {
 		this.setState({paused: false, playing: true, enabled: true});
-	},
+	}
 
-	playerFinish: function(playing) {
+	playerFinish(playing) {
 		this.setState({paused: false, playing: false});
-	},
+	}
 
-	playerPause: function(playing) {
+	playerPause(playing) {
 		this.setState({paused: true});
-	},
+	}
 
-	playerEnqueue: function(queue) {
+	playerEnqueue(queue) {
 		this.setState({enabled: queue.length > 0});
-	},
+	}
 
-	onClick: function() {
+	onClick() {
 		this.props.events.publish({event: "playerToggle"});
-	},
+	}
 
-	render: function() {
+	render() {
 		return (
 			<button className={"ui icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.onClick}>
 				<i className={this.state.paused || !this.state.playing ? "play icon" : "pause icon"} />
 			</button>
 		);
 	}
-});
+}
 
-var PlayerStopButton = React.createClass({
-	getInitialState: function() {
-		return {enabled: false};
-	},
+class PlayerStopButton extends React.Component {
+	state = {
+		enabled: false
+	}
 
-	componentDidMount: function() {
-		this.props.events.subscribe({
+	constructor(props, context) {
+		super(props, context);
+
+		this.onClick = this.onClick.bind(this);
+
+		props.events.subscribe({
 			subscriber: this,
 			event: ["playerStarted", "playerStopped", "playerFinished"]
 		});
-	},
+	}
 
-	componentWillUnmount: function() {
-	},
+	componentWillUnmount() {
+	}
 
-	receive: function(event) {
+	receive(event) {
 		switch (event.event) {
 			case "playerStarted": this.playerStart(event.data); break;
 			case "playerStopped":
 			case "playerFinished": this.playerFinish(event.data); break;
 		}
-	},
+	}
 
-	playerStart: function(playing) {
+	playerStart(playing) {
 		this.setState({enabled: true});
-	},
+	}
 
-	playerFinish: function(playing) {
+	playerFinish(playing) {
 		this.setState({enabled: false});
-	},
+	}
 
-	onClick: function() {
+	onClick() {
 		this.props.events.publish({event: "playerStop"});
-	},
+	}
 
-	render: function() {
+	render() {
 		return (
 			<button className={"ui icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.onClick}>
 				<i className="stop icon" />
 			</button>
 		);
 	}
-});
+}
 
-var PlayerNextButton = React.createClass({
-	getInitialState: function() {
-		return {enabled: false};
-	},
+class PlayerNextButton extends React.Component {
+	state = {
+		enabled: false
+	}
 
-	componentDidMount: function() {
-		this.props.events.subscribe({
+	constructor(props, context) {
+		super(props, context);
+
+		this.onClick = this.onClick.bind(this);
+
+		props.events.subscribe({
 			subscriber: this,
 			event: ["playerEnqueued"]
 		});
-	},
+	}
 
-	componentWillUnmount: function() {
-	},
+	componentWillUnmount() {
+	}
 
-	receive: function(event) {
+	receive(event) {
 		switch (event.event) {
 			case "playerEnqueued": this.setState({enabled: event.data.length > 0}); break;
 		}
-	},
+	}
 
-	onClick: function() {
+	onClick() {
 		this.props.events.publish({event: "playerNext"});
-	},
+	}
 
-	render: function() {
+	render() {
 		return (
 			<button className={"ui icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.onClick}>
 				<i className="fast forward icon" />
 			</button>
 		);
 	}
-});
+}
 
-var PlayerPriorButton = React.createClass({
-	getInitialState: function() {
-		return {enabled: false};
-	},
+class PlayerPriorButton extends React.Component {
+	state = {
+		enabled: false
+	}
 
+	constructor(props, context) {
+		super(props, context);
 
-	componentDidMount: function() {
-		this.props.events.subscribe({
+		this.onClick = this.onClick.bind(this);
+
+		props.events.subscribe({
 			subscriber: this,
 			event: ["playerEnqueued"]
 		});
-	},
+	}
 
-	componentWillUnmount: function() {
-	},
+	componentWillUnmount() {
+	}
 
-	receive: function(event) {
+	receive(event) {
 		switch (event.event) {
 			case "playerEnqueued": this.setState({enabled: event.data.length > 0}); break;
 		}
-	},
+	}
 
-	onClick: function() {
+	onClick() {
 		this.props.events.publish({event: "playerPrevious"});
-	},
+	}
 
-	render: function() {
+	render() {
 		return (
 			<button className={"ui icon button " + (this.state.enabled ? "" : "disabled")} onClick={this.onClick}>
 				<i className="fast backward icon" />
 			</button>
 		);
 	}
-});
+}
 
-var PlayerShuffleButton = React.createClass({
-	getInitialState: function() {
-		return {shuffle: false};
-	},
+class PlayerShuffleButton extends React.Component {
+	state = {
+		shuffle: false
+	}
 
-	onClick: function() {
+	constructor(props, context) {
+		super(props, context);
+
+		this.onClick = this.onClick.bind(this);
+	}
+
+	onClick() {
 		var shuffle = !this.state.shuffle;
 		this.setState({shuffle: shuffle});
 		this.props.events.publish({event: "playerShuffle", data: shuffle});
-	},
+	}
 
-	render: function() {
+	render() {
 		return (
 			<button className="ui icon button" onClick={this.onClick}>
 				<i className={"random icon " + (this.state.shuffle ? "red" : "")} />
 			</button>
 		);
 	}
-});
+}
