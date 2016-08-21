@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import Subsonic from './subsonic'
 import App from './jsx/app'
 
 /**

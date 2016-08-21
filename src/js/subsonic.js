@@ -1,4 +1,4 @@
-import {UniqueID} from './utils'
+import {UniqueID} from './util'
 
 /**
 * Subsonic API client.
