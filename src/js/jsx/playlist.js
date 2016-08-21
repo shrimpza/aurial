@@ -1,13 +1,22 @@
-var PlaylistManager = React.createClass({
-	getInitialState: function() {
-		return {playlists: [], playlist: {id: null, playlist: []}};
-	},
+import React from 'react'
+import {IconMessage,CoverArt} from './common'
 
-	componentDidMount: function() {
+export class PlaylistManager extends React.Component {
+
+	state = {
+		playlists: [],
+		playlist: {
+			id: null,
+			playlist: []
+		}
+	}
+
+	constructor(props, context) {
+		super(props, context);
 		this.loadPlaylists();
-	},
+	}
 
-	loadPlaylists: function() {
+	loadPlaylists() {
 		this.props.subsonic.getPlaylists({
 			success: function(data) {
 				this.setState({playlists: data.playlists});
@@ -16,9 +25,9 @@ var PlaylistManager = React.createClass({
 				console.error(this, status, err.toString());
 			}.bind(this)
 		});
-	},
+	}
 
-	loadPlaylist: function(id) {
+	loadPlaylist(id) {
 		this.props.subsonic.getPlaylist({
 			id: id,
 			success: function(data) {
@@ -28,9 +37,9 @@ var PlaylistManager = React.createClass({
 				console.error(this, status, err.toString());
 			}.bind(this)
 		});
-	},
+	}
 
-	render: function() {
+	render() {
 		return (
 			<div className="playlistManager">
 				<PlaylistSelector subsonic={this.props.subsonic} playlists={this.state.playlists} iconSize={this.props.iconSize} selected={this.loadPlaylist} />
@@ -38,29 +47,27 @@ var PlaylistManager = React.createClass({
 			</div>
 		);
 	}
-});
+}
 
-
-var PlaylistSelector = React.createClass({
-	componentDidMount: function() {
-		var _this = this;
+class PlaylistSelector extends React.Component {
+	componentDidMount() {
+		// TODO jquery crap https://github.com/shrimpza/aurial/issues/1
 		$('.playlistSelector .dropdown').dropdown({
 			action: 'activate',
 			onChange: function(value, text, selectedItem) {
-				_this.props.selected(value);
+				this.props.selected(value);
 			}
-		});
-	},
+		}.bind(this));
+	}
 
-	render: function() {
-		var _this = this;
+	render() {
 		var playlists = [];
 		if (this.props.playlists) {
 			this.props.playlists.map(function (playlist) {
 				return (
-					<PlaylistSelectorItem key={playlist.id} subsonic={_this.props.subsonic} data={playlist} iconSize={_this.props.iconSize} />
+					<PlaylistSelectorItem key={playlist.id} subsonic={this.props.subsonic} data={playlist} iconSize={this.props.iconSize} />
 				);
-			});
+			}.bind(this));
 		}
 
 		return (
@@ -75,10 +82,10 @@ var PlaylistSelector = React.createClass({
 			</div>
 		);
 	}
-});
+}
 
-var PlaylistSelectorItem = React.createClass({
-	render: function() {
+class PlaylistSelectorItem extends React.Component {
+	render() {
 		return (
 			<div className="item" data-value={this.props.data.id}>
 				<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
@@ -87,10 +94,10 @@ var PlaylistSelectorItem = React.createClass({
 			</div>
 		);
 	}
-})
+}
 
-var Playlist = React.createClass({
-	render: function() {
+class Playlist extends React.Component {
+	render() {
 		if (!this.props.playlist.id) {
 			return (
 				<div className="playlistView">
@@ -107,27 +114,28 @@ var Playlist = React.createClass({
 			);
 		}
 	}
-});
+}
 
-var Selection = React.createClass({
-	getInitialState: function() {
-		return {album: null};
-	},
+export class Selection extends React.Component {
+	state = {
+		album: null
+	}
 
-	componentDidMount: function() {
-		this.props.events.subscribe({
+	constructor(props, context) {
+		super(props, context);
+		props.events.subscribe({
 			subscriber: this,
 			event: ["browserSelected"]
 		});
-	},
+	}
 
-	receive: function(event) {
+	receive(event) {
 		switch (event.event) {
 			case "browserSelected": this.setState({album: event.data.tracks}); break;
 		}
-	},
+	}
 
-	render: function() {
+	render() {
 		if (this.state.album == null) {
 			return (
 				<IconMessage icon="info circle" header="Nothing Selected!" message="Select an album from the browser." />
@@ -142,23 +150,23 @@ var Selection = React.createClass({
 			);
 		}
 	}
-});
+}
 
-var SelectionAlbum = React.createClass({
-	play: function() {
+class SelectionAlbum extends React.Component {
+	play() {
 		this.props.events.publish({event: "playerEnqueue", data: {action: "REPLACE", tracks: this.props.album.song}});
 		this.props.events.publish({event: "playerPlay", data: this.props.album.song[0]});
-	},
+	}
 
-	enqueue: function() {
+	enqueue() {
 		this.props.events.publish({event: "playerEnqueue", data: {action: "ADD", tracks: this.props.album.song}});
-	},
+	}
 
-	playlist: function() {
-		// TODO
-	},
+	playlist() {
+		// TODO add/create playlist
+	}
 
-	render: function() {
+	render() {
 		return (
 			<div className="ui items">
 				<div className="item">
@@ -186,27 +194,28 @@ var SelectionAlbum = React.createClass({
 			</div>
 		);
 	}
-});
+}
 
-var PlaylistQueue = React.createClass({
-	getInitialState: function() {
-		return {queue: null};
-	},
+export class PlaylistQueue extends React.Component {
+	state = {
+		queue: null
+	}
 
-	componentDidMount: function() {
-		this.props.events.subscribe({
+	constructor(props, context) {
+		super(props, context);
+		props.events.subscribe({
 			subscriber: this,
 			event: ["playerEnqueued"]
 		});
-	},
+	}
 
-	receive: function(event) {
+	receive(event) {
 		switch (event.event) {
 			case "playerEnqueued": this.setState({queue: event.data}); break;
 		}
-	},
+	}
 
-	render: function() {
+	render() {
 		if (this.state.queue == null) {
 			return (
 				<IconMessage icon="info circle" header="Nothing in the queue!" message="Add some tracks to the queue by browsing, or selecting a playlist." />
@@ -220,40 +229,40 @@ var PlaylistQueue = React.createClass({
 			);
 		}
 	}
+}
 
-});
+class TrackList extends React.Component {
+	state = {
+		queue: [],
+		playing: null
+	}
 
-var TrackList = React.createClass({
-	getInitialState: function() {
-		return {queue: [], playing: null};
-	},
-
-	componentDidMount: function() {
-		this.props.events.subscribe({
+	constructor(props, context) {
+		super(props, context);
+		props.events.subscribe({
 			subscriber: this,
 			event: ["playerStarted", "playerStopped", "playerFinished", "playerEnqueued"]
 		});
-	},
+	}
 
-	receive: function(event) {
+	receive(event) {
 		switch (event.event) {
 			case "playerStarted": this.setState({playing: event.data}); break;
 			case "playerStopped":
 			case "playerFinished": this.setState({playing: null}); break;
 			case "playerEnqueued": this.setState({queue: event.data.map(function(q) {return q.id} )}); break;
 		}
-	},
+	}
 
-	render: function() {
-		var _this = this;
+	render() {
 		var tracks = this.props.tracks.map(function (entry) {
 			return (
-				<Track key={entry.id} subsonic={_this.props.subsonic} events={_this.props.events} track={entry} iconSize={_this.props.iconSize}
-				 playing={_this.state.playing != null && _this.state.playing.id == entry.id}
-				 queued={_this.state.queue.indexOf(entry.id) > -1}
-				 playlist={_this.props.playlist} />
+				<Track key={entry.id} subsonic={this.props.subsonic} events={this.props.events} track={entry} iconSize={this.props.iconSize}
+				 playing={this.state.playing != null && this.state.playing.id == entry.id}
+				 queued={this.state.queue.indexOf(entry.id) > -1}
+				 playlist={this.props.playlist} />
 			);
-		});
+		}.bind(this));
 
 		return (
 			<table className="ui selectable single line very basic compact table trackList">
@@ -274,18 +283,18 @@ var TrackList = React.createClass({
 			</table>
 		);
 	}
-});
+}
 
-var Track = React.createClass({
-	play: function() {
+class Track extends React.Component {
+	play() {
 		this.props.events.publish({event: "playerPlay", data: this.props.track});
-	},
+	}
 
-	enqueue: function() {
+	enqueue() {
 		this.props.events.publish({event: "playerEnqueue", data: {action: "ADD", tracks: [this.props.track]}});
-	},
+	}
 
-	render: function() {
+	render() {
 		var playlistButton = this.props.playlist
 			? <button className="ui mini compact icon teal button" title="Remove from playlist"><i className="minus icon"></i></button>
 			: <button className="ui mini compact icon teal button" title="Add to playlist"><i className="list icon"></i></button>;
@@ -321,4 +330,4 @@ var Track = React.createClass({
 			</tr>
 		);
 	}
-});
+}
