@@ -1,3 +1,4 @@
+import md5 from 'blueimp-md5'
 import {UniqueID} from './util'
 
 /**
@@ -36,24 +37,25 @@ export default class Subsonic {
 			t: md5(this.password + salt),
 			s: salt,
 			v: this.version,
-			c: appName,
+			c: this.appName,
 			f: "json"
 		};
 
-		Object.keys(_params).forEeah(function(k) {
+		Object.keys(_params).forEach(function(k) {
 			result += k + "=" + _params[k] + "&";
 		});
 
-		Object.keys(params).forEeah(function(k) {
+		Object.keys(params).forEach(function(k) {
 			result += k + "=" + params[k] + "&";
 		});
+
+		console.log(func, result);
 
 		return result;
 	}
 
 	ping(params) {
-		fetch({
-			url: this.getUrl('ping', {}),
+		fetch(this.getUrl('ping', {}), {
 			mode: 'cors',
 			cache: 'no-cache'
 		})
@@ -68,8 +70,7 @@ export default class Subsonic {
 	}
 
 	getArtists(params) {
-		fetch({
-			url: this.getUrl('getArtists', {}),
+		fetch(this.getUrl('getArtists', {}), {
 			mode: 'cors'
 		})
 		.then(function(result) {
@@ -104,8 +105,7 @@ export default class Subsonic {
 	}
 
 	getArtist(params) {
-		fetch({
-			url: this.getUrl('getArtist', {id: params.id}),
+		fetch(this.getUrl('getArtist', {id: params.id}), {
 			mode: 'cors'
 		}).then(function(result) {
 			result.json().then(function(data) {
@@ -126,8 +126,7 @@ export default class Subsonic {
 	}
 
 	getAlbum(params) {
-		fetch({
-			url: this.getUrl('getAlbum', {id: params.id}),
+		fetch(this.getUrl('getAlbum', {id: params.id}), {
 			mode: 'cors'
 		}).then(function(result) {
 			result.json().then(function(data) {
@@ -146,8 +145,7 @@ export default class Subsonic {
 	}
 
 	getPlaylists(params) {
-		fetch({
-			url: this.getUrl('getPlaylists', {}),
+		fetch(this.getUrl('getPlaylists', {}), {
 			mode: 'cors'
 		}).then(function(result) {
 			result.json().then(function(data) {
@@ -160,8 +158,7 @@ export default class Subsonic {
 	}
 
 	getPlaylist(params) {
-		fetch({
-			url: this.getUrl('getPlaylist', {id: params.id}),
+		fetch(this.getUrl('getPlaylist', {id: params.id}), {
 			mode: 'cors'
 		}).then(function(result) {
 			result.json().then(function(data) {
@@ -174,8 +171,7 @@ export default class Subsonic {
 	}
 
 	search(params) {
-		fetch({
-			url: this.getUrl('search3', {query: params.query, songCount: params.songCount}),
+		fetch(this.getUrl('search3', {query: params.query, songCount: params.songCount}), {
 			mode: 'cors'
 		}).then(function(result) {
 			result.json().then(function(data) {
@@ -188,8 +184,7 @@ export default class Subsonic {
 	}
 
 	scrobble(params) {
-		fetch({
-			url: this.getUrl('scrobble', {id: params.id}),
+		fetch(this.getUrl('scrobble', {id: params.id}), {
 			mode: 'cors'
 		}).then(function(result) {
 			result.json().then(function(data) {

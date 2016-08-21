@@ -1,13 +1,14 @@
+import React from 'react'
 import AudioPlayer from '../audioplayer'
-import {UniqueID} from '../util'
+import {UniqueID,SecondsToTime} from '../util'
 import {CoverArt} from './common'
 
 export default class Player extends React.Component {
-	noImage: 'data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
+	noImage = 'data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
 
-	sound: null,
-	playing: null,
-	queue: [],
+	sound = null;
+	playing = null;
+	queue = [];
 
 	state = {
 		queue: [],
@@ -242,7 +243,7 @@ class PlayerProgress extends React.Component {
 		});
 	}
 
-	componentWillUnmount: function() {
+	componentWillUnmount() {
 	}
 
 	receive(event) {
@@ -295,7 +296,7 @@ class PlayerPositionDisplay extends React.Component {
 		return (
 			<div className="ui disabled labeled icon button">
 				<i className="clock icon"></i>
-				{(this.state.position / 1000).asTime()}/{(this.state.duration / 1000).asTime()}
+				{SecondsToTime(this.state.position / 1000)}/{SecondsToTime(this.state.duration / 1000)}
 			</div>
 		);
 	}
@@ -371,7 +372,7 @@ class PlayerStopButton extends React.Component {
 		});
 	}
 
-	componentWillUnmount: function() {
+	componentWillUnmount() {
 	}
 
 	receive(event) {
@@ -416,7 +417,7 @@ class PlayerNextButton extends React.Component {
 		});
 	}
 
-	componentWillUnmount: function() {
+	componentWillUnmount() {
 	}
 
 	receive(event) {
@@ -451,7 +452,7 @@ class PlayerPriorButton extends React.Component {
 		});
 	}
 
-	componentWillUnmount: function() {
+	componentWillUnmount() {
 	}
 
 	receive(event) {

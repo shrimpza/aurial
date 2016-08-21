@@ -1,5 +1,6 @@
 import React from 'react'
 import {IconMessage,CoverArt} from './common'
+import {SecondsToTime} from '../util'
 
 export class PlaylistManager extends React.Component {
 
@@ -21,8 +22,8 @@ export class PlaylistManager extends React.Component {
 			success: function(data) {
 				this.setState({playlists: data.playlists});
 			}.bind(this),
-			error: function(status, err) {
-				console.error(this, status, err.toString());
+			error: function(err) {
+				console.error(this, err);
 			}.bind(this)
 		});
 	}
@@ -33,8 +34,8 @@ export class PlaylistManager extends React.Component {
 			success: function(data) {
 				this.setState({playlist: {id: id, playlist: data.playlist}});
 			}.bind(this),
-			error: function(status, err) {
-				console.error(this, status, err.toString());
+			error: function(err) {
+				console.error(this, err);
 			}.bind(this)
 		});
 	}
@@ -56,8 +57,8 @@ class PlaylistSelector extends React.Component {
 			action: 'activate',
 			onChange: function(value, text, selectedItem) {
 				this.props.selected(value);
-			}
-		}.bind(this));
+			}.bind(this)
+		});
 	}
 
 	render() {
@@ -89,7 +90,7 @@ class PlaylistSelectorItem extends React.Component {
 		return (
 			<div className="item" data-value={this.props.data.id}>
 				<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
-				<span className="description">{this.props.data.songCount} tracks, {this.props.data.duration.asTime()}</span>
+				<span className="description">{this.props.data.songCount} tracks, {SecondsToTime(this.props.data.duration)}</span>
 				<span className="text">{this.props.data.name}</span>
 			</div>
 		);
@@ -182,7 +183,7 @@ class SelectionAlbum extends React.Component {
 							<div>{this.props.album.genre != '(255)' ? this.props.album.genre : ""}</div>
 							<div>{this.props.album.year ? "Year: " + this.props.album.year : ""}</div>
 							<div>Added: {moment(this.props.album.created).format("ll")}</div>
-							<div>{this.props.album.songCount} tracks, {this.props.album.duration.asTime()}</div>
+							<div>{this.props.album.songCount} tracks, {SecondsToTime(this.props.album.duration)}</div>
 						</div>
 						<div className="extra">
 							<button className="ui small compact labelled icon green button" onClick={this.play}><i className="play icon"></i> Play</button>
@@ -325,7 +326,7 @@ class Track extends React.Component {
 					{this.props.track.year}
 				</td>
 				<td className="right aligned">
-					{this.props.track.duration ? this.props.track.duration.asTime() : '?:??'}
+					{this.props.track.duration ? SecondsToTime(this.props.track.duration) : '?:??'}
 				</td>
 			</tr>
 		);

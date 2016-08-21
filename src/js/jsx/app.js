@@ -1,6 +1,7 @@
 import React from 'react'
 import Events from '../events'
 import PlayerExtras from '../playerextra'
+import Player from './player'
 import {PlaylistManager,Selection,PlaylistQueue} from './playlist'
 import ArtistList from './browser'
 import {TabGroup} from './common'

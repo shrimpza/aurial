@@ -19,7 +19,8 @@ module.exports = {
       template: 'src/index.html'
     }),
     new CopyWebpackPlugin([{
-      from: 'src/css'
+      from: 'src/css',
+      to: 'css'
     }])
   ],
   module: {

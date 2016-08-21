@@ -58,7 +58,7 @@ class Tab extends React.Component {
 export class IconMessage extends React.Component {
 	static defaultProps = {
 		icon: "info circle",
-		tyle: info
+		type: "info"
 	}
 
 	render() {
