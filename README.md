@@ -26,14 +26,15 @@ Configuration is done on the "Settings" tab of the main application interface.
 
 ## Building
 
-It is necessary to build the JavaScript components before the application can be used:
+The project is built via NPM and [Webpack](https://webpack.github.io/).
+
+Install `npm` for your platform, and then execute the following, from the project root directory:
 
 ```
-$ npm install --global babel-cli  # you may need to sudo this
-$ npm install babel-preset-react
-
-# execute from within the project root direcory
-babel --presets react js/ --out-file build/script.js --watch
+$ npm install
+$ npm run <watch|dist>
 ```
 
-Include or ommit `--watch` to have changes recompiled as source files are saved.
+In either the `watch` or `dist` case, a `dist` directory will be produced containing the built output, which may be served via an HTTP server and accessed via a web browser.
+
+`watch` includes additional debug information, which may not be optimal for production or general-use deployments. `dist` will produce uglified and minified output suitable for general usage.
