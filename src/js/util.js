@@ -1,62 +1,52 @@
 /**
  * Format a number of seconds in a more user-friendly "mm:ss" string format.
  */
-Number.prototype.asTime = function() {
-	var mins = Math.floor(this / 60);
-	var seconds = Math.floor(this % 60);
-	return mins.toString() + ":" + (seconds < 10 ? "0" + seconds.toString() : seconds.toString());
+export function SecondsToTime(seconds) {
+	var mins = Math.floor(seconds / 60);
+	var secs = Math.floor(seconds % 60);
+	return mins.toString() + ":" + (secs < 10 ? "0" + secs.toString() : secs.toString());
 }
 
 /**
  * Return a string as hex.
  */
-String.prototype.hexEncode = function() {
+export function HexEncode(string) {
     var result = "";
-    for (var i = 0; i < this.length; i++) {
-        result += this.charCodeAt(i).toString(16);
+    for (var i = 0; i < string.length; i++) {
+        result += string.charCodeAt(i).toString(16);
     }
-
     return result
 }
 
 /**
  * Remove the provided element from an array.
  */
-Array.prototype.delete = function(element) {
-	var i = this.indexOf(element);
-	if (i > -1) this.splice(i, 1);
-	return this;
+export function ArrayDeleteElement(array, element) {
+	var i = array.indexOf(element);
+	if (i > -1) array.splice(i, 1);
+	return array;
 }
 
 /**
  * Shuffle and return the array.
  */
-Array.prototype.shuffle = function() {
-    var counter = this.length, temp, index;
+export function ArrayShuffle(array) {
+    var counter = array.length, temp, index;
 
     while (counter > 0) {
         index = (Math.random() * counter--) | 0;
 
-        temp = this[counter];
-        this[counter] = this[index];
-        this[index] = temp;
+        temp = array[counter];
+        array[counter] = array[index];
+        array[index] = temp;
     }
 
-    return this;
-}
-
-/**
- * Return the date in the format "dd MMM yyyy".
- */
-Date.prototype.toSimpleString = function() {
-    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-    return this.getDate() + " " + months[this.getMonth()] + " " + this.getFullYear();
+    return array;
 }
 
 /**
  * Generate a random whole number.
  */
-UniqueID = function() {
+export function UniqueID() {
 	return Math.random().toString().replace(/[^A-Za-z0-9]/, "");
 }

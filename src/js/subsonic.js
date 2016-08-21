@@ -1,29 +1,34 @@
-/**
- * Subsonic API client.
- *
- * Exposes methods to make requests to Subsonic API endpoints, given the
- * configuration provided at initialisation time.
- *
- * In addition to whatever input the API methods require, success and failure
- * callbacks may be provided to consume output. For example:
- *
- * subsonic.ping({
- *   success: function(response) {
- *     // use response
- *   },
- *   failure: function(status, message) {
- *     // ...
- *   }
- * })
- */
-Subsonic = function(url, user, password, version, appName) {
-	this.url = url;
-	this.user = user;
-	this.password = password;
-	this.version = version;
-	this.appName = appName;
+import {UniqueID} from './utils'
 
-	this.getUrl = function(func, params) {
+/**
+* Subsonic API client.
+*
+* Exposes methods to make requests to Subsonic API endpoints, given the
+* configuration provided at initialisation time.
+*
+* In addition to whatever input the API methods require, success and failure
+* callbacks may be provided to consume output. For example:
+*
+* subsonic.ping({
+*   success: function(response) {
+*     // use response
+*   },
+*   failure: function(status, message) {
+*     // ...
+*   }
+* })
+*/
+export default class Subsonic {
+
+	constructor(url, user, password, version, appName) {
+		this.url = url;
+		this.user = user;
+		this.password = password;
+		this.version = version;
+		this.appName = appName;
+	}
+
+	getUrl(func, params) {
 		var result = this.url + "/rest/" + func + ".view?";
 		var salt = UniqueID();
 		var _params = {
@@ -35,44 +40,50 @@ Subsonic = function(url, user, password, version, appName) {
 			f: "json"
 		};
 
-		$.each(_params, function(k, v) {
-			result += k + "=" + v + "&";
+		Object.keys(_params).forEeah(function(k) {
+			result += k + "=" + _params[k] + "&";
 		});
 
-		$.each(params, function(k, v) {
-			result += k + "=" + v + "&";
+		Object.keys(params).forEeah(function(k) {
+			result += k + "=" + params[k] + "&";
 		});
 
 		return result;
 	}
 
-	this.ping = function(params) {
-		$.ajax({
+	ping(params) {
+		fetch({
 			url: this.getUrl('ping', {}),
-			dataType: 'json',
-			cache: false,
-			success: function(data) {
+			mode: 'cors',
+			cache: 'no-cache'
+		})
+		.then(function(result) {
+			result.json().then(function(data) {
 				params.success(data['subsonic-response']);
-			},
-			error: function(xhr, status, err) {
-				params.error(status, err.toString());
-			}
+			});
+		})
+		.catch(function(error) {
+			params.error(error);
 		});
 	}
 
-	this.getArtists = function(params) {
-		$.ajax({
+	getArtists(params) {
+		fetch({
 			url: this.getUrl('getArtists', {}),
-			dataType: 'json',
-			cache: false,
-			success: function(data) {
+			mode: 'cors'
+		})
+		.then(function(result) {
+			result.json().then(function(data) {
 				var allArtists = [];
+
+				// get artists from their letter-based groups into a flat collection
 				data['subsonic-response'].artists.index.map(function(letter) {
 					letter.artist.map(function(artist) {
 						allArtists.push(artist);
 					});
 				});
 
+				// sort artists ignoring the 'ignored articles', such as 'The' etc
 				var ignoredArticles = data['subsonic-response'].artists.ignoredArticles.split(' ');
 				allArtists.sort(function(a, b) {
 					var at = a.name;
@@ -85,19 +96,19 @@ Subsonic = function(url, user, password, version, appName) {
 				});
 
 				params.success({artists: allArtists});
-			},
-			error: function(xhr, status, err) {
-				params.error(status, err.toString());
-			}
+			});
+		})
+		.catch(function(error) {
+			params.error(error);
 		});
 	}
 
-	this.getArtist = function(params) {
-		$.ajax({
+	getArtist(params) {
+		fetch({
 			url: this.getUrl('getArtist', {id: params.id}),
-			dataType: 'json',
-			cache: false,
-			success: function(data) {
+			mode: 'cors'
+		}).then(function(result) {
+			result.json().then(function(data) {
 				var albums = data['subsonic-response'].artist.album;
 
 				if (albums.length > 1) {
@@ -107,90 +118,90 @@ Subsonic = function(url, user, password, version, appName) {
 				}
 
 				params.success({albums: albums});
-			},
-			error: function(xhr, status, err) {
-				params.error(status, err.toString());
-			}
+			});
+		})
+		.catch(function(error) {
+			params.error(error);
 		});
 	}
 
-	this.getAlbum = function(params) {
-		$.ajax({
+	getAlbum(params) {
+		fetch({
 			url: this.getUrl('getAlbum', {id: params.id}),
-			dataType: 'json',
-			cache: false,
-			success: function(data) {
+			mode: 'cors'
+		}).then(function(result) {
+			result.json().then(function(data) {
 				var album = data['subsonic-response'].album;
 				album.song.sort(function(a, b) {
 					return a.discNumber && b.discNumber
-									? ((a.discNumber*1000) + a.track) - ((b.discNumber*1000) + b.track)
-									: a.track - b.track;
+					? ((a.discNumber*1000) + a.track) - ((b.discNumber*1000) + b.track)
+					: a.track - b.track;
 				});
 				params.success({album: album});
-			},
-			error: function(xhr, status, err) {
-				params.error(status, err.toString());
-			}
+			})
+		})
+		.catch(function(error) {
+			params.error(error);
 		});
 	}
 
-	this.getPlaylists = function(params) {
-		$.ajax({
+	getPlaylists(params) {
+		fetch({
 			url: this.getUrl('getPlaylists', {}),
-			dataType: 'json',
-			cache: false,
-			success: function(data) {
+			mode: 'cors'
+		}).then(function(result) {
+			result.json().then(function(data) {
 				params.success({playlists: data['subsonic-response'].playlists.playlist});
-			},
-			error: function(xhr, status, err) {
-				params.error(status, err.toString());
-			}
+			});
+		})
+		.catch(function(error) {
+			params.error(error);
 		});
 	}
 
-	this.getPlaylist = function(params) {
-		$.ajax({
+	getPlaylist(params) {
+		fetch({
 			url: this.getUrl('getPlaylist', {id: params.id}),
-			dataType: 'json',
-			cache: false,
-			success: function(data) {
+			mode: 'cors'
+		}).then(function(result) {
+			result.json().then(function(data) {
 				params.success({playlist: data['subsonic-response'].playlist.entry});
-			}.bind(this),
-			error: function(xhr, status, err) {
-				params.error(status, err.toString());
-			}.bind(this)
+			});
+		})
+		.catch(function(error) {
+			params.error(error);
 		});
 	}
 
-	this.search = function(params) {
-		$.ajax({
+	search(params) {
+		fetch({
 			url: this.getUrl('search3', {query: params.query, songCount: params.songCount}),
-			dataType: 'json',
-			cache: false,
-			success: function(data) {
+			mode: 'cors'
+		}).then(function(result) {
+			result.json().then(function(data) {
 				params.success(data['subsonic-response'].searchResult3);
-			},
-			error: function(xhr, status, err) {
-				params.error(status, err.toString());
-			}
+			});
+		})
+		.catch(function(error) {
+			params.error(error);
 		});
 	}
 
-	this.scrobble = function(params) {
-		$.ajax({
+	scrobble(params) {
+		fetch({
 			url: this.getUrl('scrobble', {id: params.id}),
-			dataType: 'json',
-			cache: false,
-			success: function(data) {
+			mode: 'cors'
+		}).then(function(result) {
+			result.json().then(function(data) {
 				params.success();
-			},
-			error: function(xhr, status, err) {
-				params.error(status, err.toString());
-			}
+			});
+		})
+		.catch(function(error) {
+			params.error(error);
 		});
 	}
 
-	this.getStreamUrl = function(params) {
+	getStreamUrl(params) {
 		return this.getUrl('stream', {
 			id: params.id,
 			format: params.format ? params.format : 'mp3',

@@ -173,7 +173,7 @@ var SelectionAlbum = React.createClass({
 						<div className="meta">
 							<div>{this.props.album.genre != '(255)' ? this.props.album.genre : ""}</div>
 							<div>{this.props.album.year ? "Year: " + this.props.album.year : ""}</div>
-							<div>Added: {new Date(this.props.album.created).toSimpleString()}</div>
+							<div>Added: {moment(this.props.album.created).format("ll")}</div>
 							<div>{this.props.album.songCount} tracks, {this.props.album.duration.asTime()}</div>
 						</div>
 						<div className="extra">
