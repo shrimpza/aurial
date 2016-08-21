@@ -3,7 +3,7 @@ import {ArrayDeleteElement} from './util'
 /**
  * A stupidly simple publish-subscribe event bus implementation.
  */
-export default class EventBus {
+export default class Events {
 	subscribers = {};
 
 	subscribe(sub) {

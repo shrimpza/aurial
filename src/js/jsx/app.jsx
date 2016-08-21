@@ -1,16 +1,30 @@
-var App = React.createClass({
-	render: function() {
-		var events = new EventBus();
+import React from 'react'
+import Events from '../events'
+import PlayerExtras from '../playerextra'
+import {PlaylistManager,Selection,PlaylistQueue} from './playlist'
+import ArtistList from './browser'
+import {TabGroup} from './common'
+import Settings from './settings'
 
-		var player = <Player subsonic={this.props.subsonic} events={events} />;
+export default class App extends React.Component {
 
-		var playlists = <PlaylistManager subsonic={this.props.subsonic} events={events} iconSize="20" />;
-		var selection = <Selection subsonic={this.props.subsonic} events={events} iconSize="20" />;
-		var queue = <PlaylistQueue subsonic={this.props.subsonic} events={events} iconSize="20" />;
+	constructor(props, context) {
+		super(props, context);
 
-		var artistList = <ArtistList subsonic={this.props.subsonic} events={events} iconSize="30" />;
+		this.events = new Events();
+	}
 
-		var settings = <Settings subsonic={this.props.subsonic} events={events} />;
+	render() {
+
+		var player = <Player subsonic={this.props.subsonic} events={this.events} />;
+
+		var playlists = <PlaylistManager subsonic={this.props.subsonic} events={this.events} iconSize="20" />;
+		var selection = <Selection subsonic={this.props.subsonic} events={this.events} iconSize="20" />;
+		var queue = <PlaylistQueue subsonic={this.props.subsonic} events={this.events} iconSize="20" />;
+
+		var artistList = <ArtistList subsonic={this.props.subsonic} events={this.events} iconSize="30" />;
+
+		var settings = <Settings subsonic={this.props.subsonic} events={this.events} />;
 
 		var tabs = [];
 		tabs.push({id:"selection", title: "Selection", active: true, icon: "chevron right"});
@@ -20,7 +34,7 @@ var App = React.createClass({
 
 		var tabGroup = <TabGroup tabs={tabs} iconSize="20" />;
 
-		var playerExtras = new PlayerExtras(this.props.subsonic, this, events);
+		var playerExtras = new PlayerExtras(this.props.subsonic, this, this.events);
 
 		return (
 			<div>
@@ -41,29 +55,4 @@ var App = React.createClass({
 			</div>
 		);
 	}
-});
-
-/**
-  * app bootstrap
-  */
-$(document).ready(function() {
-	soundManager.setup({
-		url: '//cdnjs.cloudflare.com/ajax/libs/soundmanager2/2.97a.20150601/swf/',
-		flashVersion: 9,
-		preferFlash: false,
-		useFastPolling: true,
-		onready: function() {
-			// Ready to use; soundManager.createSound() etc. can now be called.
-		}
-	});
-
-	var subsonic = new Subsonic(localStorage.getItem('url') || 'http://localhost:4040/',
-								localStorage.getItem('username') || '',
-								localStorage.getItem('password') || '',
-								"1.13.0", "Aurial");
-
-	ReactDOM.render(
-		<App subsonic={subsonic} />,
-		document.getElementById("app")
-	);
-});
+}
