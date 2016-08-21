@@ -23,7 +23,6 @@ export class PlaylistManager extends React.Component {
 	loadPlaylists() {
 		this.props.subsonic.getPlaylists({
 			success: function(data) {
-				console.log(data);
 				this.setState({playlists: data.playlists});
 			}.bind(this),
 			error: function(err) {
