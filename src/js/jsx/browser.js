@@ -1,6 +1,6 @@
 import React from 'react'
 import {UniqueID} from '../util'
-import {IconMessage} from './common'
+import {IconMessage,CoverArt} from './common'
 
 export default class ArtistList extends React.Component {
 
@@ -12,13 +12,20 @@ export default class ArtistList extends React.Component {
 		uid: UniqueID()
 	}
 
+	constructor(props, context) {
+		super(props, context);
+
+		this.search = this.search.bind(this);
+	}
+
 	componentDidMount() {
 		this.props.subsonic.getArtists({
 			success: function(data) {
 				this.setState({artists: data.artists, loaded: true, error: null});
 			}.bind(this),
-			error: function(status, err) {
+			error: function(err) {
 				this.setState({error: <IconMessage type="negative" icon="warning circle" header="" message="Failed to load artists. Check settings." />, loaded: true});
+				console.log(this, err);
 			}.bind(this)
 		})
 	}
@@ -69,14 +76,21 @@ export class Artist extends React.Component {
 		loaded: false
 	}
 
+	constructor(props, context) {
+		super(props, context);
+
+		this.loadAlbums = this.loadAlbums.bind(this);
+		this.onClick = this.onClick.bind(this);
+	}
+
 	loadAlbums() {
 		this.props.subsonic.getArtist({
 			id: this.props.data.id,
 			success: function(data) {
 				this.setState({albums: data.albums, loaded: true});
 			}.bind(this),
-			error: function(status, err) {
-				console.error(this, status, err.toString());
+			error: function(err) {
+				console.error(this, err);
 			}.bind(this)
 		});
 	}
@@ -116,14 +130,20 @@ export class Artist extends React.Component {
 
 class Album extends React.Component {
 
+	constructor(props, context) {
+		super(props, context);
+
+		this.onClick = this.onClick.bind(this);
+	}
+
 	onClick() {
 		this.props.subsonic.getAlbum({
 			id: this.props.data.id,
 			success: function(data) {
 				this.props.events.publish({event: "browserSelected", data: {tracks: data.album}});
 			}.bind(this),
-			error: function(status, err) {
-				console.error(this, status, err.toString());
+			error: function(err) {
+				console.error(this, err);
 			}.bind(this)
 		});
 	}

@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 import {IconMessage,CoverArt} from './common'
 import {SecondsToTime} from '../util'
 
@@ -15,6 +16,8 @@ export class PlaylistManager extends React.Component {
 	constructor(props, context) {
 		super(props, context);
 		this.loadPlaylists();
+
+		this.loadPlaylist = this.loadPlaylist.bind(this);
 	}
 
 	loadPlaylists() {
@@ -51,6 +54,7 @@ export class PlaylistManager extends React.Component {
 }
 
 class PlaylistSelector extends React.Component {
+
 	componentDidMount() {
 		// TODO jquery crap https://github.com/shrimpza/aurial/issues/1
 		$('.playlistSelector .dropdown').dropdown({
@@ -154,6 +158,15 @@ export class Selection extends React.Component {
 }
 
 class SelectionAlbum extends React.Component {
+
+	constructor(props, context) {
+		super(props, context);
+
+		this.play = this.play.bind(this);
+		this.enqueue = this.enqueue.bind(this);
+		this.playlist = this.playlist.bind(this);
+	}
+
 	play() {
 		this.props.events.publish({event: "playerEnqueue", data: {action: "REPLACE", tracks: this.props.album.song}});
 		this.props.events.publish({event: "playerPlay", data: this.props.album.song[0]});

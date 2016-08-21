@@ -17,6 +17,15 @@ export default class Settings extends React.Component {
 		testState: TEST_UNTESTED
 	}
 
+	constructor(props, context) {
+		super(props, context);
+
+		this.save = this.save.bind(this);
+		this.change = this.change.bind(this);
+		this.demo = this.demo.bind(this);
+		this.test = this.test.bind(this);
+	}
+
 	save(e) {
 		e.preventDefault();
 

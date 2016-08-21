@@ -22,8 +22,8 @@ export default class AudioPlayer {
     if (callback) {
       var _this = this;
       this.audio.addEventListener(event, function() {
-        callback(audio.currentTime * 1000, audio.duration * 1000);
-      });
+        callback(this.audio.currentTime * 1000, this.audio.duration * 1000);
+      }.bind(this));
     }
   }
 

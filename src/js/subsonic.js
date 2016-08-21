@@ -49,8 +49,6 @@ export default class Subsonic {
 			result += k + "=" + params[k] + "&";
 		});
 
-		console.log(func, result);
-
 		return result;
 	}
 

@@ -55,7 +55,7 @@ class Scrobbler {
 					},
 					error: function(e) {
 						this.submitted = null;
-						console.log("Scrobble failed for track " + playing.title);
+						console.log("Scrobble failed for track " + playing.title, e);
 					}
 				});
 			}
@@ -74,7 +74,7 @@ class AlbumBackgroundChanger {
 
 		this.currentArt = 0;
 
-		e.subscribe({
+		events.subscribe({
 			subscriber: this,
 			event: ["playerStarted"]
 		});
@@ -127,8 +127,8 @@ class Notifier {
 				*/
 
 				var canvas = document.createElement('canvas');
-				canvas.width = ICON_SIZE;
-				canvas.height = ICON_SIZE;
+				canvas.width = this.ICON_SIZE;
+				canvas.height = this.ICON_SIZE;
 				var ctx = canvas.getContext('2d');
 
 				var img = document.createElement('img');
@@ -148,7 +148,7 @@ class Notifier {
 
 				img.src = this.subsonic.getUrl("getCoverArt", {
 					id: event.data.coverArt,
-					size: ICON_SIZE
+					size: this.ICON_SIZE
 				});
 
 				break;

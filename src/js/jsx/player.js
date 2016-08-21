@@ -1,6 +1,6 @@
 import React from 'react'
 import AudioPlayer from '../audioplayer'
-import {UniqueID,SecondsToTime} from '../util'
+import {UniqueID,SecondsToTime,ArrayShuffle} from '../util'
 import {CoverArt} from './common'
 
 export default class Player extends React.Component {
@@ -8,10 +8,10 @@ export default class Player extends React.Component {
 
 	sound = null;
 	playing = null;
-	queue = [];
+	queue = []; // the queue we use internally for jumping between tracks, shuffling, etc
 
 	state = {
-		queue: [],
+		queue: [], // the input queue
 		shuffle: false,
 		playing: null
 	}
@@ -26,7 +26,7 @@ export default class Player extends React.Component {
 
 	componentWillUpdate(nextProps, nextState) {
 		if (nextState.queue.length != this.queue.length || nextState.shuffle != this.state.shuffle) {
-			this.queue = (this.state.shuffle || nextState.shuffle) ? nextState.queue.slice().shuffle() : nextState.queue.slice(0);
+			this.queue = (this.state.shuffle || nextState.shuffle) ? ArrayShuffle(nextState.queue.slice()) : nextState.queue.slice();
 		}
 	}
 
@@ -311,6 +311,9 @@ class PlayerPlayToggleButton extends React.Component {
 
 	constructor(props, context) {
 		super(props, context);
+
+		this.onClick = this.onClick.bind(this);
+
 		props.events.subscribe({
 			subscriber: this,
 			event: ["playerStarted", "playerStopped", "playerFinished", "playerPaused", "playerEnqueued"]
@@ -366,6 +369,9 @@ class PlayerStopButton extends React.Component {
 
 	constructor(props, context) {
 		super(props, context);
+
+		this.onClick = this.onClick.bind(this);
+
 		props.events.subscribe({
 			subscriber: this,
 			event: ["playerStarted", "playerStopped", "playerFinished"]
@@ -411,6 +417,9 @@ class PlayerNextButton extends React.Component {
 
 	constructor(props, context) {
 		super(props, context);
+
+		this.onClick = this.onClick.bind(this);
+
 		props.events.subscribe({
 			subscriber: this,
 			event: ["playerEnqueued"]
@@ -446,6 +455,9 @@ class PlayerPriorButton extends React.Component {
 
 	constructor(props, context) {
 		super(props, context);
+
+		this.onClick = this.onClick.bind(this);
+
 		props.events.subscribe({
 			subscriber: this,
 			event: ["playerEnqueued"]
@@ -477,6 +489,12 @@ class PlayerPriorButton extends React.Component {
 class PlayerShuffleButton extends React.Component {
 	state = {
 		shuffle: false
+	}
+
+	constructor(props, context) {
+		super(props, context);
+
+		this.onClick = this.onClick.bind(this);
 	}
 
 	onClick() {
