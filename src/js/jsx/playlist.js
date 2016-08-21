@@ -23,6 +23,7 @@ export class PlaylistManager extends React.Component {
 	loadPlaylists() {
 		this.props.subsonic.getPlaylists({
 			success: function(data) {
+				console.log(data);
 				this.setState({playlists: data.playlists});
 			}.bind(this),
 			error: function(err) {
@@ -68,7 +69,7 @@ class PlaylistSelector extends React.Component {
 	render() {
 		var playlists = [];
 		if (this.props.playlists) {
-			this.props.playlists.map(function (playlist) {
+			playlists = this.props.playlists.map(function (playlist) {
 				return (
 					<PlaylistSelectorItem key={playlist.id} subsonic={this.props.subsonic} data={playlist} iconSize={this.props.iconSize} />
 				);

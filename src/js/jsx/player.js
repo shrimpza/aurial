@@ -25,6 +25,7 @@ export default class Player extends React.Component {
 	}
 
 	componentWillUpdate(nextProps, nextState) {
+		// TODO this is painfully insufficent way of determining if the playlist changed
 		if (nextState.queue.length != this.queue.length || nextState.shuffle != this.state.shuffle) {
 			this.queue = (this.state.shuffle || nextState.shuffle) ? ArrayShuffle(nextState.queue.slice()) : nextState.queue.slice();
 		}
