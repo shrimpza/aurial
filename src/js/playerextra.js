@@ -98,7 +98,7 @@ class AlbumBackgroundChanger {
 */
 class Notifier {
 
-	ICON_SIZE = 48; // small icon for notifications
+	ICON_SIZE = 64; // small icon for notifications
 
 	constructor(subsonic, events) {
 		this.subsonic = subsonic;

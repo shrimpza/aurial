@@ -25,8 +25,7 @@ export default class Player extends React.Component {
 	}
 
 	componentWillUpdate(nextProps, nextState) {
-		// TODO this is painfully insufficent way of determining if the playlist changed
-		if (nextState.queue.length != this.queue.length || nextState.shuffle != this.state.shuffle) {
+		if (this.queueDiff(this.queue, nextState.queue) || this.state.shuffle != nextState.shuffle) {
 			this.queue = (this.state.shuffle || nextState.shuffle) ? ArrayShuffle(nextState.queue.slice()) : nextState.queue.slice();
 		}
 	}
@@ -86,7 +85,6 @@ export default class Player extends React.Component {
 			else idx = 0;
 
 			this.play(this.queue[idx]);
-			console.log("playing next track at " + idx);
 		}
 	}
 
@@ -100,19 +98,15 @@ export default class Player extends React.Component {
 			else idx = this.queue.length - 1;
 
 			this.play(this.queue[idx]);
-			console.log("playing previous track at " + idx);
 		}
 	}
 
 	togglePlay() {
 		if (this.sound != null) {
-			console.log("togglePlay: toggle");
 			this.sound.togglePause();
 		} else if (this.playing != null) {
-			console.log("togglePlay: restart");
 			this.play(this.playing);
 		} else if (this.queue.length > 0) {
-			console.log("togglePlay: start queue");
 			this.play(this.queue[0]);
 		}
 	}
@@ -152,6 +146,25 @@ export default class Player extends React.Component {
 		this.setState({queue: queue});
 
 		this.props.events.publish({event: "playerEnqueued", data: queue});
+	}
+
+	queueDiff(q1, q2) {
+		if (q1.length != q2.length) return true;
+
+		var diff = true;
+
+		q1.forEach(function(t1) {
+			var found = false;
+			for (const t2 of q2) {
+				if (t1.id == t2.id) {
+					found = true;
+					break;
+				}
+			}
+			diff = diff && !found;
+		});
+
+		return diff;
 	}
 
 	render() {
