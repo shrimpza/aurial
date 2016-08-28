@@ -288,8 +288,6 @@ class PlayerProgress extends React.Component {
 					<div className="track bar" style={playerProgress}></div>
 					<div className="loading bar" style={loadingProgress}></div>
 				</div>
-				<div className="ui tiny bottom attached grey progress">
-				</div>
 			</div>
 		);
 	}
