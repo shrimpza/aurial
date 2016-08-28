@@ -66,6 +66,9 @@ export default class Player extends React.Component {
 			onProgress: function(position, duration) {
 				events.publish({event: "playerUpdated", data: {track: track, duration: duration, position: position}});
 			},
+			onLoading: function(loaded, total) {
+				events.publish({event: "playerLoading", data: {track: track, loaded: loaded, total: total}});
+			},
 			onComplete: function() {
 				events.publish({event: "playerFinished", data: track});
 				this.next();
@@ -244,16 +247,15 @@ class PlayerPlayingInfo extends React.Component {
 
 class PlayerProgress extends React.Component {
 	state = {
-		uid: UniqueID()
+		playerProgress: 0,
+		loadingProgress: 0
 	}
-
-	bar = null;
 
 	constructor(props, context) {
 		super(props, context);
 		props.events.subscribe({
 			subscriber: this,
-			event: ["playerUpdated"]
+			event: ["playerUpdated", "playerLoading"]
 		});
 	}
 
@@ -263,21 +265,31 @@ class PlayerProgress extends React.Component {
 	receive(event) {
 		switch (event.event) {
 			case "playerUpdated": this.playerUpdate(event.data.track, event.data.duration, event.data.position); break;
+			case "playerLoading": this.playerLoading(event.data.track, event.data.loaded, event.data.total); break;
 		}
 	}
 
 	playerUpdate(playing, length, position) {
-		// TODO jquery crap. also what's with this way of updating it? wtf?!
-		if (this.bar == null) this.bar = $('#' + this.state.uid + " .bar");
-
 		var percent = (position / length) * 100;
-		this.bar.css("width", percent + "%");
+		this.setState({playerProgress: percent});
+	}
+
+	playerLoading(playing, loaded, total) {
+		var percent = (loaded / total) * 100;
+		this.setState({loadingProgress: percent});
 	}
 
 	render() {
+		var playerProgress = {width: this.state.playerProgress + "%"};
+		var loadingProgress = {width: this.state.loadingProgress + "%"};
 		return (
-			<div className="ui red progress" id={this.state.uid}>
-				<div className="bar"></div>
+			<div>
+				<div className="ui red progress">
+					<div className="track bar" style={playerProgress}></div>
+					<div className="loading bar" style={loadingProgress}></div>
+				</div>
+				<div className="ui tiny bottom attached grey progress">
+				</div>
 			</div>
 		);
 	}

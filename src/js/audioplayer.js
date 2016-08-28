@@ -9,6 +9,7 @@ export default class AudioPlayer {
     this.addEvent('pause', params.onPause);
     this.addEvent('ended', params.onComplete);
     this.addEvent('stop', params.onStop);
+    this.addLoadingEvent('progress', params.onLoading);
     this.addProgressEvent('timeupdate', params.onProgress);
   }
 
@@ -20,9 +21,16 @@ export default class AudioPlayer {
 
   addProgressEvent(event, callback) {
     if (callback) {
-      var _this = this;
       this.audio.addEventListener(event, function() {
         callback(this.audio.currentTime * 1000, this.audio.duration * 1000);
+      }.bind(this));
+    }
+  }
+
+  addLoadingEvent(event, callback) {
+    if (callback) {
+      this.audio.addEventListener(event, function() {
+        callback((this.audio.buffered.length > 0 ? this.audio.buffered.end(0) : 0) * 1000, this.audio.duration * 1000);
       }.bind(this));
     }
   }

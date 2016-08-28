@@ -153,3 +153,15 @@
 .trackList .duration {
     width: 10%;
 }
+
+.player .progress .bar.track {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.player .progress .bar.loading {
+    background-color: #555;
+    height: 0.2em;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
