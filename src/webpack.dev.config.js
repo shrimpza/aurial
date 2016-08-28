@@ -12,7 +12,7 @@ module.exports = {
   devtool: '#cheap-module-eval-source-map',
   plugins: [
     new webpack.ProvidePlugin({
-      'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+     'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
     }),
     new HtmlWebpackPlugin({
       title: 'Aurial',
@@ -26,14 +26,17 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.js$/,
-        loader: 'babel',
-        exclude: /node_modules/,
-        query: {
-          "plugins": [],
-          "presets": ["es2015", "stage-0", "react"]
-        }
-
+          test: /\.js$/,
+          loader: 'babel',
+          exclude: /node_modules/,
+          query: {
+            "plugins": [],
+            "presets": ["es2015", "stage-0", "react"]
+          }
+      },
+      {
+        test: /\.scss$/,
+        loaders: ["style", "css", "sass"]
       }
     ]
   }

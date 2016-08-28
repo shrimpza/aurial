@@ -48,6 +48,10 @@ module.exports = {
           ],
           "presets": ["es2015", "stage-0", "react"]
         }
+      },
+      {
+        test: /\.scss$/,
+        loaders: ["style", "css", "sass"]
       }
     ]
   }

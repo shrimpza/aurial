@@ -7,6 +7,8 @@ import ArtistList from './browser'
 import {TabGroup} from './common'
 import Settings from './settings'
 
+import '../../css/poop.scss'
+
 export default class App extends React.Component {
 
 	constructor(props, context) {
