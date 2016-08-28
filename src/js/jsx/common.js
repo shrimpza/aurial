@@ -1,5 +1,55 @@
 import React from 'react'
 
+export class Tabs extends React.Component {
+	static defaultProps = {
+		tabs: []
+	}
+
+	constructor(props, context) {
+		super(props, context);
+
+		this.activeTab = this.props.tabs[0];
+	}
+
+	render() {
+		<div>
+			
+		</div>
+	}
+}
+
+export class SimpleTab = {
+	static defaultProps = {
+		icon: null
+	}
+
+	state = {
+		active: false
+	}
+
+	constructor(props, context) {
+		super(props, context);
+
+		this.setActive = this.setActive.bind(this);
+	}
+
+	setActive(active) {
+		this.setState({active: active});
+	}
+
+	render() {
+		var icon = this.props.icon != null ? <i className={this.props.icon + " icon"}></i> : null;
+		return (
+			<a className={this.state.active ? "active item" : "item"}>
+				{icon}
+				{this.props.title}
+			</a>
+		);
+	}
+}
+
+export class TabItem
+
 export class CoverArt extends React.Component {
 	static defaultProps = {
 		id: 0,

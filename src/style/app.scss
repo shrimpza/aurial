@@ -1,0 +1,55 @@
+@import 'base';
+
+$browser-width: 380px;
+$player-height: 100px;
+
+$bg-opacity: 0.2;
+
+$playlist-menu-height: 45px;
+
+#frames {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+
+  #browser {
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: $browser-width;
+    overflow: auto;
+
+    background-color: $bg-color-alt;
+    color: $body-font-color-alt;
+  }
+
+  #player {
+    position: absolute;
+    top: 0; right: 0; left: $browser-width;
+    height: $player-height;
+  }
+
+  #playlist {
+    position: absolute;
+    top: $player-height; right: 0px; bottom: 0px; left: $browser-width;
+    overflow: auto;
+
+    #playlist-menu {
+        position: absolute;
+        top: 0; right: 0; bottom: 0; left: 0;
+        height: $playlist-menu-height;
+        background-color: red;
+    }
+
+    #playlist-content {
+        position: absolute;
+        top: $playlist-menu-height; right: 0; bottom: 0; left: 0;
+    }
+  }
+}
+
+#background-layer {
+  position: absolute;
+  top: 0; right: 0; left: $browser-width; bottom: 0;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  opacity: $bg-opacity;
+}

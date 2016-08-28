@@ -1,0 +1,21 @@
+@import 'reset';
+
+@import url('https://fonts.googleapis.com/css?family=Jaldi');
+
+$body-font: Jaldi, sans-serif;
+$body-font-color: #000;
+$body-font-color-alt: #FFF;
+
+
+$bg-color: #F7F1DF;
+$bg-color-alt: #1B1C1D;
+$bg-color-highlight: #7B8090;
+
+$button-bg-color: #000;
+$button-fg-color: #FFF;
+
+body {
+  font-family: $body-font;
+  color: $body-font-color;
+  background-color: $bg-color;
+}

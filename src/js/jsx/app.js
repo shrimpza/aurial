@@ -7,6 +7,8 @@ import ArtistList from './browser'
 import {TabGroup} from './common'
 import Settings from './settings'
 
+import '../../style/app.scss'
+
 export default class App extends React.Component {
 
 	constructor(props, context) {
@@ -38,13 +40,13 @@ export default class App extends React.Component {
 		var playerExtras = new PlayerExtras(this.props.subsonic, this, this.events);
 
 		return (
-			<div>
-				<div id="browser-frame">
+			<div id="frames">
+				<div id="browser">
 					<div id="artistList">{artistList}</div>
 				</div>
 				<div id="background-layer"></div>
-				<div id="player-frame">{player}</div>
-				<div id="playlist-frame">
+				<div id="player">{player}</div>
+				<div id="playlist">
 					<div id="playlist-menu">{tabGroup}</div>
 					<div id="playlist-content">
 						<div id="playlist-selection" data-tab="selection" className="ui active tab">{selection}</div>
