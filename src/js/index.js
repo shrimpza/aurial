@@ -16,4 +16,4 @@ const subsonic = new Subsonic(
 
 const container = document.createElement('app');
 document.body.appendChild(container);
-ReactDOM.render(<App subsonic={subsonic}/>, container);
+ReactDOM.render(<App subsonic={subsonic} trackBuffer={localStorage.getItem('trackBuffer') || 0}/>, container);

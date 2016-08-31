@@ -17,7 +17,7 @@ export default class App extends React.Component {
 
 	render() {
 
-		var player = <Player subsonic={this.props.subsonic} events={this.events} />;
+		var player = <Player subsonic={this.props.subsonic} events={this.events} trackBuffer={this.props.trackBuffer} />;
 
 		var playlists = <PlaylistManager subsonic={this.props.subsonic} events={this.events} iconSize="20" />;
 		var selection = <Selection subsonic={this.props.subsonic} events={this.events} iconSize="20" />;

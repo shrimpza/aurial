@@ -15,6 +15,7 @@ export default class Settings extends React.Component {
 		password: '',
 		notifications: localStorage.getItem('notifications') === 'true',
 		backgroundArt: localStorage.getItem('backgroundArt') === 'true',
+		trackBuffer: localStorage.getItem('trackBuffer') || '0',
 		testState: TEST_UNTESTED
 	}
 
@@ -41,6 +42,7 @@ export default class Settings extends React.Component {
 
 		localStorage.setItem('notifications', this.state.notifications);
 		localStorage.setItem('backgroundArt', this.state.backgroundArt);
+		localStorage.setItem('trackBuffer', this.state.trackBuffer);
 
 		alert("Settings saved, please refresh the page.");
 		// TODO reload app with new settings
@@ -115,6 +117,7 @@ export default class Settings extends React.Component {
 			case "password": this.setState({password: e.target.value}); break;
 			case "notifications": this.setState({notifications: e.target.checked}); break;
 			case "backgroundArt": this.setState({backgroundArt: e.target.checked}); break;
+			case "trackBuffer": this.setState({trackBuffer: e.target.value}); break;
 		}
 
 		this.setState({testState: TEST_UNTESTED});
@@ -153,6 +156,14 @@ export default class Settings extends React.Component {
 					<h3 className="ui dividing header">
 						Preferences
 					</h3>
+					<div className="field">
+						<label>Buffer next track (begin buffering this long before end of the current track)</label>
+						<select name="trackBuffer" onChange={this.change} value={this.state.trackBuffer}>
+							<option value="0">Disabled</option>
+							<option value="10">10 seconds</option>
+							<option value="30">30 seconds</option>
+						</select>
+					</div>
 					<div className="field">
 						<div className="ui checkbox">
 							<input name="notifications" type="checkbox" onChange={this.change} checked={this.state.notifications}/>

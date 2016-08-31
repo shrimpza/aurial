@@ -4,10 +4,15 @@ import {UniqueID,SecondsToTime,ArrayShuffle} from '../util'
 import {CoverArt} from './common'
 
 export default class Player extends React.Component {
-	noImage = 'data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+	static noImage = 'data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
 
-	sound = null;
-	playing = null;
+	static defaultProps = {
+		trackBuffer: false
+	}
+
+	playerQueue = [];
+	buffered = false;
+	player = null;
 	queue = []; // the queue we use internally for jumping between tracks, shuffling, etc
 
 	state = {
@@ -32,7 +37,7 @@ export default class Player extends React.Component {
 
 	receive(event) {
 		switch (event.event) {
-			case "playerPlay": this.play(event.data); break;
+			case "playerPlay": this.play({track: event.data}); break;
 			case "playerToggle": this.togglePlay(); break;
 			case "playerStop": this.stop(); break;
 			case "playerNext": this.next(); break;
@@ -63,7 +68,23 @@ export default class Player extends React.Component {
 			},
 			onProgress: function(position, duration) {
 				events.publish({event: "playerUpdated", data: {track: track, duration: duration, position: position}});
-			},
+
+				// at X seconds remaining in the current track, allow the client to begin buffering the next stream
+				if (!this.buffered && this.props.trackBuffer > 0 && duration - position < (this.props.trackBuffer * 1000)) {
+					var next = this.nextTrack();
+					console.log("Prepare next track", next);
+					if (next !== null) {
+						this.buffered = true;
+						this.playerQueue.push({
+							track: next,
+							player: this.createPlayer(next)
+						});
+					} else {
+						console.log("There is no next track");
+					}
+				}
+
+			}.bind(this),
 			onLoading: function(loaded, total) {
 				events.publish({event: "playerLoading", data: {track: track, loaded: loaded, total: total}});
 			},
@@ -74,56 +95,89 @@ export default class Player extends React.Component {
 		});
 	}
 
-	play(track) {
+	play(playItem) {
+		this.buffered = false;
 		this.stop();
 
-		this.sound = this.createPlayer(track).play();
-
-		this.setState({playing: track});
+		if (playItem != null) {
+			this.player = playItem.player ? playItem.player.play() : this.createPlayer(playItem.track).play();
+			this.setState({playing: playItem.track});
+		} else {
+			this.setState({playing: null});
+		}
 	}
 
 	next() {
-		this.stop();
+		var next = this.playerQueue.shift();
 
+		if (next == null) {
+			var track = this.nextTrack();
+			if (track != null) {
+				next = {
+					track: track
+				};
+			}
+		}
+
+		this.play(next);
+	}
+
+	previous() {
+		var prev = null;
+		var track = this.previousTrack();
+		if (track != null) {
+			prev = {
+				track: track
+			}
+		}
+
+		this.play(prev);
+	}
+
+	nextTrack() {
+		var next = null;
 		if (this.queue.length > 0) {
 			var idx = this.state.playing == null ? 0 : Math.max(0, this.queue.indexOf(this.state.playing));
 
 			if (idx < this.queue.length - 1) idx++;
 			else idx = 0;
 
-			this.play(this.queue[idx]);
+			next = this.queue[idx];
 		}
+
+		return next;
 	}
 
-	previous() {
-		this.stop();
-
+	previousTrack() {
+		var previous = null;
 		if (this.queue.length > 0) {
 			var idx = this.state.playing == null ? 0 : Math.max(0, this.queue.indexOf(this.state.playing));
 
 			if (idx > 0) idx--;
 			else idx = this.queue.length - 1;
 
-			this.play(this.queue[idx]);
+			previous = this.queue[idx];
 		}
+
+		return previous;
 	}
 
 	togglePlay() {
-		if (this.sound != null) {
-			this.sound.togglePause();
-		} else if (this.playing != null) {
-			this.play(this.playing);
+		if (this.player != null) {
+			this.player.togglePause();
+		} else if (this.state.playing != null) {
+			this.play({track: this.state.playing});
 		} else if (this.queue.length > 0) {
-			this.play(this.queue[0]);
+			this.next();
 		}
 	}
 
 	stop() {
-		if (this.sound != null) {
-			this.sound.stop();
-			this.sound.unload();
+		if (this.player != null) {
+			this.player.stop();
+			this.player.unload();
 		}
-		this.sound = null;
+		this.player = null;
 	}
 
 	enqueue(action, tracks) {
