@@ -42,14 +42,12 @@ export default class Player extends React.Component {
 		}
 	}
 
-	play(track) {
-		this.stop();
+	createPlayer(track) {
+		var events = this.props.events;
 
 		var streamUrl = this.props.subsonic.getStreamUrl({id: track.id});
 
-		var events = this.props.events;
-
-		this.sound = new AudioPlayer({
+		return new AudioPlayer({
 			url: streamUrl,
 			onPlay: function() {
 				events.publish({event: "playerStarted", data: track});
@@ -73,7 +71,13 @@ export default class Player extends React.Component {
 				events.publish({event: "playerFinished", data: track});
 				this.next();
 			}.bind(this)
-		}).play();
+		});
+	}
+
+	play(track) {
+		this.stop();
+
+		this.sound = this.createPlayer(track).play();
 
 		this.setState({playing: track});
 	}

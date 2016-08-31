@@ -9,7 +9,8 @@ import App from './jsx/app'
 const subsonic = new Subsonic(
   localStorage.getItem('url') || 'http://localhost:4040',
   localStorage.getItem('username') || '',
-  localStorage.getItem('password') || '',
+  localStorage.getItem('token') || '',
+  localStorage.getItem('salt') || '',
   "1.13.0", "Aurial"
 );
 

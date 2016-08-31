@@ -1,5 +1,6 @@
 import React from 'react'
 import Subsonic from '../subsonic'
+import {UniqueID} from '../util'
 
 const TEST_UNTESTED = 0;
 const TEST_BUSY = 1;
@@ -11,7 +12,7 @@ export default class Settings extends React.Component {
 	state = {
 		url: this.props.subsonic.url,
 		user: this.props.subsonic.user,
-		password: this.props.subsonic.password,
+		password: '',
 		notifications: localStorage.getItem('notifications') === 'true',
 		backgroundArt: localStorage.getItem('backgroundArt') === 'true',
 		testState: TEST_UNTESTED
@@ -31,16 +32,23 @@ export default class Settings extends React.Component {
 
 		localStorage.setItem('url', this.state.url);
 		localStorage.setItem('username', this.state.user);
-		localStorage.setItem('password', this.state.password);
+
+		if (this.state.password != '') {
+			var salt = UniqueID();
+			localStorage.setItem('token', Subsonic.createToken(this.state.password, salt));
+			localStorage.setItem('salt', salt);
+		}
 
 		localStorage.setItem('notifications', this.state.notifications);
 		localStorage.setItem('backgroundArt', this.state.backgroundArt);
 
+		alert("Settings saved, please refresh the page.");
 		// TODO reload app with new settings
 		// var subsonic = new Subsonic(
 		// 	localStorage.getItem('url'),
 		// 	localStorage.getItem('username'),
-		// 	localStorage.getItem('password'),
+		// 	localStorage.getItem('token'),
+		// 	localStorage.getItem('salt'),
 		// 	this.props.subsonic.version,
 		// 	this.props.subsonic.appName
 		// );
@@ -68,10 +76,15 @@ export default class Settings extends React.Component {
 	test(e) {
 		e.preventDefault();
 
+		var salt = UniqueID();
+
+		console.log(salt, this.state.password, Subsonic.createToken(this.state.password, salt));
+
 		var subsonic = new Subsonic(
 			this.state.url,
 			this.state.user,
-			this.state.password,
+			Subsonic.createToken(this.state.password, salt),
+			salt,
 			this.props.subsonic.version,
 			this.props.subsonic.appName
 		);
@@ -132,7 +145,7 @@ export default class Settings extends React.Component {
 							<input name="user" placeholder="username" type="text" onChange={this.change} value={this.state.user} />
 						</div>
 						<div className="field">
-							<label>Password</label>
+							<label>Password (<i>leave blank to keep unchanged</i>)</label>
 							<input name="password" placeholder="password" type="password" onChange={this.change} value={this.state.password} />
 						</div>
 					</div>

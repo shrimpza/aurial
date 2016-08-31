@@ -1,5 +1,4 @@
 import md5 from 'blueimp-md5'
-import {UniqueID} from './util'
 
 /**
 * Subsonic API client.
@@ -21,21 +20,25 @@ import {UniqueID} from './util'
 */
 export default class Subsonic {
 
-	constructor(url, user, password, version, appName) {
+	constructor(url, user, token, salt, version, appName) {
 		this.url = url.endsWith('/') ? url.substring(0, url.length - 1) : url.trim();
 		this.user = user;
-		this.password = password;
+		this.token = token;
+		this.salt = salt;
 		this.version = version;
 		this.appName = appName;
 	}
 
+	static createToken(password, salt) {
+		return md5(password + salt);
+	}
+
 	getUrl(func, params) {
 		var result = this.url + "/rest/" + func + ".view?";
-		var salt = UniqueID();
 		var _params = {
 			u: this.user,
-			t: md5(this.password + salt),
-			s: salt,
+			t: this.token,
+			s: this.salt,
 			v: this.version,
 			c: this.appName,
 			f: "json"
