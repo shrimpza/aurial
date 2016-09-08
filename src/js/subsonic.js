@@ -171,6 +171,46 @@ export default class Subsonic {
 		});
 	}
 
+	createPlaylist(params) {
+		fetch(this.getUrl('createPlaylist', {name: params.name}), {
+			mode: 'cors'
+		}).then(function(result) {
+			result.json().then(function(data) {
+				if (data['subsonic-response'].status == "ok") {
+					params.success();
+				} else {
+					params.error(data['subsonic-response'].error.message);
+				}
+			});
+		})
+		.catch(function(error) {
+			params.error(error);
+		});
+	}
+
+	updatePlaylist(params) {
+		var options = {};
+		if (params.name) options.name = params.name;
+		if (params.comment) options.comment = params.comment;
+		if (params.add) options.songIdToAdd = params.add.join();
+		if (params.remove) options.songIndexToRemove = params.remove.join();
+
+		fetch(this.getUrl('updatePlaylist', options), {
+			mode: 'cors'
+		}).then(function(result) {
+			result.json().then(function(data) {
+				if (data['subsonic-response'].status == "ok") {
+					params.success();
+				} else {
+					params.error(data['subsonic-response'].error.message);
+				}
+			});
+		})
+		.catch(function(error) {
+			params.error(error);
+		});
+	}
+
 	search(params) {
 		fetch(this.getUrl('search3', {query: params.query, songCount: params.songCount}), {
 			mode: 'cors'
