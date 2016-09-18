@@ -26,14 +26,17 @@ export default class TrackList extends React.Component {
 	}
 
 	render() {
-		var tracks = this.props.tracks.map(function (entry) {
-			return (
-				<Track key={entry.id} subsonic={this.props.subsonic} events={this.props.events} track={entry}
-					playing={this.state.playing != null && this.state.playing.id == entry.id}
-					queued={this.state.queue.indexOf(entry.id) > -1} playlist={this.props.playlist}
-					iconSize={this.props.iconSize} />
-			);
-		}.bind(this));
+		var tracks = []
+		if (this.props.tracks && this.props.tracks.length > 0) {
+			tracks = this.props.tracks.map(function (entry) {
+				return (
+					<Track key={entry.id} subsonic={this.props.subsonic} events={this.props.events} track={entry}
+						playing={this.state.playing != null && this.state.playing.id == entry.id}
+						queued={this.state.queue.indexOf(entry.id) > -1} playlist={this.props.playlist}
+						iconSize={this.props.iconSize} />
+				);
+			}.bind(this));
+		}
 
 		return (
 			<table className="ui selectable single line very basic compact table trackList">

@@ -163,7 +163,7 @@ export default class Subsonic {
 			mode: 'cors'
 		}).then(function(result) {
 			result.json().then(function(data) {
-				params.success({playlist: data['subsonic-response'].playlist.entry});
+				params.success({playlist: data['subsonic-response'].playlist});
 			});
 		})
 		.catch(function(error) {
@@ -189,7 +189,7 @@ export default class Subsonic {
 	}
 
 	updatePlaylist(params) {
-		var options = {};
+		var options = {playlistId: params.playlistId};
 		if (params.name) options.name = params.name;
 		if (params.comment) options.comment = params.comment;
 		if (params.add) options.songIdToAdd = params.add.join();
