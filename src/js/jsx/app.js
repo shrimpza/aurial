@@ -2,7 +2,9 @@ import React from 'react'
 import Events from '../events'
 import PlayerExtras from '../playerextra'
 import Player from './player'
-import {PlaylistManager,Selection,PlaylistQueue} from './playlist'
+import Selection from './selection'
+import PlaylistManager from './playlist'
+import PlayerQueue from './queue'
 import ArtistList from './browser'
 import {TabGroup} from './common'
 import Settings from './settings'
@@ -19,9 +21,9 @@ export default class App extends React.Component {
 
 		var player = <Player subsonic={this.props.subsonic} events={this.events} trackBuffer={this.props.trackBuffer} />;
 
-		var playlists = <PlaylistManager subsonic={this.props.subsonic} events={this.events} iconSize="20" />;
 		var selection = <Selection subsonic={this.props.subsonic} events={this.events} iconSize="20" />;
-		var queue = <PlaylistQueue subsonic={this.props.subsonic} events={this.events} iconSize="20" />;
+		var playlists = <PlaylistManager subsonic={this.props.subsonic} events={this.events} iconSize="20" />;
+		var queue = <PlayerQueue subsonic={this.props.subsonic} events={this.events} iconSize="20" />;
 
 		var artistList = <ArtistList subsonic={this.props.subsonic} events={this.events} iconSize="30" />;
 
