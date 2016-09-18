@@ -55,6 +55,7 @@ export default class AudioPlayer {
   unload() {
     this.stop();
     this.audio.source = '';
+    this.audio.load();
     return this;
   }
 }
