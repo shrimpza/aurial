@@ -189,13 +189,30 @@ export default class Subsonic {
 	}
 
 	updatePlaylist(params) {
-		var options = {playlistId: params.playlistId};
+		var options = {playlistId: params.id};
 		if (params.name) options.name = params.name;
 		if (params.comment) options.comment = params.comment;
 		if (params.add) options.songIdToAdd = params.add.join();
 		if (params.remove) options.songIndexToRemove = params.remove.join();
 
 		fetch(this.getUrl('updatePlaylist', options), {
+			mode: 'cors'
+		}).then(function(result) {
+			result.json().then(function(data) {
+				if (data['subsonic-response'].status == "ok") {
+					params.success();
+				} else {
+					params.error(data['subsonic-response'].error.message);
+				}
+			});
+		})
+		.catch(function(error) {
+			params.error(error);
+		});
+	}
+
+	deletePlaylist(params) {
+		fetch(this.getUrl('deletePlaylist', {id: params.id}), {
 			mode: 'cors'
 		}).then(function(result) {
 			result.json().then(function(data) {

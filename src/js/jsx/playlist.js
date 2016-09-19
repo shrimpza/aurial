@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment'
-import {IconMessage,CoverArt} from './common'
+import {IconMessage,CoverArt,Prompt,InputPrompt} from './common'
 import TrackList from './tracklist'
 import {SecondsToTime,UniqueID} from '../util'
 
@@ -23,6 +23,9 @@ export default class PlaylistManager extends React.Component {
 		this.props.subsonic.getPlaylists({
 			success: function(data) {
 				this.setState({playlists: data.playlists});
+				if (this.state.playlist != null) {
+					this.loadPlaylist(this.state.playlist.id);
+				}
 			}.bind(this),
 			error: function(err) {
 				console.error(this, err);
@@ -55,7 +58,6 @@ export default class PlaylistManager extends React.Component {
 class PlaylistSelector extends React.Component {
 
 	componentDidMount() {
-		// TODO jquery crap https://github.com/shrimpza/aurial/issues/1
 		$('.playlistSelector .dropdown').dropdown({
 			action: 'activate',
 			onChange: function(value, text, selectedItem) {
@@ -130,6 +132,8 @@ class PlaylistInfo extends React.Component {
 		this.enqueue = this.enqueue.bind(this);
 		this.delete = this.delete.bind(this);
 		this.rename = this.rename.bind(this);
+		this.showRename = this.showRename.bind(this);
+		this.showDelete = this.showDelete.bind(this);
 	}
 
 	play() {
@@ -142,17 +146,33 @@ class PlaylistInfo extends React.Component {
 	}
 
 	delete() {
-		// TODO delete playlist
+		this.props.subsonic.deletePlaylist({
+			id: this.props.playlist.id,
+			success: this.props.changed.bind(this)
+		});
 	}
 
-	rename() {
+	rename(name) {
+		this.props.subsonic.updatePlaylist({
+			id: this.props.playlist.id,
+			name: name,
+			success: this.props.changed.bind(this)
+		});
+	}
+
+	showDelete() {
+		this.refs.deleter.show();
+	}
+	
+	showRename() {
 		this.refs.renamer.show();
 	}
 
 	render() {
 		return (
 			<div className="ui items">
-				<PlaylistNamer ref="renamer" subsonic={this.props.subsonic} playlist={this.props.playlist} changed={this.props.changed}/>
+				<InputPrompt ref="renamer" title="Rename Playlist" message="Enter a new name for this playlist" value={this.props.playlist.name} approve={this.rename} />
+				<Prompt ref="deleter" title="Delete Playlist" message="Are you sure you want to delete this playlist?" icon="warning circle" approve={this.delete} />
 				<div className="item">
 					<div className="ui small image">
 						<CoverArt subsonic={this.props.subsonic} id={this.props.playlist.coverArt} size={200} />
@@ -169,86 +189,10 @@ class PlaylistInfo extends React.Component {
 						<div className="extra">
 							<button className="ui small compact labelled icon green button" onClick={this.play}><i className="play icon"></i> Play</button>
 							<button className="ui small compact labelled icon olive button" onClick={this.enqueue}><i className="plus icon"></i> Add to Queue</button>
-							<button className="ui small compact labelled icon grey button" onClick={this.rename}><i className="edit icon"></i> Rename</button>
-							<button className="ui small compact labelled icon red button" onClick={this.delete}><i className="trash icon"></i> Delete</button>
+							<button className="ui small compact labelled icon grey button" onClick={this.showRename}><i className="edit icon"></i> Rename</button>
+							<button className="ui small compact labelled icon red button" onClick={this.showDelete}><i className="trash icon"></i> Delete</button>
 						</div>
 					</div>
-				</div>
-			</div>
-		);
-	}
-}
-
-export class PlaylistNamer extends React.Component {
-	_id = UniqueID();
-
-	defaultProps = {
-		playlist: null
-	}
-
-	// state = {
-	// 	name: ""
-	// }
-
-	constructor(props, context) {
-		super(props, context);
-
-		this.state = {
-			name: props.playlist.name
-		}
-
-		this.show = this.show.bind(this);
-		this.change = this.change.bind(this);
-	}
-
-	componentDidMount() {
-		$('#' + this._id).modal({
-			onApprove : function() {
-				this.saveName(this.props.playlist.id, this.state.name);
-			}.bind(this)
-		});
-	}
-
-	show() {
-		$('#' + this._id).modal('show');
-	}
-
-	saveName(playlistId, name) {
-		this.props.subsonic.updatePlaylist({
-			playlistId: playlistId,
-			name: name,
-			success: function() {
-				this.props.changed();
-			}.bind(this)
-		});
-	}
-
-	change(e) {
-		switch (e.target.name) {
-			case "name": this.setState({name: e.target.value}); break;
-		}
-	}
-
-	render() {
-		return (
-			<div id={this._id} className="ui small modal">
-				<i className="close icon"></i>
-				<div className="header">
-					Rename Playlist
-				</div>
-				<div className="content">
-					<div className="description">
-						<form className="ui form" onSubmit={function() {return false;}}>
-							<div className="field">
-								<label>Playlist Name</label>
-								<input name="name" type="text" onChange={this.change} value={this.state.name} />
-							</div>
-						</form>
-					</div>
-				</div>
-				<div className="actions">
-					<div className="ui cancel button">Cancel</div>
-					<div className="ui blue ok button">OK</div>
 				</div>
 			</div>
 		);
