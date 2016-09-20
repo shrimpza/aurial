@@ -6,9 +6,35 @@ import {SecondsToTime,UniqueID} from '../util'
 
 export default class PlaylistManager extends React.Component {
 
+	constructor(props, context) {
+		super(props, context);
+
+		this.loadPlaylists = this.loadPlaylists.bind(this);
+		this.loadPlaylist = this.loadPlaylist.bind(this);
+	}
+
+	loadPlaylists() {
+		this.refs.selector.loadPlaylists();
+	}
+
+	loadPlaylist(id) {
+		this.refs.playlist.loadPlaylist(id);
+	}
+
+	render() {
+		return (
+			<div className="playlistManager">
+				<PlaylistSelector ref="selector" subsonic={this.props.subsonic} iconSize={this.props.iconSize} selected={this.loadPlaylist} />
+				<Playlist ref="playlist" subsonic={this.props.subsonic} events={this.props.events} iconSize={this.props.iconSize} changed={this.loadPlaylists} />
+			</div>
+		);
+	}
+}
+
+class PlaylistSelector extends React.Component {
+
 	state = {
-		playlists: [],
-		playlist: null
+		playlists: []
 	}
 
 	constructor(props, context) {
@@ -16,7 +42,15 @@ export default class PlaylistManager extends React.Component {
 		this.loadPlaylists();
 
 		this.loadPlaylists = this.loadPlaylists.bind(this);
-		this.loadPlaylist = this.loadPlaylist.bind(this);
+	}
+
+	componentDidMount() {
+		$('.playlistSelector .dropdown').dropdown({
+			action: 'activate',
+			onChange: function(value, text, selectedItem) {
+				this.props.selected(value);
+			}.bind(this)
+		});
 	}
 
 	loadPlaylists() {
@@ -33,43 +67,10 @@ export default class PlaylistManager extends React.Component {
 		});
 	}
 
-	loadPlaylist(id) {
-		this.props.subsonic.getPlaylist({
-			id: id,
-			success: function(data) {
-				this.setState({playlist: data.playlist});
-			}.bind(this),
-			error: function(err) {
-				console.error(this, err);
-			}.bind(this)
-		});
-	}
-
-	render() {
-		return (
-			<div className="playlistManager">
-				<PlaylistSelector subsonic={this.props.subsonic} playlists={this.state.playlists} iconSize={this.props.iconSize} selected={this.loadPlaylist} />
-				<Playlist subsonic={this.props.subsonic} events={this.props.events} iconSize={this.props.iconSize} playlist={this.state.playlist} changed={this.loadPlaylists} />
-			</div>
-		);
-	}
-}
-
-class PlaylistSelector extends React.Component {
-
-	componentDidMount() {
-		$('.playlistSelector .dropdown').dropdown({
-			action: 'activate',
-			onChange: function(value, text, selectedItem) {
-				this.props.selected(value);
-			}.bind(this)
-		});
-	}
-
 	render() {
 		var playlists = [];
-		if (this.props.playlists) {
-			playlists = this.props.playlists.map(function (playlist) {
+		if (this.state.playlists) {
+			playlists = this.state.playlists.map(function (playlist) {
 				return (
 					<PlaylistSelectorItem key={playlist.id} subsonic={this.props.subsonic} data={playlist} iconSize={this.props.iconSize} />
 				);
@@ -103,8 +104,30 @@ class PlaylistSelectorItem extends React.Component {
 }
 
 class Playlist extends React.Component {
+
+	state = {
+		playlist: null
+	}
+
+	constructor(props, context) {
+		super(props, context);
+		this.loadPlaylist = this.loadPlaylist.bind(this);
+	}
+
+	loadPlaylist(id) {
+		this.props.subsonic.getPlaylist({
+			id: id,
+			success: function(data) {
+				this.setState({playlist: data.playlist});
+			}.bind(this),
+			error: function(err) {
+				console.error(this, err);
+			}.bind(this)
+		});
+	}
+
 	render() {
-		if (!this.props.playlist) {
+		if (!this.state.playlist) {
 			return (
 				<div className="playlistView">
 					<IconMessage icon="info circle" header="Nothing Selected!" message="Select a playlist." />
@@ -114,9 +137,9 @@ class Playlist extends React.Component {
 		} else {
 			return (
 				<div className="ui basic segment playlistView">
-					<PlaylistInfo events={this.props.events} subsonic={this.props.subsonic} playlist={this.props.playlist} changed={this.props.changed} />
-					<TrackList subsonic={this.props.subsonic} tracks={this.props.playlist.entry}
-						events={this.props.events} playlist={this.props.playlist.id} iconSize={this.props.iconSize} />
+					<PlaylistInfo events={this.props.events} subsonic={this.props.subsonic} playlist={this.state.playlist} changed={this.props.changed} />
+					<TrackList subsonic={this.props.subsonic} tracks={this.state.playlist.entry} events={this.props.events}
+						playlist={this.state.playlist.id} iconSize={this.props.iconSize} />
 				</div>
 			);
 		}
@@ -163,7 +186,7 @@ class PlaylistInfo extends React.Component {
 	showDelete() {
 		this.refs.deleter.show();
 	}
-	
+
 	showRename() {
 		this.refs.renamer.show();
 	}
@@ -172,7 +195,7 @@ class PlaylistInfo extends React.Component {
 		return (
 			<div className="ui items">
 				<InputPrompt ref="renamer" title="Rename Playlist" message="Enter a new name for this playlist" value={this.props.playlist.name} approve={this.rename} />
-				<Prompt ref="deleter" title="Delete Playlist" message="Are you sure you want to delete this playlist?" icon="warning circle" approve={this.delete} />
+				<Prompt ref="deleter" title="Delete Playlist" message="Are you sure you want to delete this playlist?" ok="Yes" icon="red warning circle" approve={this.delete} />
 				<div className="item">
 					<div className="ui small image">
 						<CoverArt subsonic={this.props.subsonic} id={this.props.playlist.coverArt} size={200} />
