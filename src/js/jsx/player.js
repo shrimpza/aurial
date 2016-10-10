@@ -131,6 +131,7 @@ export default class Player extends React.Component {
 			}
 		}
 
+		if (this.player != null) this.player.unload();
 		this.play(prev);
 	}
 
