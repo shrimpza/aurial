@@ -31,7 +31,8 @@
         top: 0; right: 0; left: 380px; bottom: 0;
         background-repeat: no-repeat;
         background-size: 100% auto;
-        opacity: 0.2;
+        opacity: 0.3;
+        filter: blur(20px);
     }
 
     #player-frame {
