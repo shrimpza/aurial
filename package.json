@@ -23,16 +23,14 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-runtime": "^6.9.1",
-    "copy-webpack-plugin": "^3.0.1",
+    "copy-webpack-plugin": "^4.0.1",
     "exports-loader": "^0.6.3",
-    "html-webpack-plugin": "^2.22.0",
+    "html-webpack-plugin": "^2.28.0",
     "imports-loader": "^0.6.5",
     "moment": "^2.13.0",
     "blueimp-md5": "^2.3.0",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
-    "watchpack": "^1.1.0",
-    "webpack": "^1.13.2",
-    "whatwg-fetch": "^1.0.0"
+    "webpack": "^2.2.1"
   }
 }
