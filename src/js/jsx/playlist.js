@@ -1,56 +1,44 @@
 import React from 'react'
 import moment from 'moment'
-import {IconMessage,CoverArt,Prompt,InputPrompt} from './common'
+import {IconMessage,CoverArt,Prompt,InputPrompt,ListPrompt} from './common'
 import TrackList from './tracklist'
 import {SecondsToTime,UniqueID} from '../util'
 
 export default class PlaylistManager extends React.Component {
+
+	state = {
+		playlists: [],
+		playlist: null
+	}
 
 	constructor(props, context) {
 		super(props, context);
 
 		this.loadPlaylists = this.loadPlaylists.bind(this);
 		this.loadPlaylist = this.loadPlaylist.bind(this);
-	}
+		this.showList = this.showList.bind(this);
+		this.receive = this.receive.bind(this);
 
-	loadPlaylists() {
-		this.refs.selector.loadPlaylists();
-	}
-
-	loadPlaylist(id) {
-		this.refs.playlist.loadPlaylist(id);
-	}
-
-	render() {
-		return (
-			<div className="playlistManager">
-				<PlaylistSelector ref="selector" subsonic={this.props.subsonic} iconSize={this.props.iconSize} selected={this.loadPlaylist} />
-				<Playlist ref="playlist" subsonic={this.props.subsonic} events={this.props.events} iconSize={this.props.iconSize} changed={this.loadPlaylists} />
-			</div>
-		);
-	}
-}
-
-class PlaylistSelector extends React.Component {
-
-	state = {
-		playlists: []
-	}
-
-	constructor(props, context) {
-		super(props, context);
 		this.loadPlaylists();
 
-		this.loadPlaylists = this.loadPlaylists.bind(this);
+		props.events.subscribe({
+			subscriber: this,
+			event: ["playlistManage"]
+		});
 	}
 
-	componentDidMount() {
-		$('.playlistSelector .dropdown').dropdown({
-			action: 'activate',
-			onChange: function(value, text, selectedItem) {
-				this.props.selected(value);
-			}.bind(this)
-		});
+	receive(event) {
+		switch (event.event) {
+			case "playlistManage":
+			if (event.data.action == "ADD") {
+				this.showList(function(playlist) {
+					alert("selected: " + playlist);
+				});
+			} else if (event.data.action == "CREATE") {
+				// make a playlist etc
+			}
+			break;
+		}
 	}
 
 	loadPlaylists() {
@@ -67,10 +55,65 @@ class PlaylistSelector extends React.Component {
 		});
 	}
 
+	loadPlaylist(id) {
+		this.props.subsonic.getPlaylist({
+			id: id,
+			success: function(data) {
+				this.setState({playlist: data.playlist});
+			}.bind(this),
+			error: function(err) {
+				console.error(this, err);
+			}.bind(this)
+		});
+	}
+
+	showList(approve) {
+		this.refs.lister.show(approve);
+	}
+
 	render() {
 		var playlists = [];
 		if (this.state.playlists) {
 			playlists = this.state.playlists.map(function (playlist) {
+				return (
+					<PlaylistSelectorItem key={playlist.id} subsonic={this.props.subsonic} data={playlist} iconSize={this.props.iconSize} simple={true} />
+				);
+			}.bind(this));
+		}
+
+		return (
+			<div className="playlistManager">
+				<ListPrompt ref="lister" title="Add to playlist" message="Choose a playlist to add tracks to" ok="Add" icon="teal list" items={playlists} />
+				<PlaylistSelector subsonic={this.props.subsonic} iconSize={this.props.iconSize} playlists={this.state.playlists} selected={this.loadPlaylist} />
+				<Playlist subsonic={this.props.subsonic} events={this.props.events} iconSize={this.props.iconSize} playlist={this.state.playlist} changed={this.loadPlaylists} />
+			</div>
+		);
+	}
+}
+
+class PlaylistSelector extends React.Component {
+
+	defaultProps = {
+		playlists: []
+	}
+
+	constructor(props, context) {
+		super(props, context);
+	}
+
+	componentDidMount() {
+		$('.playlistSelector .dropdown').dropdown({
+			action: 'activate',
+			onChange: function(value, text, selectedItem) {
+				if (this.props.selected) this.props.selected(value);
+			}.bind(this)
+		});
+	}
+
+	render() {
+		var playlists = [];
+		if (this.props.playlists) {
+			playlists = this.props.playlists.map(function (playlist) {
 				return (
 					<PlaylistSelectorItem key={playlist.id} subsonic={this.props.subsonic} data={playlist} iconSize={this.props.iconSize} />
 				);
@@ -93,10 +136,14 @@ class PlaylistSelector extends React.Component {
 
 class PlaylistSelectorItem extends React.Component {
 	render() {
+		var description = !this.props.simple
+		? <span className="description">{this.props.data.songCount} tracks, {SecondsToTime(this.props.data.duration)}</span>
+		: null;
+
 		return (
 			<div className="item" data-value={this.props.data.id}>
 				<CoverArt subsonic={this.props.subsonic} id={this.props.data.coverArt} size={this.props.iconSize} />
-				<span className="description">{this.props.data.songCount} tracks, {SecondsToTime(this.props.data.duration)}</span>
+				{description}
 				<span className="text">{this.props.data.name}</span>
 			</div>
 		);
@@ -105,41 +152,27 @@ class PlaylistSelectorItem extends React.Component {
 
 class Playlist extends React.Component {
 
-	state = {
+	defaultProps = {
 		playlist: null
 	}
 
 	constructor(props, context) {
 		super(props, context);
-		this.loadPlaylist = this.loadPlaylist.bind(this);
-	}
-
-	loadPlaylist(id) {
-		this.props.subsonic.getPlaylist({
-			id: id,
-			success: function(data) {
-				this.setState({playlist: data.playlist});
-			}.bind(this),
-			error: function(err) {
-				console.error(this, err);
-			}.bind(this)
-		});
 	}
 
 	render() {
-		if (!this.state.playlist) {
+		if (!this.props.playlist) {
 			return (
 				<div className="playlistView">
 					<IconMessage icon="info circle" header="Nothing Selected!" message="Select a playlist." />
 				</div>
 			);
-
 		} else {
 			return (
 				<div className="ui basic segment playlistView">
-					<PlaylistInfo events={this.props.events} subsonic={this.props.subsonic} playlist={this.state.playlist} changed={this.props.changed} />
-					<TrackList subsonic={this.props.subsonic} tracks={this.state.playlist.entry} events={this.props.events}
-						playlist={this.state.playlist.id} iconSize={this.props.iconSize} />
+					<PlaylistInfo events={this.props.events} subsonic={this.props.subsonic} playlist={this.props.playlist} changed={this.props.changed} />
+					<TrackList subsonic={this.props.subsonic} tracks={this.props.playlist.entry} events={this.props.events}
+						playlist={this.props.playlist.id} iconSize={this.props.iconSize} />
 				</div>
 			);
 		}

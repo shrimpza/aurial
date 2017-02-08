@@ -60,7 +60,7 @@ class SelectionAlbum extends React.Component {
 	}
 
 	playlist() {
-		// TODO add/create playlist
+		this.props.events.publish({event: "playlistManage", data: {action: "ADD", tracks: this.props.album.song}});
 	}
 
 	render() {
