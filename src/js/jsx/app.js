@@ -8,6 +8,7 @@ import PlayerQueue from './queue'
 import ArtistList from './browser'
 import {TabGroup} from './common'
 import Settings from './settings'
+import {ArrayDeleteElement} from '../util'
 
 export default class App extends React.Component {
 
@@ -28,6 +29,8 @@ export default class App extends React.Component {
 		var artistList = <ArtistList subsonic={this.props.subsonic} events={this.events} iconSize="30" />;
 
 		var settings = <Settings subsonic={this.props.subsonic} events={this.events} />;
+
+		var messages = <Messages events={this.events} />;
 
 		var tabs = [];
 		tabs.push({id:"selection", title: "Selection", active: true, icon: "chevron right"});
@@ -55,6 +58,83 @@ export default class App extends React.Component {
 						<div id="settings" data-tab="settings" className="ui tab">{settings}</div>
 					</div>
 				</div>
+				{messages}
+			</div>
+		);
+	}
+}
+
+export class Messages extends React.Component {
+
+	static defaultProps = {
+		showTime: 8 // seconds
+	}
+
+	static message(events, message, type, icon) {
+		events.publish({
+			event: "message",
+			data: {
+				text: message,
+				type: type,
+				icon: icon
+			}
+		});
+	}
+
+	constructor(props, context) {
+		super(props, context);
+
+		this.state = {
+			messages: []
+		}
+
+		props.events.subscribe({
+			subscriber: this,
+			event: ["message"]
+		});
+
+		this.receive = this.receive.bind(this);
+		this.removeMessage = this.removeMessage.bind(this);
+	}
+
+	receive(event) {
+		if (event.event == "message") {
+			event.data._id = "msg" + Math.random();
+			var msgs =  this.state.messages.slice();
+			msgs.push(event.data);
+			this.setState({messages: msgs});
+
+			setTimeout(function() {
+				this.removeMessage(event.data);
+			}.bind(this), this.props.showTime * 1000);
+		}
+	}
+
+	removeMessage(message) {
+		var msgs =  this.state.messages.slice();
+		ArrayDeleteElement(msgs, message);
+		this.setState({messages: msgs});
+	}
+
+	render() {
+		var anim = {
+			animationDuration: ((this.props.showTime / 2) + 0.2) + "s",
+			animationDelay: (this.props.showTime / 2) + "s"
+		}
+
+		var messages = this.state.messages.map(function(m) {
+			var icon = m.icon ? <i className={m.icon + " icon"}></i> : null;
+			return (
+				<div className={"ui icon " + m.type + " message"} key={m._id} style={anim}>
+					{icon}
+					<p>{m.text}</p>
+				</div>
+			);
+		});
+
+		return (
+			<div className="messages">
+				{messages}
 			</div>
 		);
 	}

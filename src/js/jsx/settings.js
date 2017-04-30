@@ -1,6 +1,7 @@
 import React from 'react'
 import Subsonic from '../subsonic'
 import {UniqueID} from '../util'
+import {Messages} from './app'
 
 const TEST_UNTESTED = 0;
 const TEST_BUSY = 1;
@@ -44,7 +45,8 @@ export default class Settings extends React.Component {
 		localStorage.setItem('backgroundArt', this.state.backgroundArt);
 		localStorage.setItem('trackBuffer', this.state.trackBuffer);
 
-		alert("Settings saved, please refresh the page.");
+		Messages.message(this.props.events, "Settings saved, please refresh the page.", "success", "Save");
+
 		// TODO reload app with new settings
 		// var subsonic = new Subsonic(
 		// 	localStorage.getItem('url'),
@@ -80,8 +82,6 @@ export default class Settings extends React.Component {
 
 		var salt = UniqueID();
 
-		console.log(salt, this.state.password, Subsonic.createToken(this.state.password, salt));
-
 		var subsonic = new Subsonic(
 			this.state.url,
 			this.state.user,
@@ -97,15 +97,15 @@ export default class Settings extends React.Component {
 			success: function(data) {
 				if (data.status == "ok") {
 					this.setState({testState: TEST_SUCCESS});
-					alert("Success!");
+					Messages.message(this.props.events, "Connection test successful!", "success", "plug");
 				} else {
 					this.setState({testState: TEST_FAILED});
-					alert(data.error.message);
+					Messages.message(this.props.events, data.error.message, "error", "plug");
 				}
 			}.bind(this),
 			error: function(status, msg) {
 				this.setState({testState: TEST_FAILED});
-				alert("Failed to ping server");
+				Messages.message(this.props.events, "Failed to connect to server.", "error", "plug");
 			}.bind(this)
 		});
 	}
