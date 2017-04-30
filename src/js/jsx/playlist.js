@@ -16,6 +16,8 @@ export default class PlaylistManager extends React.Component {
 
 		this.loadPlaylists = this.loadPlaylists.bind(this);
 		this.loadPlaylist = this.loadPlaylist.bind(this);
+		this.createPlaylist = this.createPlaylist.bind(this);
+		this.updatePlaylist = this.updatePlaylist.bind(this);
 		this.showList = this.showList.bind(this);
 		this.receive = this.receive.bind(this);
 
@@ -32,16 +34,49 @@ export default class PlaylistManager extends React.Component {
 			case "playlistManage":
 			if (event.data.action == "ADD") {
 				this.showList(function(playlist) {
-					alert("selected: " + playlist);
+					var tracks = event.data.tracks.map(function(t) {
+						return t.id;
+					});
+
 					if (isNaN(playlist)) {
-						alert("new playlist");
+						this.createPlaylist(playlist, tracks);
+					} else {
+						this.updatePlaylist(playlist, tracks, []);
 					}
-				});
+				}.bind(this));
 			} else if (event.data.action == "CREATE") {
 				// make a playlist etc
 			}
 			break;
 		}
+	}
+
+	createPlaylist(name, trackIds) {
+		this.props.subsonic.createPlaylist({
+			name: name,
+			tracks: trackIds,
+			success: function() {
+				alert("New playlist created");
+				this.loadPlaylists();
+			}.bind(this),
+			error: function(err) {
+				console.error(this, err);
+			}.bind(this)
+		});
+	}
+
+	updatePlaylist(id, add, remove) {
+		this.props.subsonic.updatePlaylist({
+			id: id,
+			add: add,
+			remove: remove,
+			success: function() {
+				alert("Playlist updated");
+			},
+			error: function(err) {
+				console.error(this, err);
+			}.bind(this)
+		});
 	}
 
 	loadPlaylists() {

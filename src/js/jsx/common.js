@@ -249,6 +249,8 @@ export class ListPrompt extends React.Component {
 			}.bind(this)
 		});
 
+		$('#' + this._id + ' .dropdown').dropdown('clear');
+
 		$('#' + this._id).modal('show');
 	}
 
