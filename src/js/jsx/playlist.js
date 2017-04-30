@@ -33,6 +33,9 @@ export default class PlaylistManager extends React.Component {
 			if (event.data.action == "ADD") {
 				this.showList(function(playlist) {
 					alert("selected: " + playlist);
+					if (isNaN(playlist)) {
+						alert("new playlist");
+					}
 				});
 			} else if (event.data.action == "CREATE") {
 				// make a playlist etc
@@ -83,7 +86,8 @@ export default class PlaylistManager extends React.Component {
 
 		return (
 			<div className="playlistManager">
-				<ListPrompt ref="lister" title="Add to playlist" message="Choose a playlist to add tracks to" ok="Add" icon="teal list" items={playlists} />
+				<ListPrompt ref="lister" title="Add to playlist" message="Choose a playlist to add tracks to" ok="Add" icon="teal list"
+					defaultText="Playlists..." allowNew={true} items={playlists} />
 				<PlaylistSelector subsonic={this.props.subsonic} iconSize={this.props.iconSize} playlists={this.state.playlists} selected={this.loadPlaylist} />
 				<Playlist subsonic={this.props.subsonic} events={this.props.events} iconSize={this.props.iconSize} playlist={this.state.playlist} changed={this.loadPlaylists} />
 			</div>

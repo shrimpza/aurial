@@ -208,11 +208,13 @@ export class ListPrompt extends React.Component {
 	static defaultProps = {
 		title: "Prompt",
 		message: "Please select an option",
+		defaultText: "Select an option...",
 		ok: "OK",
 		cancel: "Cancel",
 		icon: "grey list",
 		items: [],
 		value: null,
+		allowNew: false,
 		approve: function() { },
 		deny: function() { }
 	}
@@ -228,13 +230,6 @@ export class ListPrompt extends React.Component {
 	}
 
 	componentDidMount() {
-		$('#' + this._id + ' .dropdown').dropdown({
-			action: 'activate',
-			onChange: function(value, text, selectedItem) {
-				this.setState({value: value});
-			}.bind(this)
-		});
-
 		$('#' + this._id).modal({
 			onApprove: function() {
 				this.state.approve(this.state.value);
@@ -245,6 +240,15 @@ export class ListPrompt extends React.Component {
 
 	show(approve) {
 		this.setState({value: this.props.value, approve: approve});
+
+		$('#' + this._id + ' .dropdown').dropdown({
+			action: 'activate',
+			allowAdditions: this.props.allowNew,
+			onChange: function(value, text, selectedItem) {
+				this.setState({value: value});
+			}.bind(this)
+		});
+
 		$('#' + this._id).modal('show');
 	}
 
@@ -260,10 +264,13 @@ export class ListPrompt extends React.Component {
 					</div>
 					<div className="description">
 						<div>{this.props.message}</div>
-						<div className="ui fluid selection dropdown">
-							<i className="dropdown icon"></i>
-							<div className="menu">
-								{this.props.items}
+						<div className="ui basic segment">
+							<div className="ui fluid search selection dropdown">
+								<i className="dropdown icon"></i>
+								<div className="default text">{this.props.defaultText}</div>
+								<div className="menu">
+									{this.props.items}
+								</div>
 							</div>
 						</div>
 					</div>
