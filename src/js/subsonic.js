@@ -49,7 +49,13 @@ export default class Subsonic {
 		});
 
 		Object.keys(params).forEach(function(k) {
-			result += k + "=" + params[k] + "&";
+			if (Array.isArray(params[k])) {
+				params[k].forEach(function(v) {
+					result += k + "=" + v + "&";
+				});
+			} else {
+				result += k + "=" + params[k] + "&";
+			}
 		});
 
 		return result;
@@ -172,7 +178,7 @@ export default class Subsonic {
 	}
 
 	createPlaylist(params) {
-		fetch(this.getUrl('createPlaylist', {name: params.name}), {
+		fetch(this.getUrl('createPlaylist', {name: params.name, songId: params.tracks}), {
 			mode: 'cors'
 		}).then(function(result) {
 			result.json().then(function(data) {
@@ -192,8 +198,8 @@ export default class Subsonic {
 		var options = {playlistId: params.id};
 		if (params.name) options.name = params.name;
 		if (params.comment) options.comment = params.comment;
-		if (params.add) options.songIdToAdd = params.add.join();
-		if (params.remove) options.songIndexToRemove = params.remove.join();
+		if (params.add) options.songIdToAdd = params.add;
+		if (params.remove) options.songIndexToRemove = params.remove;
 
 		fetch(this.getUrl('updatePlaylist', options), {
 			mode: 'cors'
