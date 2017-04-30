@@ -1,6 +1,7 @@
 import React from 'react'
 import {UniqueID} from '../util'
 import {IconMessage,CoverArt} from './common'
+import {Messages} from './app'
 
 export default class ArtistList extends React.Component {
 
@@ -25,7 +26,7 @@ export default class ArtistList extends React.Component {
 			}.bind(this),
 			error: function(err) {
 				this.setState({error: <IconMessage type="negative" icon="warning circle" header="" message="Failed to load artists. Check settings." />, loaded: true});
-				console.log(this, err);
+				console.error(this, err);
 			}.bind(this)
 		})
 	}
@@ -91,6 +92,7 @@ export class Artist extends React.Component {
 			}.bind(this),
 			error: function(err) {
 				console.error(this, err);
+				Messages.message(this.props.events, err, "error", "warning sign");
 			}.bind(this)
 		});
 	}
@@ -144,6 +146,7 @@ class Album extends React.Component {
 			}.bind(this),
 			error: function(err) {
 				console.error(this, err);
+				Messages.message(this.props.events, err, "error", "warning sign");
 			}.bind(this)
 		});
 	}
