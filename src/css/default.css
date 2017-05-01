@@ -65,7 +65,7 @@
 
 	#playlist-frame {
 		position: absolute;
-		top: 100px; right: 0px; bottom: 0px; left: 380px;
+		top: 100px; right: 0; bottom: 0; left: 380px;
 	}
 
 	#playlist-menu {
@@ -78,32 +78,32 @@
 		top: 45px; right: 0; bottom: 0; left: 0;
 	}
 
-	#playlist-content #playlist-selection {
+	#playlist-selection {
 		position: absolute;
 		top: 0; right: 0; bottom: 0; left: 0;
 	}
 
-	#playlist-content #playlist-selection .selectionView {
+	#playlist-selection .selectionView {
 		position: absolute;
 		top: 0; right: 0; bottom: 0; left: 0;
 		overflow: auto;
 	}
 
-	#playlist-content #playlist-selection .selectionView .item .header .artist {
+	#playlist-selection .selectionView .item .header .artist {
 		font-weight: normal;
 		font-size: 0.8em;
 	}
 
-	#playlist-content #playlist-selection .selectionView .item .meta div {
+	#playlist-selection .selectionView .item .meta div {
 		line-height: 1.2em;
 	}
 
-	#playlist-content #playlist-playlists {
+	#playlist-playlists {
 		position: absolute;
 		top: 0; right: 0; bottom: 0; left: 0;
 	}
 
-	#playlist-content #playlist-playlists, #playlist-content #playlist-playlists .playlistManager {
+	#playlist-playlists, #playlist-playlists .playlistManager {
 		position: absolute;
 		top: 0; right: 0; bottom: 0; left: 0;
 	}
@@ -120,7 +120,7 @@
 		overflow: auto;
 	}
 
-	#playlist-content #playlist-playing .queueView {
+	#playlist-playing .queueView {
 		position: absolute;
 		top: 0; right: 0; bottom: 0; left: 0;
 		overflow: auto;
