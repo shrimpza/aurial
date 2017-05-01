@@ -138,7 +138,7 @@ export default class Settings extends React.Component {
 		}
 
 		return (
-			<div className="ui basic segment" id="subsonic-settings">
+			<div className="ui basic segment">
 				<form className="ui form" onSubmit={this.save}>
 					<h3 className="ui dividing header">
 						Subsonic Connection

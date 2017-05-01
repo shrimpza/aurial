@@ -1,11 +1,6 @@
 /* style for desktop and larger displays */
 @media screen and (min-width: 1000px) {
-	#frames {
-		position: absolute;
-		top: 0; right: 0; bottom: 0; left: 0;
-	}
-
-	#browser-frame {
+	.browser-frame {
 		position: absolute;
 		top: 0; bottom: 0; left: 0;
 		width: 380px;
@@ -14,19 +9,19 @@
 		background-color: #1B1C1D;
 	}
 
-	#browser-frame .segment {
+	.browser-frame .segment {
 		padding:0.25em;
 	}
 
-	#browser-frame .segment .input {
+	.browser-frame .segment .input {
 		margin-top: 1.0em;
 	}
 
-	#browser-frame .accordion .segment {
+	.browser-frame .accordion .segment {
 		margin: 0 0 1rem 0;
 	}
 
-	#background-layer {
+	.background-layer {
 		position: absolute;
 		top: 0; right: 0; left: 380px; bottom: 0;
 		background-repeat: no-repeat;
@@ -35,92 +30,92 @@
 		filter: blur(20px);
 	}
 
-	#player-frame {
+	.player-frame {
 		position: absolute;
 		top: 0; right: 0; left: 380px;
 		height: 100px;
 	}
 
-	#player-frame .player {
+	.player-frame .player {
 		position: absolute;
 		top: 0; right: 0; left: 0; bottom: 0;
 	}
 
-	#player-frame .player .bar {
+	.player-frame .player .bar {
 		min-width: 0;
 	}
 
-	#player-frame .player table {
+	.player-frame .player table {
 		width: 100%;
 	}
 
-	#player-frame .player table td.controls {
+	.player-frame .player table td.controls {
 		width: 1%;
 		white-space: nowrap;
 	}
 
-	#player-frame .player table td.progress .progress {
+	.player-frame .player table td.progress .progress {
 		margin: 3px;
 	}
 
-	#playlist-frame {
+	.playlist-frame {
 		position: absolute;
 		top: 100px; right: 0; bottom: 0; left: 380px;
 	}
 
-	#playlist-menu {
+	.playlist-menu {
 		position: absolute;
 		top: 0; right: 0; bottom: 0; left: 0;
 	}
 
-	#playlist-content {
+	.playlist-content {
 		position: absolute;
 		top: 45px; right: 0; bottom: 0; left: 0;
 	}
 
-	#playlist-selection {
+	.playlist-selection {
 		position: absolute;
 		top: 0; right: 0; bottom: 0; left: 0;
 	}
 
-	#playlist-selection .selectionView {
+	.playlist-selection .selectionView {
 		position: absolute;
 		top: 0; right: 0; bottom: 0; left: 0;
 		overflow: auto;
 	}
 
-	#playlist-selection .selectionView .item .header .artist {
+	.playlist-selection .selectionView .item .header .artist {
 		font-weight: normal;
 		font-size: 0.8em;
 	}
 
-	#playlist-selection .selectionView .item .meta div {
+	.playlist-selection .selectionView .item .meta div {
 		line-height: 1.2em;
 	}
 
-	#playlist-playlists {
+	.playlist-playlists {
 		position: absolute;
 		top: 0; right: 0; bottom: 0; left: 0;
 	}
 
-	#playlist-playlists, #playlist-playlists .playlistManager {
+	.playlist-playlists, .playlist-playlists .playlistManager {
 		position: absolute;
 		top: 0; right: 0; bottom: 0; left: 0;
 	}
 
-	#playlist-playlists .playlistManager .playlistSelector {
+	.playlist-playlists .playlistManager .playlistSelector {
 		position: absolute;
 		top: 0; right: 0; left: 0;
 		height: 50px;
 	}
 
-	#playlist-playlists .playlistManager .playlistView {
+	.playlist-playlists .playlistManager .playlistView {
 		position: absolute;
 		top: 51px; right: 0; bottom:0; left: 0;
 		overflow: auto;
 	}
 
-	#playlist-playing .queueView {
+	.playlist-playing .queueView {
 		position: absolute;
 		top: 0; right: 0; bottom: 0; left: 0;
 		overflow: auto;

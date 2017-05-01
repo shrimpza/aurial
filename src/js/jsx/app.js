@@ -63,18 +63,18 @@ export default class App extends React.Component {
 
 		return (
 			<div>
-				<div id="browser-frame">
-					<div id="artistList">{artistList}</div>
+				<div className="browser-frame">
+					<div className="artistList">{artistList}</div>
 				</div>
-				<div id="background-layer"></div>
-				<div id="player-frame">{player}</div>
-				<div id="playlist-frame">
-					<div id="playlist-menu">{tabGroup}</div>
-					<div id="playlist-content">
-						<div id="playlist-selection" data-tab="selection" className="ui active tab">{selection}</div>
-						<div id="playlist-playlists" data-tab="playlists" className="ui tab">{playlists}</div>
-						<div id="playlist-playing" data-tab="playing" className="ui tab">{queue}</div>
-						<div id="settings" data-tab="settings" className="ui tab">{settings}</div>
+				<div className="background-layer"></div>
+				<div className="player-frame">{player}</div>
+				<div className="playlist-frame">
+					<div className="playlist-menu">{tabGroup}</div>
+					<div className="playlist-content">
+						<div className="playlist-selection ui active tab" data-tab="selection">{selection}</div>
+						<div className="playlist-playlists ui tab" data-tab="playlists">{playlists}</div>
+						<div className="playlist-playing ui tab" data-tab="playing">{queue}</div>
+						<div className="settings ui tab" data-tab="settings">{settings}</div>
 					</div>
 				</div>
 				{messages}
