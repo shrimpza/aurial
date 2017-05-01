@@ -21,10 +21,10 @@ module.exports = {
       title: 'Aurial',
       template: 'src/index.html'
     }),
-    new CopyWebpackPlugin([{
-      from: 'src/css',
-      to: 'css'
-    }])
+		new CopyWebpackPlugin([
+			{from: 'src/css', to: 'css'},
+			{from: 'README.md'}
+		])
   ],
   module: {
     rules: [

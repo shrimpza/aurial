@@ -5,10 +5,14 @@ node_js:
 script:
   - npm run dist
 
+before_deploy:
+  - mv ./dist ./aurial
+  - tar --exclude="*.tgz" -czf ./aurial/aurial.tgz ./aurial
+
 deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
-  local_dir: ./dist/
+  local_dir: ./aurial/
   on:
     branch: master
