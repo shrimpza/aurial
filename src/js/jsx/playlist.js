@@ -156,7 +156,7 @@ export default class PlaylistManager extends React.Component {
 				<ListPrompt ref="lister" title="Add to playlist" message="Choose a playlist to add tracks to" ok="Add" icon="teal list"
 					defaultText="Playlists..." allowNew={true} items={playlists} />
 
-				<PlaylistSelector subsonic={this.props.subsonic} iconSize={this.props.iconSize} playlists={this.state.playlists} selected={this.loadPlaylist} />
+				<PlaylistSelector subsonic={this.props.subsonic} events={this.props.events} iconSize={this.props.iconSize} playlists={this.state.playlists} selected={this.loadPlaylist} />
 				<Playlist subsonic={this.props.subsonic} events={this.props.events} iconSize={this.props.iconSize} playlist={this.state.playlist} changed={this.loadPlaylists} />
 			</div>
 		);
@@ -173,6 +173,8 @@ class PlaylistSelector extends React.Component {
 		super(props, context);
 
 		this.value = null;
+
+		this.create = this.create.bind(this);
 	}
 
 	componentDidMount() {
@@ -191,6 +193,10 @@ class PlaylistSelector extends React.Component {
 		if (this.value) $('.playlistSelector .dropdown').dropdown('set selected', this.value);
 	}
 
+	create() {
+		this.props.events.publish({event: "playlistManage", data: {action: "CREATE"}});
+	}
+
 	render() {
 		var playlists = [];
 		if (this.props.playlists) {
@@ -203,11 +209,18 @@ class PlaylistSelector extends React.Component {
 
 		return (
 			<div className="ui basic segment playlistSelector">
-				<div className="ui fluid selection dropdown">
-					<i className="dropdown icon"></i>
-					<div className="default text">Playlists...</div>
-					<div className="menu">
-						{playlists}
+				<div className="ui grid">
+					<div className="thirteen wide column">
+						<div className="ui fluid selection dropdown">
+							<i className="dropdown icon"></i>
+							<div className="default text">Playlists...</div>
+							<div className="menu">
+								{playlists}
+							</div>
+						</div>
+					</div>
+					<div className="three wide column">
+						<button className="ui fluid labelled icon green button" onClick={this.create}><i className="plus icon"></i> New Playlist</button>
 					</div>
 				</div>
 			</div>
