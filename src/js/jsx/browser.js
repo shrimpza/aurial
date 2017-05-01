@@ -27,6 +27,7 @@ export default class ArtistList extends React.Component {
 			error: function(err) {
 				this.setState({error: <IconMessage type="negative" icon="warning circle" header="" message="Failed to load artists. Check settings." />, loaded: true});
 				console.error(this, err);
+				Messages.message(this.props.events, "Unable to get artists: " + err.message, "error", "warning sign");
 			}.bind(this)
 		})
 	}
@@ -92,7 +93,7 @@ export class Artist extends React.Component {
 			}.bind(this),
 			error: function(err) {
 				console.error(this, err);
-				Messages.message(this.props.events, err, "error", "warning sign");
+				Messages.message(this.props.events, "Unable to load artist's albums: " + err.message, "error", "warning sign");
 			}.bind(this)
 		});
 	}
@@ -146,7 +147,7 @@ class Album extends React.Component {
 			}.bind(this),
 			error: function(err) {
 				console.error(this, err);
-				Messages.message(this.props.events, err, "error", "warning sign");
+				Messages.message(this.props.events, "Unable to load album: " + err.message, "error", "warning sign");
 			}.bind(this)
 		});
 	}

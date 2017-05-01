@@ -90,7 +90,7 @@ export default class PlaylistManager extends React.Component {
 			}.bind(this),
 			error: function(err) {
 				console.error(this, err);
-				Messages.message(this.props.events, err, "error", "warning sign");
+				Messages.message(this.props.events, "Failed to create playlist: " + err.message, "error", "warning sign");
 			}.bind(this)
 		});
 	}
@@ -105,7 +105,7 @@ export default class PlaylistManager extends React.Component {
 			},
 			error: function(err) {
 				console.error(this, err);
-				Messages.message(this.props.events, err, "error", "warning sign");
+				Messages.message(this.props.events, "Failed to update playlist: " + err.message, "error", "warning sign");
 			}.bind(this)
 		});
 	}
@@ -120,7 +120,7 @@ export default class PlaylistManager extends React.Component {
 			}.bind(this),
 			error: function(err) {
 				console.error(this, err);
-				Messages.message(this.props.events, err, "error", "warning sign");
+				Messages.message(this.props.events, "Unable to get playlists: " + err.message, "error", "warning sign");
 			}.bind(this)
 		});
 	}
@@ -133,7 +133,7 @@ export default class PlaylistManager extends React.Component {
 			}.bind(this),
 			error: function(err) {
 				console.error(this, err);
-				Messages.message(this.props.events, err, "error", "warning sign");
+				Messages.message(this.props.events, "Unable to load playlist: " + err.message, "error", "warning sign");
 			}.bind(this)
 		});
 	}

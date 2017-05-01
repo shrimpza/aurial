@@ -2,6 +2,7 @@ import React from 'react'
 import Subsonic from '../subsonic'
 import {UniqueID} from '../util'
 import {Messages} from './app'
+import {Prompt} from './common'
 
 const TEST_UNTESTED = 0;
 const TEST_BUSY = 1;
@@ -68,13 +69,16 @@ export default class Settings extends React.Component {
 
 	demo(e) {
 		e.preventDefault();
-		if (confirm("Reconfigure to use the Subsonic demo server?")) {
+		this.refs.demoPrompt.show(function(approve) {
+			if (!approve) return;
+
 			this.setState({
 				url: "http://demo.subsonic.org",
-				user: "guest",
+				user: "guest5",
 				password: "guest"
 			});
-		}
+
+		}.bind(this));
 	}
 
 	test(e) {
@@ -99,13 +103,14 @@ export default class Settings extends React.Component {
 					this.setState({testState: TEST_SUCCESS});
 					Messages.message(this.props.events, "Connection test successful!", "success", "plug");
 				} else {
+					console.log(data.error);
 					this.setState({testState: TEST_FAILED});
 					Messages.message(this.props.events, data.error.message, "error", "plug");
 				}
 			}.bind(this),
-			error: function(status, msg) {
+			error: function(err) {
 				this.setState({testState: TEST_FAILED});
-				Messages.message(this.props.events, "Failed to connect to server.", "error", "plug");
+				Messages.message(this.props.events, "Failed to connect to server: " + err.message, "error", "plug");
 			}.bind(this)
 		});
 	}
@@ -186,6 +191,10 @@ export default class Settings extends React.Component {
 						Test Connection
 					</button>
 				</form>
+
+				<Prompt ref="demoPrompt" title="Use Demo Server"
+					message="Reconfigure to use the Subsonic demo server? Please see http://www.subsonic.org/pages/demo.jsp for more information."
+					ok="Yes" cancel="No" icon="red question" />
 			</div>
 		);
 	}
