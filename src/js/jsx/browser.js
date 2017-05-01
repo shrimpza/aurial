@@ -17,9 +17,19 @@ export default class ArtistList extends React.Component {
 		super(props, context);
 
 		this.search = this.search.bind(this);
+
+		this.loadArtists();
 	}
 
 	componentDidMount() {
+		$('#' + this.state.uid).accordion({exclusive: false});
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if (prevProps.subsonic != this.props.subsonic) this.loadArtists();
+	}
+
+	loadArtists() {
 		this.props.subsonic.getArtists({
 			success: function(data) {
 				this.setState({artists: data.artists, loaded: true, error: null});
@@ -30,11 +40,6 @@ export default class ArtistList extends React.Component {
 				Messages.message(this.props.events, "Unable to get artists: " + err.message, "error", "warning sign");
 			}.bind(this)
 		})
-	}
-
-	componentDidUpdate() {
-		// TODO jquery crap https://github.com/shrimpza/aurial/issues/1
-		$('#' + this.state.uid).accordion({exclusive: false});
 	}
 
 	search(e) {

@@ -15,6 +15,12 @@ export default class PlayerExtras {
 			this.albumBackgroundChanger = new AlbumBackgroundChanger(subsonic, events);
 		}
 	}
+
+	terminate() {
+		if (this.scrobler) this.scrobler.terminate();
+		if (this.notifier) this.notifier.terminate();
+		if (this.albumBackgroundChanger) this.albumBackgroundChanger.terminate();
+	}
 }
 
 /**
@@ -30,7 +36,14 @@ class Scrobbler {
 
 		this.submitted = null;
 
-		events.subscribe({
+		this.events.subscribe({
+			subscriber: this,
+			event: ["playerUpdated"]
+		});
+	}
+
+	terminate() {
+		this.events.unsubscribe({
 			subscriber: this,
 			event: ["playerUpdated"]
 		});
@@ -83,6 +96,13 @@ class AlbumBackgroundChanger {
 		});
 	}
 
+	terminate() {
+		this.events.unsubscribe({
+			subscriber: this,
+			event: ["playerStarted"]
+		});
+	}
+
 	receive(event) {
 		switch (event.event) {
 			case "playerStarted": {
@@ -115,6 +135,13 @@ class Notifier {
 				});
 			}
 		}.bind(this));
+	}
+
+	terminate() {
+		this.events.unsubscribe({
+			subscriber: this,
+			event: ["playerStarted"]
+		});
 	}
 
 	receive(event) {

@@ -29,6 +29,11 @@ export default class PlaylistManager extends React.Component {
 		});
 	}
 
+
+	componentDidUpdate(prevProps, prevState) {
+		if (prevProps.subsonic != this.props.subsonic) this.loadPlaylists();
+	}
+
 	receive(event) {
 		if (event.event == "playlistManage") {
 			if (event.data.action == "ADD") {

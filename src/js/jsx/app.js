@@ -15,20 +15,39 @@ export default class App extends React.Component {
 	constructor(props, context) {
 		super(props, context);
 
+		this.state = {
+			subsonic: props.subsonic,
+			trackBuffer: props.trackBuffer
+		}
+
 		this.events = new Events();
+
+		this.events.subscribe({
+			subscriber: this,
+			event: ["appSettings"]
+		});
+	}
+
+	receive(event) {
+		if (event.event == "appSettings") {
+			if (this.playerExtras) this.playerExtras.terminate();
+			this.setState({
+				subsonic: event.data.subsonic,
+				trackBuffer: event.data.trackBuffer
+			});
+		}
 	}
 
 	render() {
+		var player = <Player subsonic={this.state.subsonic} events={this.events} trackBuffer={this.state.trackBuffer} />;
 
-		var player = <Player subsonic={this.props.subsonic} events={this.events} trackBuffer={this.props.trackBuffer} />;
+		var selection = <Selection subsonic={this.state.subsonic} events={this.events} iconSize="20" />;
+		var playlists = <PlaylistManager subsonic={this.state.subsonic} events={this.events} iconSize="20" />;
+		var queue = <PlayerQueue subsonic={this.state.subsonic} events={this.events} iconSize="20" />;
 
-		var selection = <Selection subsonic={this.props.subsonic} events={this.events} iconSize="20" />;
-		var playlists = <PlaylistManager subsonic={this.props.subsonic} events={this.events} iconSize="20" />;
-		var queue = <PlayerQueue subsonic={this.props.subsonic} events={this.events} iconSize="20" />;
+		var artistList = <ArtistList subsonic={this.state.subsonic} events={this.events} iconSize="30" />;
 
-		var artistList = <ArtistList subsonic={this.props.subsonic} events={this.events} iconSize="30" />;
-
-		var settings = <Settings subsonic={this.props.subsonic} events={this.events} />;
+		var settings = <Settings subsonic={this.state.subsonic} events={this.events} />;
 
 		var messages = <Messages events={this.events} />;
 
@@ -40,7 +59,7 @@ export default class App extends React.Component {
 
 		var tabGroup = <TabGroup tabs={tabs} iconSize="20" />;
 
-		var playerExtras = new PlayerExtras(this.props.subsonic, this, this.events);
+		this.playerExtras = new PlayerExtras(this.state.subsonic, this, this.events);
 
 		return (
 			<div>
@@ -74,7 +93,7 @@ export class Messages extends React.Component {
 		events.publish({
 			event: "message",
 			data: {
-				text: message,
+				text: message.toString(),
 				type: type,
 				icon: icon
 			}

@@ -48,23 +48,23 @@ export default class Settings extends React.Component {
 
 		Messages.message(this.props.events, "Settings saved, please refresh the page.", "success", "Save");
 
-		// TODO reload app with new settings
-		// var subsonic = new Subsonic(
-		// 	localStorage.getItem('url'),
-		// 	localStorage.getItem('username'),
-		// 	localStorage.getItem('token'),
-		// 	localStorage.getItem('salt'),
-		// 	this.props.subsonic.version,
-		// 	this.props.subsonic.appName
-		// );
-		//
-		// // completely replace the app node with a new one, with the new settings
-		// if (React.unmountComponentAtNode(document.body)) {
-		// 	React.render(
-		// 		<App subsonic={subsonic} />,
-		// 		document.body
-		// 	);
-		// }
+		// reload app with new settings
+		var subsonic = new Subsonic(
+			localStorage.getItem('url'),
+			localStorage.getItem('username'),
+			localStorage.getItem('token'),
+			localStorage.getItem('salt'),
+			this.props.subsonic.version,
+			this.props.subsonic.appName
+		);
+
+		// publish new settings to negate need to reload the page - App consumes these
+		this.props.events.publish({event: "appSettings",
+			data: {
+				subsonic: subsonic,
+				trackBuffer: localStorage.getItem('trackBuffer')
+			}
+		});
 	}
 
 	demo(e) {
