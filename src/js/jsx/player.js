@@ -185,39 +185,34 @@ export default class Player extends React.Component {
 	enqueue(action, tracks) {
 		var queue = this.state.queue.slice();
 
-		switch (action) {
-			case "REPLACE": {
-				queue = tracks.slice();
-				Messages.message(this.props.events, "Added " + tracks.length + " tracks to queue.", "info", "info");
-				break;
-			}
-			case "ADD":
-			default: {
-				var trackIds = queue.map(function(t) {
-					return t.id;
-				});
+		if (action == "REPLACE") {
+			queue = tracks.slice();
+			Messages.message(this.props.events, "Added " + tracks.length + " tracks to queue.", "info", "info");
+		} else if (action == "ADD") {
+			var trackIds = queue.map(function(t) {
+				return t.id;
+			});
 
-				var added = 0;
-				var removed = 0;
-				for (var i = 0; i < tracks.length; i++) {
-					var idx = trackIds.indexOf(tracks[i].id);
-					if (idx == -1) {
-						queue.push(tracks[i]);
-						trackIds.push(tracks[i].id);
-						added ++;
-					} else {
-						queue.splice(idx, 1);
-						trackIds.splice(idx, 1);
-						removed ++;
-					}
+			var added = 0;
+			var removed = 0;
+			for (var i = 0; i < tracks.length; i++) {
+				var idx = trackIds.indexOf(tracks[i].id);
+				if (idx == -1) {
+					queue.push(tracks[i]);
+					trackIds.push(tracks[i].id);
+					added ++;
+				} else {
+					queue.splice(idx, 1);
+					trackIds.splice(idx, 1);
+					removed ++;
 				}
+			}
 
-				Messages.message(this.props.events,
-					(added > 0 ? "Added " + added + " track(s) to queue. " : "")
-					+ (removed > 0 ? "Removed " + removed + " track(s) from queue." : ""),
-					"info", "info");
-
-				break;
+			if (tracks.length == 1) {
+				var trackTitle = tracks[0].artist + " - " + tracks[0].title;
+				Messages.message(this.props.events, (added ? "Added " + trackTitle + " to queue. " : "") + (removed ? "Removed " + trackTitle + " from queue." : ""),	"info", "info");
+			} else {
+				Messages.message(this.props.events, (added ? "Added " + added + " tracks to queue. " : "") + (removed ? "Removed " + removed + " tracks from queue." : ""), "info", "info");
 			}
 		}
 
