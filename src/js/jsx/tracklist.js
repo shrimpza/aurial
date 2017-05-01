@@ -66,6 +66,8 @@ class Track extends React.Component {
 
 		this.play = this.play.bind(this);
 		this.enqueue = this.enqueue.bind(this);
+		this.playlistAdd = this.playlistAdd.bind(this);
+		this.playlistRemove = this.playlistRemove.bind(this);
 	}
 
 	play() {
@@ -76,17 +78,25 @@ class Track extends React.Component {
 		this.props.events.publish({event: "playerEnqueue", data: {action: "ADD", tracks: [this.props.track]}});
 	}
 
+	playlistAdd() {
+		this.props.events.publish({event: "playlistManage", data: {action: "ADD", tracks: [this.props.track]}});
+	}
+
+	playlistRemove() {
+		this.props.events.publish({event: "playlistManage", data: {action: "REMOVE", tracks: [this.props.track], id: this.props.playlist}});
+	}
+
 	render() {
 		var playlistButton;
 		if (this.props.playlist) {
 			playlistButton = (
-				<button className="ui mini compact icon teal button" title="Remove from playlist">
+				<button className="ui mini compact icon teal button" title="Remove from playlist" onClick={this.playlistRemove}>
 					<i className="minus icon"></i>
 				</button>
 			);
 		} else {
 			playlistButton = (
-				<button className="ui mini compact icon teal button" title="Add to playlist">
+				<button className="ui mini compact icon teal button" title="Add to playlist" onClick={this.playlistAdd}>
 					<i className="list icon"></i>
 				</button>
 			);

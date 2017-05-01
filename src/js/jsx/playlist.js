@@ -81,6 +81,24 @@ export default class PlaylistManager extends React.Component {
 						}.bind(this)
 					});
 				}.bind(this));
+			} else if (event.data.action == "REMOVE") {
+				// load up the playlist, since we can only remove tracks by their index within a playlist
+				this.props.subsonic.getPlaylist({
+					id: event.data.id,
+					success: function(data) {
+						var tracks = event.data.tracks.map(function(t) {
+							for (var i = 0; i < data.playlist.entry.length; i++) {
+								if (t.id == data.playlist.entry[i].id) return i;
+							}
+						});
+
+						this.updatePlaylist(event.data.id, [], tracks);
+					}.bind(this),
+					error: function(err) {
+						console.error(this, err);
+						Messages.message(this.props.events, "Unable to load playlist: " + err.message, "error", "warning sign");
+					}.bind(this)
+				});
 			}
 		}
 	}
@@ -107,7 +125,8 @@ export default class PlaylistManager extends React.Component {
 			remove: remove,
 			success: function() {
 				Messages.message(this.props.events, "Playlist updated", "success", "checkmark");
-			},
+				if (id == this.state.playlist.id) this.loadPlaylist(id);
+			}.bind(this),
 			error: function(err) {
 				console.error(this, err);
 				Messages.message(this.props.events, "Failed to update playlist: " + err.message, "error", "warning sign");
