@@ -19,7 +19,6 @@ export default class PlaylistManager extends React.Component {
 		this.loadPlaylist = this.loadPlaylist.bind(this);
 		this.createPlaylist = this.createPlaylist.bind(this);
 		this.updatePlaylist = this.updatePlaylist.bind(this);
-		this.showList = this.showList.bind(this);
 		this.receive = this.receive.bind(this);
 
 		this.loadPlaylists();
@@ -33,7 +32,9 @@ export default class PlaylistManager extends React.Component {
 	receive(event) {
 		if (event.event == "playlistManage") {
 			if (event.data.action == "ADD") {
-				this.showList(function(playlist) {
+				this.refs.lister.show(function(approved, playlist) {
+					if (!approved) return;
+
 					var tracks = event.data.tracks.map(function(t) {
 						return t.id;
 					});
@@ -45,24 +46,36 @@ export default class PlaylistManager extends React.Component {
 					}
 				}.bind(this));
 			} else if (event.data.action == "CREATE") {
-				// make a playlist etc
+				this.refs.creator.show("", function(approved, newName) {
+					if (!approved) return;
+
+					this.createPlaylist(newName, []);
+				}.bind(this));
 			} else if (event.data.action == "DELETE") {
-				this.props.subsonic.deletePlaylist({
-					id: event.data.id,
-					success: function() {
-						this.loadPlaylists();
-						Messages.message(this.props.events, "Playlist deleted", "warning", "trash");
-					}.bind(this)
-				});
+				this.refs.deleter.show(function(approved) {
+					if (!approved) return;
+
+					this.props.subsonic.deletePlaylist({
+						id: event.data.id,
+						success: function() {
+							this.loadPlaylists();
+							Messages.message(this.props.events, "Playlist deleted", "warning", "trash");
+						}.bind(this)
+					});
+				}.bind(this));
 			} else if (event.data.action == "RENAME") {
-				this.props.subsonic.updatePlaylist({
-					id: event.data.id,
-					name: event.data.name,
-					success: function() {
-						this.loadPlaylists();
-						Messages.message(this.props.events, "Playlist renamed", "success", "write");
-					}.bind(this)
-				});
+				this.refs.renamer.show(event.data.name, function(approved, newName) {
+					if (!approved) return;
+
+					this.props.subsonic.updatePlaylist({
+						id: event.data.id,
+						name: newName,
+						success: function() {
+							this.loadPlaylists();
+							Messages.message(this.props.events, "Playlist renamed", "success", "edit");
+						}.bind(this)
+					});
+				}.bind(this));
 			}
 		}
 	}
@@ -125,10 +138,6 @@ export default class PlaylistManager extends React.Component {
 		});
 	}
 
-	showList(approve) {
-		this.refs.lister.show(approve);
-	}
-
 	render() {
 		var playlists = [];
 		if (this.state.playlists) {
@@ -141,8 +150,12 @@ export default class PlaylistManager extends React.Component {
 
 		return (
 			<div className="playlistManager">
+				<InputPrompt ref="creator" title="Create Playlist" message="Enter a name for the new playlist" />
+				<InputPrompt ref="renamer" title="Rename Playlist" message="Enter a new name for this playlist" />
+				<Prompt ref="deleter" title="Delete Playlist" message="Are you sure you want to delete this playlist?" ok="Yes" icon="red trash" />
 				<ListPrompt ref="lister" title="Add to playlist" message="Choose a playlist to add tracks to" ok="Add" icon="teal list"
 					defaultText="Playlists..." allowNew={true} items={playlists} />
+
 				<PlaylistSelector subsonic={this.props.subsonic} iconSize={this.props.iconSize} playlists={this.state.playlists} selected={this.loadPlaylist} />
 				<Playlist subsonic={this.props.subsonic} events={this.props.events} iconSize={this.props.iconSize} playlist={this.state.playlist} changed={this.loadPlaylists} />
 			</div>
@@ -256,8 +269,6 @@ class PlaylistInfo extends React.Component {
 		this.enqueue = this.enqueue.bind(this);
 		this.delete = this.delete.bind(this);
 		this.rename = this.rename.bind(this);
-		this.showRename = this.showRename.bind(this);
-		this.showDelete = this.showDelete.bind(this);
 	}
 
 	play() {
@@ -273,24 +284,13 @@ class PlaylistInfo extends React.Component {
 		this.props.events.publish({event: "playlistManage", data: {action: "DELETE", id: this.props.playlist.id}});
 	}
 
-	rename(name) {
-		this.props.events.publish({event: "playlistManage", data: {action: "RENAME", id: this.props.playlist.id, name: name}});
-	}
-
-	showDelete() {
-		this.refs.deleter.show();
-	}
-
-	showRename() {
-		this.refs.renamer.show();
+	rename() {
+		this.props.events.publish({event: "playlistManage", data: {action: "RENAME", id: this.props.playlist.id, name: this.props.playlist.name}});
 	}
 
 	render() {
 		return (
 			<div className="ui items">
-				<InputPrompt ref="renamer" title="Rename Playlist" message="Enter a new name for this playlist" value={this.props.playlist.name} approve={this.rename} />
-				<Prompt ref="deleter" title="Delete Playlist" message="Are you sure you want to delete this playlist?" ok="Yes" icon="red trash" approve={this.delete} />
-
 				<div className="item">
 					<div className="ui small image">
 						<CoverArt subsonic={this.props.subsonic} id={this.props.playlist.coverArt} size={200} />
@@ -307,8 +307,8 @@ class PlaylistInfo extends React.Component {
 						<div className="extra">
 							<button className="ui small compact labelled icon green button" onClick={this.play}><i className="play icon"></i> Play</button>
 							<button className="ui small compact labelled icon olive button" onClick={this.enqueue}><i className="plus icon"></i> Add to Queue</button>
-							<button className="ui small compact labelled icon grey button" onClick={this.showRename}><i className="edit icon"></i> Rename</button>
-							<button className="ui small compact labelled icon red button" onClick={this.showDelete}><i className="trash icon"></i> Delete</button>
+							<button className="ui small compact labelled icon grey button" onClick={this.rename}><i className="edit icon"></i> Rename</button>
+							<button className="ui small compact labelled icon red button" onClick={this.delete}><i className="trash icon"></i> Delete</button>
 						</div>
 					</div>
 				</div>

@@ -84,9 +84,7 @@ export class Prompt extends React.Component {
 		message: "Are you sure?",
 		ok: "OK",
 		cancel: "Cancel",
-		icon: "grey help circle",
-		approve: function() { },
-		deny: function() { }
+		icon: "grey help circle"
 	}
 
 	constructor(props, context) {
@@ -97,12 +95,18 @@ export class Prompt extends React.Component {
 
 	componentDidMount() {
 		$('#' + this._id).modal({
-			onApprove: this.props.approve,
-			onDeny: this.props.deny
+			onApprove: function() {
+				this.state.result(true);
+			}.bind(this),
+			onDeny: function() {
+				this.state.result(false);
+			}.bind(this)
 		});
 	}
 
-	show() {
+	show(result) {
+		this.setState({result: result});
+
 		$('#' + this._id).modal('show');
 	}
 
@@ -137,18 +141,15 @@ export class InputPrompt extends React.Component {
 		message: "Please provide a value",
 		ok: "OK",
 		cancel: "Cancel",
-		icon: "grey write",
-		value: "",
-		approve: function() { },
-		deny: function() { }
+		icon: "grey edit"
 	}
 
 	constructor(props, context) {
 		super(props, context);
 
 		this.state = {
-			value: props.value
-		}
+			value: ""
+		};
 
 		this.show = this.show.bind(this);
 		this.change = this.change.bind(this);
@@ -157,14 +158,16 @@ export class InputPrompt extends React.Component {
 	componentDidMount() {
 		$('#' + this._id).modal({
 			onApprove: function() {
-				this.props.approve(this.state.value);
+				this.state.result(true, this.state.value);
 			}.bind(this),
-			onDeny: this.props.deny
+			onDeny: function() {
+				this.state.result(false, this.state.value);
+			}.bind(this),
 		});
 	}
 
-	show() {
-		this.setState({value: this.props.value});
+	show(value, result) {
+		this.setState({value: value, result: result});
 		$('#' + this._id).modal('show');
 	}
 
@@ -232,9 +235,11 @@ export class ListPrompt extends React.Component {
 	componentDidMount() {
 		$('#' + this._id).modal({
 			onApprove: function() {
-				this.state.approve(this.state.value);
+				this.state.approve(true, this.state.value);
 			}.bind(this),
-			onDeny: this.props.deny
+			onDeny: function() {
+				this.state.approve(false, this.state.value);
+			}.bind(this)
 		});
 	}
 
