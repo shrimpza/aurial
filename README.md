@@ -29,11 +29,11 @@ Configuration is done on the "Settings" tab of the main application interface.
 
 Note that the current look and functionality may differ from what is shown here, as the application is still under development.
 
-![Browsing the library](https://i.imgur.com/JmWY5Z3.png)
+![Browsing the library](https://i.imgur.com/O8AdgCH.png)
 
-![Playing some music](https://i.imgur.com/1ImtXGR.png)
+![Playing some music](https://i.imgur.com/b0oLCp4.png)
 
-![Playlist support (work in progress)](https://i.imgur.com/ebDbB2T.png)
+![Playlist support](https://i.imgur.com/xih3aT7.png)
 
 
 ## Building
