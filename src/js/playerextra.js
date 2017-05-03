@@ -108,7 +108,7 @@ class AlbumBackgroundChanger {
 			case "playerStarted": {
 				if (this.currentArt != event.data.coverArt) {
 					this.currentArt = event.data.coverArt;
-					$('#background-layer').css('background-image', 'url(' + this.subsonic.getUrl("getCoverArt", {id: event.data.coverArt}) + ')');
+					$('.background-layer').css('background-image', 'url(' + this.subsonic.getUrl("getCoverArt", {id: event.data.coverArt}) + ')');
 				}
 				break;
 			}
