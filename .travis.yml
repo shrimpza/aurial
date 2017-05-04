@@ -3,11 +3,11 @@ node_js:
   - "stable"
 
 script:
-  - npm run dist
+  - yarn run dist
 
 before_deploy:
   - mv ./dist ./aurial
-  - tar --exclude="*.tgz" -czf ./aurial/aurial.tgz ./aurial
+  - tar -czf ./aurial.tgz ./aurial && mv ./aurial.tgz ./aurial/aurial.tgz
 
 deploy:
   provider: pages
