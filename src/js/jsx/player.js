@@ -28,6 +28,13 @@ export default class Player extends React.Component {
 			subscriber: this,
 			event: ["playerPlay", "playerToggle", "playerStop", "playerNext", "playerPrevious", "playerEnqueue", "playerShuffle"]
 		});
+
+		if (props.persist === true) {
+			// this is (badly) delayed to allow it a chance to set up, and stuff. this is a bad idea
+			setTimeout(function() {
+				props.events.publish({event: "playerEnqueue", data: {action: "ADD", tracks: JSON.parse(localStorage.getItem('queue'))}});
+			}, 500);
+		}
 	}
 
 	componentWillUpdate(nextProps, nextState) {
@@ -211,7 +218,7 @@ export default class Player extends React.Component {
 			if (tracks.length == 1) {
 				var trackTitle = tracks[0].artist + " - " + tracks[0].title;
 				Messages.message(this.props.events, (added ? "Added " + trackTitle + " to queue. " : "") + (removed ? "Removed " + trackTitle + " from queue." : ""),	"info", "info");
-			} else {
+			} else if (added || removed) {
 				Messages.message(this.props.events, (added ? "Added " + added + " tracks to queue. " : "") + (removed ? "Removed " + removed + " tracks from queue." : ""), "info", "info");
 			}
 		}
@@ -219,6 +226,10 @@ export default class Player extends React.Component {
 		this.setState({queue: queue});
 
 		this.props.events.publish({event: "playerEnqueued", data: queue});
+
+		if (this.props.persist) {
+			localStorage.setItem('queue', JSON.stringify(queue));
+		}
 	}
 
 	queueDiff(q1, q2) {

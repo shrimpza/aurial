@@ -2,6 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import {IconMessage} from './common'
 import TrackList from './tracklist'
+import {SecondsToTime} from '../util'
 
 export default class PlayerQueue extends React.Component {
 	state = {
@@ -15,12 +16,8 @@ export default class PlayerQueue extends React.Component {
 			event: ["playerEnqueued"]
 		});
 
-		if (props.persist === true) {
-			console.log("because", props.persist);
-			this.state = {
-				queue: JSON.parse(localStorage.getItem('queue') || null)
-			}
-		}
+		this.clear = this.clear.bind(this);
+		this.playlist = this.playlist.bind(this);
 	}
 
 	receive(event) {
@@ -29,10 +26,12 @@ export default class PlayerQueue extends React.Component {
 		}
 	}
 
-	componentWillUpdate(nextProps, nextState) {
-		if (this.props.persist) {
-			localStorage.setItem('queue', JSON.stringify(nextState.queue));
-		}
+	clear() {
+		this.props.events.publish({event: "playerEnqueue", data: {action: "ADD", tracks: this.state.queue}});
+	}
+
+	playlist() {
+		this.props.events.publish({event: "playlistManage", data: {action: "ADD", tracks: this.state.queue}});
 	}
 
 	render() {
@@ -42,8 +41,25 @@ export default class PlayerQueue extends React.Component {
 			);
 
 		} else {
+			var length = this.state.queue.reduce(function(total, track) {
+				return total + track.duration;
+			}, 0);
+
 			return (
 				<div className="ui basic segment queueView">
+					<div className="ui items">
+						<div className="item">
+							<div className="aligned content">
+								<p className="header">
+									<i className="grey play icon"></i>
+									{this.state.queue.length} tracks, {SecondsToTime(length)}</p>
+								<div className="extra">
+									<button className="ui small compact labelled icon teal button" onClick={this.playlist}><i className="list icon"></i> Add to Playlist</button>
+									<button className="ui small compact labelled icon red button" onClick={this.clear}><i className="trash icon"></i> Clear Queue</button>
+								</div>
+							</div>
+						</div>
+					</div>
 					<TrackList subsonic={this.props.subsonic} events={this.props.events} tracks={this.state.queue} iconSize={this.props.iconSize} />
 				</div>
 			);

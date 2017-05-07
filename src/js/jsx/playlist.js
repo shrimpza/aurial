@@ -244,7 +244,7 @@ class PlaylistSelector extends React.Component {
 						</div>
 					</div>
 					<div className="three wide column">
-						<button className="ui fluid labelled icon green button" onClick={this.create}><i className="plus icon"></i> New Playlist</button>
+						<button className="ui fluid labelled icon teal button" onClick={this.create}><i className="plus icon"></i> New Playlist</button>
 					</div>
 				</div>
 			</div>

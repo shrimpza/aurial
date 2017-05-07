@@ -41,11 +41,11 @@ export default class App extends React.Component {
 	}
 
 	render() {
-		var player = <Player subsonic={this.state.subsonic} events={this.events} trackBuffer={this.state.trackBuffer} />;
+		var player = <Player subsonic={this.state.subsonic} events={this.events} trackBuffer={this.state.trackBuffer} persist={this.state.persistQueue} />;
 
 		var selection = <Selection subsonic={this.state.subsonic} events={this.events} iconSize="20" />;
 		var playlists = <PlaylistManager subsonic={this.state.subsonic} events={this.events} iconSize="20" />;
-		var queue = <PlayerQueue subsonic={this.state.subsonic} events={this.events} iconSize="20" persist={this.state.persistQueue} />;
+		var queue = <PlayerQueue subsonic={this.state.subsonic} events={this.events} iconSize="20" />;
 
 		var artistList = <ArtistList subsonic={this.state.subsonic} events={this.events} iconSize="30" />;
 
