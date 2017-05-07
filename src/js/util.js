@@ -3,8 +3,16 @@
 */
 export function SecondsToTime(seconds) {
 	var mins = Math.floor(seconds / 60);
+	var hours = Math.floor(mins / 60);
 	var secs = Math.floor(seconds % 60);
-	return mins.toString() + ":" + (secs < 10 ? "0" + secs.toString() : secs.toString());
+
+	var hourString = "";
+	if (hours > 0) {
+		mins -= hours * 60;
+		hourString = hours.toString() + (mins < 10 ? ":0" : ":");
+	}
+
+	return hourString + mins.toString() + ":" + (secs < 10 ? "0" + secs.toString() : secs.toString());
 }
 
 /**
