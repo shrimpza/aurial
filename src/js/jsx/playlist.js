@@ -330,7 +330,7 @@ class PlaylistInfo extends React.Component {
 			<div className="ui items">
 				<div className="item">
 					<div className="ui small image">
-						<CoverArt subsonic={this.props.subsonic} id={this.props.playlist.coverArt} size={200} />
+						<CoverArt subsonic={this.props.subsonic} id={this.props.playlist.coverArt} size={200} events={this.props.events} />
 					</div>
 					<div className="aligned content">
 						<div className="header">

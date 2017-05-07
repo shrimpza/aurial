@@ -7,9 +7,22 @@ export class CoverArt extends React.Component {
 		size: 20
 	}
 
+	constructor(props, context) {
+		super(props, context);
+
+		this.popup = this.popup.bind(this);
+	}
+
+	popup() {
+		if (this.props.events) this.props.events.publish({
+			event: "showImage",
+			data: this.props.subsonic.getUrl("getCoverArt", {id: this.props.id})
+		});
+	}
+
 	render() {
 		return (
-			<img className="ui image" src={this.props.subsonic.getUrl("getCoverArt", {id: this.props.id, size: this.props.size})} />
+			<img className="ui image" src={this.props.subsonic.getUrl("getCoverArt", {id: this.props.id, size: this.props.size})} onClick={this.popup} />
 		);
 	}
 }
@@ -285,6 +298,65 @@ export class ListPrompt extends React.Component {
 				<div className="actions">
 					<div className="ui cancel button">{this.props.cancel}</div>
 					<div className="ui blue ok button">{this.props.ok}</div>
+				</div>
+			</div>
+		);
+	}
+}
+
+export class ImageViewer extends React.Component {
+	_id = UniqueID();
+
+	static defaultProps = {
+		title: "View",
+		ok: "OK"
+	}
+
+	constructor(props, context) {
+		super(props, context);
+
+		this.state = {
+			iamge: ""
+		};
+
+		props.events.subscribe({
+			subscriber: this,
+			event: ["showImage"]
+		});
+
+		this.show = this.show.bind(this);
+	}
+
+	receive(event) {
+		if (event.event == "showImage") {
+			this.setState({image: event.data});
+			this.show();
+		}
+	}
+
+	componentDidMount() {
+		$('#' + this._id).modal();
+	}
+
+	show() {
+		$('#' + this._id).modal('show');
+	}
+
+	render() {
+		var center = {
+			textAlign: "center",
+			maxHeight: "700px"
+		};
+		return (
+			<div id={this._id} className="ui basic modal">
+				<div className="header">
+					{this.props.title}
+				</div>
+				<div className="content" style={center}>
+					<img src={this.state.image} style={center}/>
+				</div>
+				<div className="actions">
+					<div className="ui basic inverted ok button">{this.props.ok}</div>
 				</div>
 			</div>
 		);

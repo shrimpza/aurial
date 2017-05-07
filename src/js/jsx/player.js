@@ -245,7 +245,7 @@ export default class Player extends React.Component {
 		var coverArt = <img src={this.noImage} />;
 
 		if (this.state.playing != null) {
-			coverArt = <CoverArt subsonic={this.props.subsonic} id={this.state.playing.coverArt} size={80} />;
+			coverArt = <CoverArt subsonic={this.props.subsonic} id={this.state.playing.coverArt} size={80} events={this.props.events} />;
 		}
 
 		return (

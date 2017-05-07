@@ -6,7 +6,7 @@ import Selection from './selection'
 import PlaylistManager from './playlist'
 import PlayerQueue from './queue'
 import ArtistList from './browser'
-import {TabGroup} from './common'
+import {TabGroup, ImageViewer} from './common'
 import Settings from './settings'
 import {ArrayDeleteElement} from '../util'
 
@@ -63,6 +63,7 @@ export default class App extends React.Component {
 
 		return (
 			<div>
+				<ImageViewer title="Image Viewer" events={this.events} />
 				<div className="browser-frame">
 					<div className="artistList">{artistList}</div>
 				</div>

@@ -68,7 +68,7 @@ class SelectionAlbum extends React.Component {
 			<div className="ui items">
 				<div className="item">
 					<div className="ui small image">
-						<CoverArt subsonic={this.props.subsonic} id={this.props.album.coverArt} size={200} />
+						<CoverArt subsonic={this.props.subsonic} id={this.props.album.coverArt} events={this.props.events} size={200} />
 					</div>
 					<div className="aligned content">
 						<div className="header">
