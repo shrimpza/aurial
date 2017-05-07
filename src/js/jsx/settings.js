@@ -17,6 +17,7 @@ export default class Settings extends React.Component {
 		password: '',
 		notifications: localStorage.getItem('notifications') === 'true',
 		backgroundArt: localStorage.getItem('backgroundArt') === 'true',
+		persistQueue: localStorage.getItem('persistQueue') === 'true',
 		trackBuffer: localStorage.getItem('trackBuffer') || '0',
 		testState: TEST_UNTESTED
 	}
@@ -44,9 +45,10 @@ export default class Settings extends React.Component {
 
 		localStorage.setItem('notifications', this.state.notifications);
 		localStorage.setItem('backgroundArt', this.state.backgroundArt);
+		localStorage.setItem('persistQueue', this.state.persistQueue);
 		localStorage.setItem('trackBuffer', this.state.trackBuffer);
 
-		Messages.message(this.props.events, "Settings saved, please refresh the page.", "success", "Save");
+		Messages.message(this.props.events, "Settings saved.", "success", "Save");
 
 		// reload app with new settings
 		var subsonic = new Subsonic(
@@ -122,6 +124,7 @@ export default class Settings extends React.Component {
 			case "password": this.setState({password: e.target.value}); break;
 			case "notifications": this.setState({notifications: e.target.checked}); break;
 			case "backgroundArt": this.setState({backgroundArt: e.target.checked}); break;
+			case "persistQueue": this.setState({persistQueue: e.target.checked}); break;
 			case "trackBuffer": this.setState({trackBuffer: e.target.value}); break;
 		}
 
@@ -179,6 +182,12 @@ export default class Settings extends React.Component {
 						<div className="ui checkbox">
 							<input name="backgroundArt" type="checkbox" onChange={this.change} checked={this.state.backgroundArt}/>
 							<label>Enable background art</label>
+						</div>
+					</div>
+					<div className="field">
+						<div className="ui checkbox">
+							<input name="persistQueue" type="checkbox" onChange={this.change} checked={this.state.persistQueue}/>
+							<label>Save queue (your queue will be restored after browser restarts, page reloads, etc)</label>
 						</div>
 					</div>
 

@@ -17,7 +17,8 @@ export default class App extends React.Component {
 
 		this.state = {
 			subsonic: props.subsonic,
-			trackBuffer: props.trackBuffer
+			trackBuffer: props.trackBuffer,
+			persistQueue: props.persistQueue
 		}
 
 		this.events = new Events();
@@ -33,7 +34,8 @@ export default class App extends React.Component {
 			if (this.playerExtras) this.playerExtras.terminate();
 			this.setState({
 				subsonic: event.data.subsonic,
-				trackBuffer: event.data.trackBuffer
+				trackBuffer: event.data.trackBuffer,
+				persistQueue: event.data.persistQueue
 			});
 		}
 	}
@@ -43,7 +45,7 @@ export default class App extends React.Component {
 
 		var selection = <Selection subsonic={this.state.subsonic} events={this.events} iconSize="20" />;
 		var playlists = <PlaylistManager subsonic={this.state.subsonic} events={this.events} iconSize="20" />;
-		var queue = <PlayerQueue subsonic={this.state.subsonic} events={this.events} iconSize="20" />;
+		var queue = <PlayerQueue subsonic={this.state.subsonic} events={this.events} iconSize="20" persist={this.state.persistQueue} />;
 
 		var artistList = <ArtistList subsonic={this.state.subsonic} events={this.events} iconSize="30" />;
 

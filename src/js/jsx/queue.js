@@ -14,11 +14,24 @@ export default class PlayerQueue extends React.Component {
 			subscriber: this,
 			event: ["playerEnqueued"]
 		});
+
+		if (props.persist === true) {
+			console.log("because", props.persist);
+			this.state = {
+				queue: JSON.parse(localStorage.getItem('queue') || null)
+			}
+		}
 	}
 
 	receive(event) {
 		switch (event.event) {
 			case "playerEnqueued": this.setState({queue: event.data}); break;
+		}
+	}
+
+	componentWillUpdate(nextProps, nextState) {
+		if (this.props.persist) {
+			localStorage.setItem('queue', JSON.stringify(nextState.queue));
 		}
 	}
 
