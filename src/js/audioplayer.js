@@ -1,9 +1,10 @@
 export default class AudioPlayer {
 
   constructor(params) {
-    this.audio = new Audio();
-    this.audio.src = params.url;
+		this.audio = new Audio();
+		if (params.volume) this.audio.volume = params.volume;
 
+		// set up events
     this.addEvent('play', params.onPlay);
     this.addEvent('playing', params.onPlaying);
     this.addEvent('pause', params.onPause);
@@ -11,6 +12,9 @@ export default class AudioPlayer {
     this.addEvent('stop', params.onStop);
     this.addLoadingEvent('progress', params.onLoading);
     this.addProgressEvent('timeupdate', params.onProgress);
+
+		// events and everything else configured, set the src to begin loading
+    this.audio.src = params.url;
   }
 
   addEvent(event, callback) {
@@ -51,6 +55,11 @@ export default class AudioPlayer {
     else this.audio.pause();
     return this;
   }
+
+	volume(volume) {
+		this.audio.volume = volume;
+		return thus;
+	}
 
   unload() {
     this.stop();

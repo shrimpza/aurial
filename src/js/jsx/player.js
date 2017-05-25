@@ -19,7 +19,8 @@ export default class Player extends React.Component {
 	state = {
 		queue: [], // the input queue
 		shuffle: false,
-		playing: null
+		playing: null,
+		volume: 1.0
 	}
 
 	constructor(props, context) {
@@ -52,6 +53,7 @@ export default class Player extends React.Component {
 			case "playerPrevious": this.previous(); break;
 			case "playerEnqueue": this.enqueue(event.data.action, event.data.tracks); break;
 			case "playerShuffle": this.setState({shuffle: event.data}); break;
+			case "playerVolume": this.volume({volume: event.data}); break;
 		}
 	}
 
@@ -62,6 +64,7 @@ export default class Player extends React.Component {
 
 		return new AudioPlayer({
 			url: streamUrl,
+			volume: this.state.volume,
 			onPlay: function() {
 				events.publish({event: "playerStarted", data: track});
 			},
@@ -187,6 +190,12 @@ export default class Player extends React.Component {
 			this.player.unload();
 		}
 		this.player = null;
+	}
+
+	volume(volume) {
+		if (this.player != null) this.player.volume(volume);
+
+		this.setState({volume: volume});
 	}
 
 	enqueue(action, tracks) {
