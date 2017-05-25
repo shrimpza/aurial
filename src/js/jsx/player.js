@@ -298,6 +298,9 @@ export default class Player extends React.Component {
 										<td className="progress">
 											<PlayerProgress key="progress" events={this.props.events} />
 										</td>
+										<td className="volume">
+											<PlayerVolume key="volume" events={this.props.events} volume={this.state.volume} />
+										</td>
 									</tr>
 								</tbody></table>
 							</div>
@@ -331,6 +334,39 @@ class PlayerPlayingInfo extends React.Component {
 			<span>
 				{album}
 			</span>
+		);
+	}
+}
+
+class PlayerPositionDisplay extends React.Component {
+	state = {
+		duration: 0,
+		position: 0
+	}
+
+	constructor(props, context) {
+		super(props, context);
+		props.events.subscribe({
+			subscriber: this,
+			event: ["playerUpdated"]
+		});
+	}
+
+	componentWillUnmount() {
+	}
+
+	receive(event) {
+		switch (event.event) {
+			case "playerUpdated": this.setState({duration: event.data.duration, position: event.data.position}); break;
+		}
+	}
+
+	render() {
+		return (
+			<div className="ui disabled labeled icon button">
+				<i className="clock icon"></i>
+				{SecondsToTime(this.state.position / 1000)}/{SecondsToTime(this.state.duration / 1000)}
+			</div>
 		);
 	}
 }
@@ -373,8 +409,9 @@ class PlayerProgress extends React.Component {
 		var playerProgress = {width: this.state.playerProgress + "%"};
 		var loadingProgress = {width: this.state.loadingProgress + "%"};
 		return (
-			<div>
+			<div className="player-progress">
 				<div className="ui red progress">
+					<i className="clock icon"></i>
 					<div className="track bar" style={playerProgress}></div>
 					<div className="loading bar" style={loadingProgress}></div>
 				</div>
@@ -383,34 +420,34 @@ class PlayerProgress extends React.Component {
 	}
 }
 
-class PlayerPositionDisplay extends React.Component {
-	state = {
-		duration: 0,
-		position: 0
-	}
+
+class PlayerVolume extends React.Component {
 
 	constructor(props, context) {
 		super(props, context);
-		props.events.subscribe({
-			subscriber: this,
-			event: ["playerUpdated"]
-		});
+
+		this.onClick = this.onClick.bind(this);
 	}
 
 	componentWillUnmount() {
 	}
 
-	receive(event) {
-		switch (event.event) {
-			case "playerUpdated": this.setState({duration: event.data.duration, position: event.data.position}); break;
-		}
+	onClick(event) {
+		var rect = document.querySelector(".player-volume").getBoundingClientRect();
+		var volume = (event.clientX - rect.left) / rect.width;
+		console.log(volume);
+
+		// TODO publish volume event
 	}
 
 	render() {
+		var playerVolume = {width: (this.props.volume*100) + "%"};
 		return (
-			<div className="ui disabled labeled icon button">
-				<i className="clock icon"></i>
-				{SecondsToTime(this.state.position / 1000)}/{SecondsToTime(this.state.duration / 1000)}
+			<div className="player-volume" onClick={this.onClick}>
+				<div className="ui blue progress">
+					<i className="volume up icon"></i>
+					<div className="bar" style={playerVolume}></div>
+				</div>
 			</div>
 		);
 	}

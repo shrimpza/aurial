@@ -54,8 +54,15 @@
 		white-space: nowrap;
 	}
 
-	.player-frame .player table td.progress .progress {
+	.player-frame .player table td.progress .progress,
+	.player-frame .player table td.volume .progress {
 		margin: 3px;
+	}
+
+	.player-frame .player table td.volume {
+		width: 10%;
+		white-space: nowrap;
+		cursor: pointer;
 	}
 
 	.playlist-frame {
@@ -172,12 +179,22 @@
 	width: 10%;
 }
 
-.player .progress .bar.track {
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
+.player .progress {
+	height: 28px;
 }
 
-.player .progress .bar.loading {
+.player .progress i {
+	position: absolute;
+	left: 5px;
+	top: 5px;
+	z-index: 1000;
+}
+
+.player .player-progress .bar.track {
+	border-radius: 5px 5px 0 0;
+}
+
+.player .player-progress .bar.loading {
 	background-color: #555;
 	height: 0.2em;
 	border-top-left-radius: 0;
