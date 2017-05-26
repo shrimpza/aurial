@@ -27,7 +27,7 @@ export default class Player extends React.Component {
 		super(props, context);
 		props.events.subscribe({
 			subscriber: this,
-			event: ["playerPlay", "playerToggle", "playerStop", "playerNext", "playerPrevious", "playerEnqueue", "playerShuffle"]
+			event: ["playerPlay", "playerToggle", "playerStop", "playerNext", "playerPrevious", "playerEnqueue", "playerShuffle", "playerVolume"]
 		});
 
 		if (props.persist === true) {
@@ -53,7 +53,7 @@ export default class Player extends React.Component {
 			case "playerPrevious": this.previous(); break;
 			case "playerEnqueue": this.enqueue(event.data.action, event.data.tracks); break;
 			case "playerShuffle": this.setState({shuffle: event.data}); break;
-			case "playerVolume": this.volume({volume: event.data}); break;
+			case "playerVolume": this.volume(event.data); break;
 		}
 	}
 
@@ -437,7 +437,7 @@ class PlayerVolume extends React.Component {
 		var volume = (event.clientX - rect.left) / rect.width;
 		console.log(volume);
 
-		// TODO publish volume event
+		this.props.events.publish({event: "playerVolume", data: volume});
 	}
 
 	render() {

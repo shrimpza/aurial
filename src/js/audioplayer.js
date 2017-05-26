@@ -58,7 +58,7 @@ export default class AudioPlayer {
 
 	volume(volume) {
 		this.audio.volume = volume;
-		return thus;
+		return this;
 	}
 
   unload() {
