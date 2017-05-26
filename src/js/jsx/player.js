@@ -426,24 +426,36 @@ class PlayerVolume extends React.Component {
 	constructor(props, context) {
 		super(props, context);
 
-		this.onClick = this.onClick.bind(this);
+		this.mouseDown = this.mouseDown.bind(this);
+		this.mouseUp = this.mouseUp.bind(this);
+		this.mouseMove = this.mouseMove.bind(this);
 	}
 
 	componentWillUnmount() {
 	}
 
-	onClick(event) {
-		var rect = document.querySelector(".player-volume").getBoundingClientRect();
-		var volume = (event.clientX - rect.left) / rect.width;
-		console.log(volume);
+	mouseDown(event) {
+		this.drag = true;
+		this.mouseMove(event);
+	}
 
-		this.props.events.publish({event: "playerVolume", data: volume});
+	mouseUp(event) {
+		this.drag = false;
+	}
+
+	mouseMove(event) {
+		if (this.drag) {
+			var rect = document.querySelector(".player-volume").getBoundingClientRect();
+			var volume = Math.min(1.0, Math.max(0.0, (event.clientX - rect.left) / rect.width));
+
+			this.props.events.publish({event: "playerVolume", data: volume});
+		}
 	}
 
 	render() {
 		var playerVolume = {width: (this.props.volume*100) + "%"};
 		return (
-			<div className="player-volume" onClick={this.onClick}>
+			<div className="player-volume" onMouseDown={this.mouseDown} onMouseMove={this.mouseMove} onMouseUp={this.mouseUp}>
 				<div className="ui blue progress">
 					<i className="volume up icon"></i>
 					<div className="bar" style={playerVolume}></div>
