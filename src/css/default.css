@@ -179,10 +179,6 @@
 	width: 10%;
 }
 
-.player .progress {
-	height: 28px;
-}
-
 .player .progress i {
 	position: absolute;
 	left: 5px;
