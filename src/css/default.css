@@ -144,6 +144,14 @@
 		animation-iteration-count: 1;
 	}
 
+	.links {
+		position: absolute;
+		top: 0;
+		right: 0;
+		padding: 5px;
+		z-index: 10000;
+	}
+
 	@keyframes fate-out {
 		0% { opacity: 1; }
 		90% { opacity: 0; }

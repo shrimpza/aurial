@@ -65,6 +65,7 @@ export default class App extends React.Component {
 
 		return (
 			<div>
+				<Links />
 				<ImageViewer title="Image Viewer" events={this.events} />
 				<div className="browser-frame">
 					<div className="artistList">{artistList}</div>
@@ -157,6 +158,19 @@ export class Messages extends React.Component {
 		return (
 			<div className="messages">
 				{messages}
+			</div>
+		);
+	}
+}
+
+class Links extends React.Component {
+	render() {
+		return (
+			<div className="links">
+				<a href="https://github.com/shrimpza/aurial">
+					<i className="github icon"></i>
+					<span>Aurial on GitHub</span>
+				</a>
 			</div>
 		);
 	}
