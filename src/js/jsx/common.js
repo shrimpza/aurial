@@ -10,7 +10,12 @@ export class CoverArt extends React.Component {
 	constructor(props, context) {
 		super(props, context);
 
+		this.state = {
+			image: props.subsonic.getUrl("getCoverArt", {id: props.id, size: props.size})
+		};
+
 		this.popup = this.popup.bind(this);
+		this.error = this.error.bind(this);
 	}
 
 	popup() {
@@ -20,9 +25,14 @@ export class CoverArt extends React.Component {
 		});
 	}
 
+	error() {
+		setState({image: "css/aurial_200.png"});
+	}
+
 	render() {
+		var style = {maxHeight: this.props.size, maxWidth: this.props.size};
 		return (
-			<img className="ui image" src={this.props.subsonic.getUrl("getCoverArt", {id: this.props.id, size: this.props.size})} onClick={this.popup} />
+			<img className="ui image" src={this.state.image} onClick={this.popup} onError={this.error} style={style} />
 		);
 	}
 }

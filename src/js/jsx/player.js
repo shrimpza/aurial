@@ -5,7 +5,7 @@ import {CoverArt} from './common'
 import {Messages} from './app'
 
 export default class Player extends React.Component {
-	static noImage = 'data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+	noImage = 'css/aurial_200.png';
 
 	static defaultProps = {
 		trackBuffer: false
