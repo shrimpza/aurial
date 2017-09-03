@@ -381,7 +381,7 @@ class PlayerProgress extends React.Component {
 		super(props, context);
 		props.events.subscribe({
 			subscriber: this,
-			event: ["playerUpdated", "playerLoading"]
+			event: ["playerUpdated", "playerLoading", "playerStopped"]
 		});
 	}
 
@@ -392,6 +392,7 @@ class PlayerProgress extends React.Component {
 		switch (event.event) {
 			case "playerUpdated": this.playerUpdate(event.data.track, event.data.duration, event.data.position); break;
 			case "playerLoading": this.playerLoading(event.data.track, event.data.loaded, event.data.total); break;
+			case "playerStopped": this.playerUpdate(event.data.track, 1, 0); console.log("wat"); break;
 		}
 	}
 

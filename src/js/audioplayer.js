@@ -9,12 +9,13 @@ export default class AudioPlayer {
 		this.addEvent('playing', params.onPlaying);
 		this.addEvent('pause', params.onPause);
 		this.addEvent('ended', params.onComplete);
-		this.addEvent('stop', params.onStop);
 		this.addLoadingEvent('progress', params.onLoading);
 		this.addProgressEvent('timeupdate', params.onProgress);
 
 		// events and everything else configured, set the src to begin loading
 		this.audio.src = params.url;
+
+		this.stopEvent = params.onStop;
 	}
 
 	addEvent(event, callback) {
@@ -47,6 +48,8 @@ export default class AudioPlayer {
 	stop() {
 		this.audio.pause();
 		this.audio.currentTime = 0;
+		// also, generate a synthetic "stop" event
+		if (this.stopEvent) this.stopEvent();
 		return this;
 	}
 
