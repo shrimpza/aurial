@@ -27,8 +27,10 @@ module.exports = {
         loader: 'babel-loader',
         exclude: /node_modules/,
         options: {
-          "plugins": [],
-          "presets": ["es2015", "stage-0", "react"]
+					"plugins": [
+						["transform-react-jsx", { "pragma": "h" }]
+					],
+          "presets": ["es2015", "stage-0"]
         }
       }
     ]

@@ -1,4 +1,4 @@
-import React from 'react'
+import { h, Component } from 'preact';
 import Events from '../events'
 import PlayerExtras from '../playerextra'
 import Player from './player'
@@ -10,7 +10,7 @@ import {TabGroup, ImageViewer} from './common'
 import Settings from './settings'
 import {ArrayDeleteElement} from '../util'
 
-export default class App extends React.Component {
+export default class App extends Component {
 
 	constructor(props, context) {
 		super(props, context);
@@ -87,7 +87,7 @@ export default class App extends React.Component {
 	}
 }
 
-export class Messages extends React.Component {
+export class Messages extends Component {
 
 	static defaultProps = {
 		showTime: 8 // seconds
@@ -163,7 +163,7 @@ export class Messages extends React.Component {
 	}
 }
 
-class Links extends React.Component {
+class Links extends Component {
 	render() {
 		return (
 			<div className="links">

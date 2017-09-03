@@ -1,10 +1,10 @@
-import React from 'react'
+import { h, Component } from 'preact';
 import AudioPlayer from '../audioplayer'
 import {UniqueID,SecondsToTime,ArrayShuffle} from '../util'
 import {CoverArt} from './common'
 import {Messages} from './app'
 
-export default class Player extends React.Component {
+export default class Player extends Component {
 	noImage = 'css/aurial_200.png';
 
 	static defaultProps = {
@@ -312,7 +312,7 @@ export default class Player extends React.Component {
 	}
 }
 
-class PlayerPlayingTitle extends React.Component {
+class PlayerPlayingTitle extends Component {
 	render() {
 		return (
 			<span>
@@ -322,7 +322,7 @@ class PlayerPlayingTitle extends React.Component {
 	}
 }
 
-class PlayerPlayingInfo extends React.Component {
+class PlayerPlayingInfo extends Component {
 	render() {
 		var album = "Nothing playing";
 		if (this.props.playing != null) {
@@ -338,7 +338,7 @@ class PlayerPlayingInfo extends React.Component {
 	}
 }
 
-class PlayerPositionDisplay extends React.Component {
+class PlayerPositionDisplay extends Component {
 	state = {
 		duration: 0,
 		position: 0
@@ -371,7 +371,7 @@ class PlayerPositionDisplay extends React.Component {
 	}
 }
 
-class PlayerProgress extends React.Component {
+class PlayerProgress extends Component {
 	state = {
 		playerProgress: 0,
 		loadingProgress: 0
@@ -422,7 +422,7 @@ class PlayerProgress extends React.Component {
 }
 
 
-class PlayerVolume extends React.Component {
+class PlayerVolume extends Component {
 
 	constructor(props, context) {
 		super(props, context);
@@ -466,7 +466,7 @@ class PlayerVolume extends React.Component {
 	}
 }
 
-class PlayerPlayToggleButton extends React.Component {
+class PlayerPlayToggleButton extends Component {
 	state = {
 		paused: false,
 		playing: false,
@@ -526,7 +526,7 @@ class PlayerPlayToggleButton extends React.Component {
 	}
 }
 
-class PlayerStopButton extends React.Component {
+class PlayerStopButton extends Component {
 	state = {
 		enabled: false
 	}
@@ -574,7 +574,7 @@ class PlayerStopButton extends React.Component {
 	}
 }
 
-class PlayerNextButton extends React.Component {
+class PlayerNextButton extends Component {
 	state = {
 		enabled: false
 	}
@@ -612,7 +612,7 @@ class PlayerNextButton extends React.Component {
 	}
 }
 
-class PlayerPriorButton extends React.Component {
+class PlayerPriorButton extends Component {
 	state = {
 		enabled: false
 	}
@@ -650,7 +650,7 @@ class PlayerPriorButton extends React.Component {
 	}
 }
 
-class PlayerShuffleButton extends React.Component {
+class PlayerShuffleButton extends Component {
 	state = {
 		shuffle: false
 	}

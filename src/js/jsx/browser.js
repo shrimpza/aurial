@@ -1,9 +1,9 @@
-import React from 'react'
+import { h, Component } from 'preact';
 import {UniqueID} from '../util'
 import {IconMessage,CoverArt} from './common'
 import {Messages} from './app'
 
-export default class ArtistList extends React.Component {
+export default class ArtistList extends Component {
 
 	state = {
 		artists: [],
@@ -76,7 +76,7 @@ export default class ArtistList extends React.Component {
 	}
 }
 
-export class Artist extends React.Component {
+export class Artist extends Component {
 
 	state = {
 		albums: [],
@@ -136,7 +136,7 @@ export class Artist extends React.Component {
 	}
 }
 
-class Album extends React.Component {
+class Album extends Component {
 
 	constructor(props, context) {
 		super(props, context);

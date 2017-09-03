@@ -1,5 +1,4 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import {h, render} from 'preact'
 import Subsonic from './subsonic'
 import App from './jsx/app'
 
@@ -16,7 +15,7 @@ const subsonic = new Subsonic(
 
 const container = document.createElement('app');
 document.body.appendChild(container);
-ReactDOM.render(
+render(
 	<App subsonic={subsonic}
 		trackBuffer={localStorage.getItem('trackBuffer') || 0}
 		persistQueue={localStorage.getItem('persistQueue') === 'true'}

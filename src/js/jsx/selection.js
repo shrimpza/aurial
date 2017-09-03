@@ -1,10 +1,10 @@
-import React from 'react'
+import { h, Component } from 'preact';
 import moment from 'moment'
 import {IconMessage,CoverArt} from './common'
 import TrackList from './tracklist'
 import {SecondsToTime} from '../util'
 
-export default class Selection extends React.Component {
+export default class Selection extends Component {
 	state = {
 		album: null
 	}
@@ -40,7 +40,7 @@ export default class Selection extends React.Component {
 	}
 }
 
-class SelectionAlbum extends React.Component {
+class SelectionAlbum extends Component {
 
 	constructor(props, context) {
 		super(props, context);

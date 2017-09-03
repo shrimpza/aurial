@@ -1,11 +1,11 @@
-import React from 'react'
+import { h, Component } from 'preact';
 import moment from 'moment'
 import {IconMessage,CoverArt,Prompt,InputPrompt,ListPrompt} from './common'
 import TrackList from './tracklist'
 import {SecondsToTime,UniqueID} from '../util'
 import {Messages} from './app'
 
-export default class PlaylistManager extends React.Component {
+export default class PlaylistManager extends Component {
 
 	state = {
 		playlists: [],
@@ -37,7 +37,7 @@ export default class PlaylistManager extends React.Component {
 	receive(event) {
 		if (event.event == "playlistManage") {
 			if (event.data.action == "ADD") {
-				this.refs.lister.show(function(approved, playlist) {
+				this.lister.show(function(approved, playlist) {
 					if (!approved) return;
 
 					var tracks = event.data.tracks.map(function(t) {
@@ -51,13 +51,13 @@ export default class PlaylistManager extends React.Component {
 					}
 				}.bind(this));
 			} else if (event.data.action == "CREATE") {
-				this.refs.creator.show("", function(approved, newName) {
+				this.creator.show("", function(approved, newName) {
 					if (!approved) return;
 
 					this.createPlaylist(newName, []);
 				}.bind(this));
 			} else if (event.data.action == "DELETE") {
-				this.refs.deleter.show(function(approved) {
+				this.deleter.show(function(approved) {
 					if (!approved) return;
 
 					this.props.subsonic.deletePlaylist({
@@ -69,7 +69,7 @@ export default class PlaylistManager extends React.Component {
 					});
 				}.bind(this));
 			} else if (event.data.action == "RENAME") {
-				this.refs.renamer.show(event.data.name, function(approved, newName) {
+				this.renamer.show(event.data.name, function(approved, newName) {
 					if (!approved) return;
 
 					this.props.subsonic.updatePlaylist({
@@ -174,10 +174,10 @@ export default class PlaylistManager extends React.Component {
 
 		return (
 			<div className="playlistManager">
-				<InputPrompt ref="creator" title="Create Playlist" message="Enter a name for the new playlist" />
-				<InputPrompt ref="renamer" title="Rename Playlist" message="Enter a new name for this playlist" />
-				<Prompt ref="deleter" title="Delete Playlist" message="Are you sure you want to delete this playlist?" ok="Yes" icon="red trash" />
-				<ListPrompt ref="lister" title="Add to playlist" message="Choose a playlist to add tracks to" ok="Add" icon="teal list"
+				<InputPrompt ref={(r) => {this.creator = r;}} title="Create Playlist" message="Enter a name for the new playlist" />
+				<InputPrompt ref={(r) => {this.renamer = r;}} title="Rename Playlist" message="Enter a new name for this playlist" />
+				<Prompt ref={(r) => {this.deleter = r;}} title="Delete Playlist" message="Are you sure you want to delete this playlist?" ok="Yes" icon="red trash" />
+				<ListPrompt ref={(r) => {this.lister = r;}} title="Add to playlist" message="Choose a playlist to add tracks to" ok="Add" icon="teal list"
 					defaultText="Playlists..." allowNew={true} items={playlists} />
 
 				<PlaylistSelector subsonic={this.props.subsonic} events={this.props.events} iconSize={this.props.iconSize} playlists={this.state.playlists} selected={this.loadPlaylist} />
@@ -187,7 +187,7 @@ export default class PlaylistManager extends React.Component {
 	}
 }
 
-class PlaylistSelector extends React.Component {
+class PlaylistSelector extends Component {
 
 	defaultProps = {
 		playlists: []
@@ -252,7 +252,7 @@ class PlaylistSelector extends React.Component {
 	}
 }
 
-class PlaylistSelectorItem extends React.Component {
+class PlaylistSelectorItem extends Component {
 	render() {
 		var description = !this.props.simple
 		? <span className="description">{this.props.data.songCount} tracks, {SecondsToTime(this.props.data.duration)}</span>
@@ -268,7 +268,7 @@ class PlaylistSelectorItem extends React.Component {
 	}
 }
 
-class Playlist extends React.Component {
+class Playlist extends Component {
 
 	defaultProps = {
 		playlist: null
@@ -297,7 +297,7 @@ class Playlist extends React.Component {
 	}
 }
 
-class PlaylistInfo extends React.Component {
+class PlaylistInfo extends Component {
 
 	constructor(props, context) {
 		super(props, context);

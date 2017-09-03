@@ -1,10 +1,10 @@
-import React from 'react'
+import { h, Component } from 'preact';
 import moment from 'moment'
 import {IconMessage} from './common'
 import TrackList from './tracklist'
 import {SecondsToTime} from '../util'
 
-export default class PlayerQueue extends React.Component {
+export default class PlayerQueue extends Component {
 	state = {
 		queue: null
 	}

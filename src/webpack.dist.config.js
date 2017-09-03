@@ -38,10 +38,10 @@ module.exports = {
         loader: 'babel-loader',
         exclude: /node_modules/,
         options: {
-          "plugins": [
-            "transform-react-inline-elements"
-          ],
-          "presets": ["es2015", "stage-0", "react"]
+					"plugins": [
+						["transform-react-jsx", { "pragma": "h" }]
+					],
+          "presets": ["es2015", "stage-0"]
         }
       }
     ]

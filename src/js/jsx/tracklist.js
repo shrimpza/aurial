@@ -1,8 +1,8 @@
-import React from 'react'
+import { h, Component } from 'preact';
 import {IconMessage,CoverArt} from './common'
 import {SecondsToTime} from '../util'
 
-export default class TrackList extends React.Component {
+export default class TrackList extends Component {
 	state = {
 		queue: [],
 		playing: null
@@ -59,7 +59,7 @@ export default class TrackList extends React.Component {
 	}
 }
 
-class Track extends React.Component {
+class Track extends Component {
 
 	constructor(props, context) {
 		super(props, context);

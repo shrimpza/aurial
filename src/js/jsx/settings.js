@@ -1,4 +1,4 @@
-import React from 'react'
+import { h, Component } from 'preact';
 import Subsonic from '../subsonic'
 import {UniqueID} from '../util'
 import {Messages} from './app'
@@ -9,7 +9,7 @@ const TEST_BUSY = 1;
 const TEST_SUCCESS = 2;
 const TEST_FAILED = 3;
 
-export default class Settings extends React.Component {
+export default class Settings extends Component {
 
 	state = {
 		url: this.props.subsonic.url,
@@ -71,7 +71,7 @@ export default class Settings extends React.Component {
 
 	demo(e) {
 		e.preventDefault();
-		this.refs.demoPrompt.show(function(approve) {
+		this.demoPrompt.show(function(approve) {
 			if (!approve) return;
 
 			this.setState({
@@ -201,7 +201,7 @@ export default class Settings extends React.Component {
 					</button>
 				</form>
 
-				<Prompt ref="demoPrompt" title="Use Demo Server"
+				<Prompt ref={(r) => {this.demoPrompt = r;} } title="Use Demo Server"
 					message="Reconfigure to use the Subsonic demo server? Please see http://www.subsonic.org/pages/demo.jsp for more information."
 					ok="Yes" cancel="No" icon="red question" />
 			</div>

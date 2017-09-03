@@ -1,7 +1,7 @@
-import React from 'react'
+import { h, Component } from 'preact';
 import {UniqueID} from '../util'
 
-export class CoverArt extends React.Component {
+export class CoverArt extends Component {
 	static defaultProps = {
 		id: 0,
 		size: 20
@@ -44,7 +44,7 @@ export class CoverArt extends React.Component {
 	}
 }
 
-export class TabGroup extends React.Component {
+export class TabGroup extends Component {
 	static defaultProps = {
 		tabs: []
 	}
@@ -68,7 +68,7 @@ export class TabGroup extends React.Component {
 	}
 }
 
-class Tab extends React.Component {
+class Tab extends Component {
 	static defaultProps = {
 		icon: null,
 		active: false
@@ -85,7 +85,7 @@ class Tab extends React.Component {
 	}
 }
 
-export class IconMessage extends React.Component {
+export class IconMessage extends Component {
 	static defaultProps = {
 		icon: "info circle",
 		type: "info"
@@ -106,7 +106,7 @@ export class IconMessage extends React.Component {
 	}
 }
 
-export class Prompt extends React.Component {
+export class Prompt extends Component {
 	_id = UniqueID();
 
 	static defaultProps = {
@@ -163,7 +163,7 @@ export class Prompt extends React.Component {
 	}
 }
 
-export class InputPrompt extends React.Component {
+export class InputPrompt extends Component {
 	_id = UniqueID();
 
 	static defaultProps = {
@@ -235,7 +235,7 @@ export class InputPrompt extends React.Component {
 	}
 }
 
-export class ListPrompt extends React.Component {
+export class ListPrompt extends Component {
 	_id = UniqueID();
 
 	static defaultProps = {
@@ -321,7 +321,7 @@ export class ListPrompt extends React.Component {
 	}
 }
 
-export class ImageViewer extends React.Component {
+export class ImageViewer extends Component {
 	_id = UniqueID();
 
 	static defaultProps = {
