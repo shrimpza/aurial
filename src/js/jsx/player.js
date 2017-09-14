@@ -392,7 +392,7 @@ class PlayerProgress extends Component {
 		switch (event.event) {
 			case "playerUpdated": this.playerUpdate(event.data.track, event.data.duration, event.data.position); break;
 			case "playerLoading": this.playerLoading(event.data.track, event.data.loaded, event.data.total); break;
-			case "playerStopped": this.playerUpdate(event.data.track, 1, 0); console.log("wat"); break;
+			case "playerStopped": this.playerUpdate(event.data.track, 1, 0); break;
 		}
 	}
 
