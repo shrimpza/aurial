@@ -1,0 +1,206 @@
+/* style for desktop and larger displays */
+@media screen and (min-width: 1000px) {
+	.browser-frame {
+		position: absolute;
+		top: 0; bottom: 0; left: 0;
+		width: 380px;
+		overflow: auto;
+
+		background-color: #1B1C1D;
+	}
+
+	.browser-frame .segment {
+		padding:0.25em;
+	}
+
+	.browser-frame .segment .input {
+		margin-top: 1.0em;
+	}
+
+	.browser-frame .accordion .segment {
+		margin: 0 0 1rem 0;
+	}
+
+	.background-layer {
+		position: absolute;
+		top: 0; right: 0; left: 380px; bottom: 0;
+		background-repeat: no-repeat;
+		background-size: 100% auto;
+		opacity: 0.3;
+		filter: blur(20px);
+	}
+
+	.player-frame {
+		position: absolute;
+		top: 0; right: 0; left: 380px;
+		height: 100px;
+	}
+
+	.player-frame .player {
+		position: absolute;
+		top: 0; right: 0; left: 0; bottom: 0;
+	}
+
+	.player-frame .player .bar {
+		min-width: 0;
+	}
+
+	.player-frame .player table {
+		width: 100%;
+	}
+
+	.player-frame .player table td.controls {
+		width: 1%;
+		white-space: nowrap;
+	}
+
+	.player-frame .player table td.progress .progress,
+	.player-frame .player table td.volume .progress {
+		margin: 3px;
+	}
+
+	.player-frame .player table td.volume {
+		width: 10%;
+		white-space: nowrap;
+		cursor: pointer;
+	}
+
+	.playlist-frame {
+		position: absolute;
+		top: 100px; right: 0; bottom: 0; left: 380px;
+	}
+
+	.playlist-menu {
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+	}
+
+	.playlist-content {
+		position: absolute;
+		top: 45px; right: 0; bottom: 0; left: 0;
+	}
+
+	.playlist-selection {
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+	}
+
+	.playlist-selection .selectionView {
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+		overflow: auto;
+	}
+
+	.playlist-selection .selectionView .item .header .artist {
+		font-weight: normal;
+		font-size: 0.8em;
+	}
+
+	.playlist-selection .selectionView .item .meta div {
+		line-height: 1.2em;
+	}
+
+	.playlist-playlists {
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+	}
+
+	.playlist-playlists, .playlist-playlists .playlistManager {
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+	}
+
+	.playlist-playlists .playlistManager .playlistSelector {
+		position: absolute;
+		top: 0; right: 0; left: 0;
+		height: 50px;
+	}
+
+	.playlist-playlists .playlistManager .playlistView {
+		position: absolute;
+		top: 51px; right: 0; bottom:0; left: 0;
+		overflow: auto;
+	}
+
+	.playlist-playing .queueView {
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+		overflow: auto;
+	}
+
+	.ui.small.modal .image.content .description {
+		width: 100%;
+	}
+
+	.messages {
+		position: absolute;
+		right: 10px; bottom: 10px;
+		width: 400px;
+	}
+
+	.messages .message {
+		animation-name: fate-out;
+		animation-timing-function: ease-out;
+		animation-iteration-count: 1;
+	}
+
+	.links {
+		position: absolute;
+		top: 0;
+		right: 0;
+		padding: 5px;
+		z-index: 10000;
+	}
+
+	@keyframes fate-out {
+		0% { opacity: 1; }
+		90% { opacity: 0; }
+		100% { opacity: 0; }
+	}
+}
+
+.trackList .controls {
+	width: 5%;
+}
+
+.trackList .number {
+	width: 5%;
+}
+
+.trackList .artist {
+	width: 20%;
+}
+
+.trackList .title {
+	width: 25%;
+}
+
+.trackList .album {
+	width: 25%;
+}
+
+.trackList .date {
+	width: 10%;
+}
+
+.trackList .duration {
+	width: 10%;
+}
+
+.player .progress i {
+	position: absolute;
+	left: 5px;
+	top: 5px;
+	z-index: 1000;
+}
+
+.player .player-progress .bar.track {
+	border-radius: 5px 5px 0 0;
+}
+
+.player .player-progress .bar.loading {
+	background-color: #555;
+	height: 0.2em;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
