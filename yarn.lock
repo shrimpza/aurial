@@ -2581,9 +2581,10 @@ portfinder@^1.0.9:
     debug "^2.2.0"
     mkdirp "0.5.x"
 
-preact@^8.2.5:
-  version "8.2.5"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-8.2.5.tgz#cbfa3962a8012768159f6d01d46f9c1eb3213c0a"
+preact@^10.4.1:
+  version "10.4.1"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.4.1.tgz#9b3ba020547673a231c6cf16f0fbaef0e8863431"
+  integrity sha512-WKrRpCSwL2t3tpOOGhf2WfTpcmbpxaWtDbdJdKdjd0aEiTkvOmS4NBkG6kzlaAHI9AkQ3iVqbFWM3Ei7mZ4o1Q==
 
 preserve@^0.2.0:
   version "0.2.0"

@@ -18,9 +18,10 @@ export default class Settings extends Component {
 		notifications: localStorage.getItem('notifications') === 'true',
 		backgroundArt: localStorage.getItem('backgroundArt') === 'true',
 		persistQueue: localStorage.getItem('persistQueue') === 'true',
+		repeatQueue: localStorage.getItem('repeatQueue') === 'true',
 		trackBuffer: localStorage.getItem('trackBuffer') || '0',
 		testState: TEST_UNTESTED
-	}
+	};
 
 	constructor(props, context) {
 		super(props, context);
@@ -37,7 +38,7 @@ export default class Settings extends Component {
 		localStorage.setItem('url', this.state.url);
 		localStorage.setItem('username', this.state.user);
 
-		if (this.state.password != '') {
+		if (this.state.password !== '') {
 			var salt = UniqueID();
 			localStorage.setItem('token', Subsonic.createToken(this.state.password, salt));
 			localStorage.setItem('salt', salt);
@@ -46,6 +47,7 @@ export default class Settings extends Component {
 		localStorage.setItem('notifications', this.state.notifications);
 		localStorage.setItem('backgroundArt', this.state.backgroundArt);
 		localStorage.setItem('persistQueue', this.state.persistQueue);
+		localStorage.setItem('repeatQueue', this.state.repeatQueue);
 		localStorage.setItem('trackBuffer', this.state.trackBuffer);
 
 		Messages.message(this.props.events, "Settings saved.", "success", "Save");
@@ -101,7 +103,7 @@ export default class Settings extends Component {
 
 		subsonic.ping({
 			success: function(data) {
-				if (data.status == "ok") {
+				if (data.status === "ok") {
 					this.setState({testState: TEST_SUCCESS});
 					Messages.message(this.props.events, "Connection test successful!", "success", "plug");
 				} else {
@@ -125,6 +127,7 @@ export default class Settings extends Component {
 			case "notifications": this.setState({notifications: e.target.checked}); break;
 			case "backgroundArt": this.setState({backgroundArt: e.target.checked}); break;
 			case "persistQueue": this.setState({persistQueue: e.target.checked}); break;
+			case "repeatQueue": this.setState({repeatQueue: e.target.checked}); break;
 			case "trackBuffer": this.setState({trackBuffer: e.target.value}); break;
 		}
 
@@ -188,6 +191,12 @@ export default class Settings extends Component {
 						<div className="ui checkbox">
 							<input name="persistQueue" type="checkbox" onChange={this.change} checked={this.state.persistQueue}/>
 							<label>Save queue (your queue will be restored after browser restarts, page reloads, etc)</label>
+						</div>
+					</div>
+					<div className="field">
+						<div className="ui checkbox">
+							<input name="repeatQueue" type="checkbox" onChange={this.change} checked={this.state.repeatQueue}/>
+							<label>Repeat queue (restart playing once the end of the queue has been reached)</label>
 						</div>
 					</div>
 

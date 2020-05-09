@@ -1,6 +1,6 @@
-import { h, Component } from 'preact';
+import {h, Component} from 'preact';
 import AudioPlayer from '../audioplayer'
-import {UniqueID,SecondsToTime,ArrayShuffle} from '../util'
+import {SecondsToTime, ArrayShuffle} from '../util'
 import {CoverArt} from './common'
 import {Messages} from './app'
 
@@ -39,7 +39,7 @@ export default class Player extends Component {
 	}
 
 	componentWillUpdate(nextProps, nextState) {
-		if (this.queueDiff(this.queue, nextState.queue) || this.state.shuffle != nextState.shuffle) {
+		if (this.queueDiff(this.queue, nextState.queue) || this.state.shuffle !== nextState.shuffle) {
 			this.queue = (this.state.shuffle || nextState.shuffle) ? ArrayShuffle(nextState.queue.slice()) : nextState.queue.slice();
 		}
 	}
@@ -151,8 +151,13 @@ export default class Player extends Component {
 		if (this.queue.length > 0) {
 			var idx = this.state.playing == null ? 0 : Math.max(0, this.queue.indexOf(this.state.playing));
 
-			if (idx < this.queue.length - 1) idx++;
-			else idx = 0;
+			if (idx < this.queue.length - 1) {
+				idx++;
+			} else {
+				// it's the end of the queue, user may choose to not repeat, in which case return no next track
+				if (this.state.playing != null && localStorage.getItem('repeatQueue') === 'false') return null
+				else idx = 0;
+			}
 
 			next = this.queue[idx];
 		}
@@ -201,10 +206,10 @@ export default class Player extends Component {
 	enqueue(action, tracks) {
 		var queue = this.state.queue.slice();
 
-		if (action == "REPLACE") {
+		if (action === "REPLACE") {
 			queue = tracks.slice();
 			Messages.message(this.props.events, "Added " + tracks.length + " tracks to queue.", "info", "info");
-		} else if (action == "ADD") {
+		} else if (action === "ADD") {
 			var trackIds = queue.map(function(t) {
 				return t.id;
 			});
@@ -213,7 +218,7 @@ export default class Player extends Component {
 			var removed = 0;
 			for (var i = 0; i < tracks.length; i++) {
 				var idx = trackIds.indexOf(tracks[i].id);
-				if (idx == -1) {
+				if (idx === -1) {
 					queue.push(tracks[i]);
 					trackIds.push(tracks[i].id);
 					added ++;
@@ -224,7 +229,7 @@ export default class Player extends Component {
 				}
 			}
 
-			if (tracks.length == 1) {
+			if (tracks.length === 1) {
 				var trackTitle = tracks[0].artist + " - " + tracks[0].title;
 				Messages.message(this.props.events, (added ? "Added " + trackTitle + " to queue. " : "") + (removed ? "Removed " + trackTitle + " from queue." : ""),	"info", "info");
 			} else if (added || removed) {
@@ -242,14 +247,14 @@ export default class Player extends Component {
 	}
 
 	queueDiff(q1, q2) {
-		if (q1.length != q2.length) return true;
+		if (q1.length !== q2.length) return true;
 
 		var diff = true;
 
 		q1.forEach(function(t1) {
 			var found = false;
 			for (const t2 of q2) {
-				if (t1.id == t2.id) {
+				if (t1.id === t2.id) {
 					found = true;
 					break;
 				}
