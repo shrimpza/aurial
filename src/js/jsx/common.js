@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import {h, Component} from 'preact';
 import {UniqueID} from '../util'
 
 export class CoverArt extends Component {
@@ -6,8 +6,6 @@ export class CoverArt extends Component {
 		id: 0,
 		size: 20
 	}
-
-	_image = null;
 
 	constructor(props, context) {
 		super(props, context);
@@ -275,8 +273,9 @@ export class ListPrompt extends Component {
 
 	show(approve) {
 		this.setState({value: this.props.value, approve: approve});
+		var dropdown = $('#' + this._id + ' .dropdown');
 
-		$('#' + this._id + ' .dropdown').dropdown({
+		dropdown.dropdown({
 			action: 'activate',
 			allowAdditions: this.props.allowNew,
 			onChange: function(value, text, selectedItem) {
@@ -284,7 +283,7 @@ export class ListPrompt extends Component {
 			}.bind(this)
 		});
 
-		$('#' + this._id + ' .dropdown').dropdown('clear');
+		dropdown.dropdown('clear');
 
 		$('#' + this._id).modal('show');
 	}
@@ -345,7 +344,7 @@ export class ImageViewer extends Component {
 	}
 
 	receive(event) {
-		if (event.event == "showImage") {
+		if (event.event === "showImage") {
 			this.setState({image: event.data});
 			this.show();
 		}

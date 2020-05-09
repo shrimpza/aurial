@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import {h, Component} from 'preact';
 import moment from 'moment'
 import {IconMessage,CoverArt,Prompt,InputPrompt,ListPrompt} from './common'
 import TrackList from './tracklist'
@@ -31,32 +31,32 @@ export default class PlaylistManager extends Component {
 
 
 	componentDidUpdate(prevProps, prevState) {
-		if (prevProps.subsonic != this.props.subsonic) this.loadPlaylists();
+		if (prevProps.subsonic !== this.props.subsonic) this.loadPlaylists();
 	}
 
 	receive(event) {
-		if (event.event == "playlistManage") {
-			if (event.data.action == "ADD") {
+		if (event.event === "playlistManage") {
+			if (event.data.action === "ADD") {
 				this.lister.show(function(approved, playlist) {
 					if (!approved) return;
 
-					var tracks = event.data.tracks.map(function(t) {
-						return t.id;
-					});
+					var tracks = event.data.tracks.map(t => t.id);
 
-					if (isNaN(playlist)) {
+					var currentPlaylist = this.state.playlists.find(p => p.id === playlist)
+
+					if (currentPlaylist === undefined) {
 						this.createPlaylist(playlist, tracks);
 					} else {
 						this.updatePlaylist(playlist, tracks, []);
 					}
 				}.bind(this));
-			} else if (event.data.action == "CREATE") {
+			} else if (event.data.action === "CREATE") {
 				this.creator.show("", function(approved, newName) {
 					if (!approved) return;
 
 					this.createPlaylist(newName, []);
 				}.bind(this));
-			} else if (event.data.action == "DELETE") {
+			} else if (event.data.action === "DELETE") {
 				this.deleter.show(function(approved) {
 					if (!approved) return;
 
@@ -68,7 +68,7 @@ export default class PlaylistManager extends Component {
 						}.bind(this)
 					});
 				}.bind(this));
-			} else if (event.data.action == "RENAME") {
+			} else if (event.data.action === "RENAME") {
 				this.renamer.show(event.data.name, function(approved, newName) {
 					if (!approved) return;
 
@@ -81,14 +81,14 @@ export default class PlaylistManager extends Component {
 						}.bind(this)
 					});
 				}.bind(this));
-			} else if (event.data.action == "REMOVE") {
+			} else if (event.data.action === "REMOVE") {
 				// load up the playlist, since we can only remove tracks by their index within a playlist
 				this.props.subsonic.getPlaylist({
 					id: event.data.id,
 					success: function(data) {
 						var tracks = event.data.tracks.map(function(t) {
 							for (var i = 0; i < data.playlist.entry.length; i++) {
-								if (t.id == data.playlist.entry[i].id) return i;
+								if (t.id === data.playlist.entry[i].id) return i;
 							}
 						});
 
@@ -125,7 +125,8 @@ export default class PlaylistManager extends Component {
 			remove: remove,
 			success: function() {
 				Messages.message(this.props.events, "Playlist updated", "success", "checkmark");
-				if (id == this.state.playlist.id) this.loadPlaylist(id);
+				this.loadPlaylists();
+				if (this.state.playlist !== null && id === this.state.playlist.id) this.loadPlaylist(id);
 			}.bind(this),
 			error: function(err) {
 				console.error(this, err);
@@ -205,7 +206,7 @@ class PlaylistSelector extends Component {
 		$('.playlistSelector .dropdown').dropdown({
 			action: 'activate',
 			onChange: function(value, text, selectedItem) {
-				if (this.value != value) {
+				if (this.value !== value) {
 					if (this.props.selected) this.props.selected(value);
 					this.value = value;
 				}
