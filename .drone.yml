@@ -9,6 +9,7 @@ steps:
       - name: pages-cache
         path: /out
     commands:
+      - yarn install
       - yarn run dist
       - mv ./dist /out/aurial
       - tar -czf /out/aurial.tgz /out/aurial && mv /out/aurial.tgz /out/aurial/aurial.tgz
