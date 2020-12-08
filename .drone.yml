@@ -1,0 +1,35 @@
+kind: pipeline
+name: default
+type: docker
+
+steps:
+  - name: build
+    image: node:12-alpine
+    volumes:
+      - name: pages-cache
+        path: /out
+    commands:
+      - yarn run dist
+      - mv ./dist /out/aurial
+      - tar -czf /out/aurial.tgz /out/aurial && mv /out/aurial.tgz /out/aurial/aurial.tgz
+    when:
+      branch:
+        - master
+  - name: publish
+    image: plugins/gh-pages
+    volumes:
+      - name: pages-cache
+        path: /out
+    settings:
+      username:
+        from_secret: GH_USER
+      password:
+        from_secret: GH_TOKEN
+      pages_directory: /out/aurial
+    when:
+      branch:
+        - master
+
+volumes:
+  - name: pages-cache
+    temp: {}
